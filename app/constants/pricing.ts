@@ -4,6 +4,14 @@ export interface PLAN {
   popular: boolean;
   product_id: { monthly: string; yearly: string } | null;
   price: { monthly: number; yearly: number };
+  i18n: {
+    name: string;
+    description: string;
+    yearlyDescription?: string;
+    features: string;
+    creditsLine?: string;
+    billingLabel?: string;
+  };
   name: string;
   description: string;
   yearly_description?: string;
@@ -45,9 +53,14 @@ export const FREE_PLAN: PLAN = {
   popular: false,
   product_id: null,
   price: { monthly: 0, yearly: 0 },
+  i18n: {
+    name: "pricing.starter",
+    description: "pricing.starterDescription",
+    features: "pricing.starterFeatures",
+  },
   name: "Starter",
   description:
-    "Get started with Nano Banana 2 for free. Basic features with watermarks.",
+    "Get started with NB2 Studio for free. Basic features with watermarks.",
   feature_description: [
     "10 starter credits",
     "Basic generation quality",
@@ -69,6 +82,12 @@ export const BASIC_PLAN: PLAN = {
   id: "basic",
   popular: false,
   price: { monthly: 9, yearly: 0 },
+  i18n: {
+    name: "pricing.basic",
+    description: "pricing.basicDescription",
+    features: "pricing.basicFeatures",
+    billingLabel: "pricing.monthlyPlanLabel",
+  },
   product_id: {
     monthly: CREEM_ACTIVE_PRODUCT_IDS.basicMonthly,
     yearly: "",
@@ -99,6 +118,13 @@ export const PREMIUM_PLAN: PLAN = {
   id: "premium",
   popular: true,
   price: { monthly: 19, yearly: 69 },
+  i18n: {
+    name: "pricing.pro",
+    description: "pricing.proDescription",
+    yearlyDescription: "pricing.proYearlyDescription",
+    features: "pricing.proFeatures",
+    creditsLine: "pricing.proCreditsLine",
+  },
   product_id: {
     monthly: CREEM_ACTIVE_PRODUCT_IDS.proMonthly,
     yearly: CREEM_ACTIVE_PRODUCT_IDS.proYearly,

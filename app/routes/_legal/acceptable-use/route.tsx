@@ -3,18 +3,17 @@ import type { Route } from "./+types/route";
 import { Legal } from "~/components/pages/legal";
 import { parseMarkdown } from "~/.server/libs/markdown";
 import content from "./content.md?raw";
-
 import { createCanonical } from "~/utils/meta";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   return [
-    { title: "Terms of Use - NB2 Studio" },
+    { title: "Acceptable Use Policy - NB2 Studio" },
     {
       name: "description",
       content:
-        "Review the Terms of Use for NB2 Studio, including rules, responsibilities, and legal conditions for using our AI image platform.",
+        "Read the NB2 Studio Acceptable Use Policy, including prohibited content, NSFW restrictions, and enforcement rules.",
     },
-    createCanonical("/legal/terms", matches[0].data.DOMAIN),
+    createCanonical("/legal/acceptable-use", matches[0].data.DOMAIN),
   ];
 };
 
@@ -26,4 +25,3 @@ export const loader = ({}: Route.LoaderArgs) => {
 export default function Page({ loaderData: { node } }: Route.ComponentProps) {
   return <Legal node={node} />;
 }
-

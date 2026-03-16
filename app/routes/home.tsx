@@ -10,7 +10,6 @@ import Comparison from "~/features/nano-banana/components/Comparison";
 import Inspiration from "~/features/nano-banana/components/Inspiration";
 import UseCases from "~/features/nano-banana/components/UseCases";
 import Pricing from "~/features/nano-banana/components/Pricing";
-import Testimonials from "~/features/nano-banana/components/Testimonials";
 import FAQ from "~/features/nano-banana/components/FAQ";
 import BottomCTA from "~/features/nano-banana/components/BottomCTA";
 import Footer from "~/features/nano-banana/components/Footer";
@@ -28,11 +27,11 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   const domain = matches[0]?.data?.DOMAIN ?? "https://nanobanana2pro.space";
 
   return [
-    { title: "Nano Banana 2 - AI Image Editor & Generator" },
+    { title: "NB2 Studio - Nano Banana 2 AI Image Editor & Generator" },
     {
       name: "description",
       content:
-        "Nano Banana 2 is an AI image editor built for creators. Generate and edit images with prompt-only or image-plus-prompt workflows, high-quality output, and fast iteration.",
+        "NB2 Studio is an independent AI image editor for nano banana 2, gemini nano banana 2, and google nano banana 2 workflow intents. Not affiliated with Google.",
     },
     createCanonical("/", domain),
     createAlternate("/", domain, "en"),
@@ -60,7 +59,6 @@ export function LandingPage({ initialLanguage = "en" }: LandingPageProps) {
           <Inspiration />
           <UseCases />
           <Pricing />
-          <Testimonials />
           <FAQ />
           <BottomCTA />
         </main>
@@ -73,3 +71,4 @@ export function LandingPage({ initialLanguage = "en" }: LandingPageProps) {
 export default function HomePage() {
   return <LandingPage initialLanguage="en" />;
 }
+

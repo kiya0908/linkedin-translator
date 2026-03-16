@@ -8,11 +8,11 @@ import { createCanonical } from "~/utils/meta";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   return [
-    { title: "Cookie Policy - Nano Banana 2" },
+    { title: "Cookie Policy - NB2 Studio" },
     {
       name: "description",
       content:
-        "Find out how Nano Banana 2 use cookies and similar technologies to enhance your experience. Learn about your choices regarding cookie settings and consent.",
+        "Find out how NB2 Studio uses cookies and similar technologies and how you can manage cookie preferences.",
     },
     createCanonical("/legal/cookie", matches[0].data.DOMAIN),
   ];
@@ -26,3 +26,4 @@ export const loader = ({}: Route.LoaderArgs) => {
 export default function Page({ loaderData: { node } }: Route.ComponentProps) {
   return <Legal node={node} />;
 }
+

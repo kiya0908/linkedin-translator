@@ -1,6 +1,5 @@
 import { Fragment } from "react";
 import { Logo, Link } from "~/components/common";
-import { Socials } from "./socials";
 
 interface FooterNavLink {
   label: string;
@@ -10,9 +9,11 @@ interface FooterNavLink {
     target?: React.HTMLAttributeAnchorTarget;
   }>;
 }
+
 export interface FooterProps {
   navLinks: FooterNavLink[];
 }
+
 export const Footer = ({ navLinks }: FooterProps) => {
   return (
     <Fragment>
@@ -26,15 +27,14 @@ export const Footer = ({ navLinks }: FooterProps) => {
               Fresh hair ideas and AI hairstyle try-on for you to find styles
               that suit you best!
             </p>
-            <Socials className="mt-2" iconSize={24} />
           </aside>
           {navLinks.map((navLink, i) => (
             <div key={i}>
               <label className="footer-title mb-0">{navLink.label}</label>
               <nav className="flex flex-row md:flex-col gap-x-4 gap-y-2 flex-wrap">
-                {navLink.list.map((link, i) => (
+                {navLink.list.map((link, index) => (
                   <Link
-                    key={`${navLink.label}_${i}`}
+                    key={`${navLink.label}_${index}`}
                     className="link link-hover"
                     target={link.target}
                     to={link.to}
@@ -50,11 +50,7 @@ export const Footer = ({ navLinks }: FooterProps) => {
       <div className="bg-neutral text-neutral-content border-t border-neutral-700">
         <div className="container text-sm p-4">
           <p className="text-center leading-none text-neutral-400">
-            © {new Date().getFullYear()}{" "}
-            <Link className="text-neutral-50" to="https://hairroom.app" target="_blank">
-              Hairroom
-            </Link>{" "}
-            All Rights Reserved.
+            © {new Date().getFullYear()} NB2 Studio. All Rights Reserved.
           </p>
         </div>
       </div>

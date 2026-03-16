@@ -6,6 +6,21 @@ import { BASIC_PLAN, PREMIUM_PLAN } from "~/constants/pricing";
 
 export default function Pricing() {
   const { t } = useTranslation();
+  const tr = (key: string) => {
+    const value = t(key);
+    return typeof value === "string" ? value : key;
+  };
+  const formatText = (
+    template: string,
+    variables: Record<string, string | number>
+  ) => {
+    return template.replace(/\{\{(\w+)\}\}/g, (_, key: string) =>
+      String(variables[key] ?? "")
+    );
+  };
+
+  const basicFeatures = t(BASIC_PLAN.i18n.features) as string[];
+  const proBaseFeatures = t(PREMIUM_PLAN.i18n.features) as string[];
   const enterpriseFeatures = t("pricing.enterpriseFeatures") as string[];
 
   const [isAnnual, setIsAnnual] = useState(false);
@@ -14,10 +29,13 @@ export default function Pricing() {
   const user = useUser((state) => state.user);
 
   const proFeatures = [
-    `${isAnnual ? PREMIUM_PLAN.limit.credits.yearly : PREMIUM_PLAN.limit.credits.monthly} Credits ${
-      isAnnual ? "per year" : "per month"
-    }`,
-    ...PREMIUM_PLAN.feature_description.slice(1),
+    formatText(tr(PREMIUM_PLAN.i18n.creditsLine ?? "pricing.proCreditsLine"), {
+      credits: isAnnual
+        ? PREMIUM_PLAN.limit.credits.yearly
+        : PREMIUM_PLAN.limit.credits.monthly,
+      period: isAnnual ? tr("pricing.perYear") : tr("pricing.perMonth"),
+    }),
+    ...proBaseFeatures,
   ];
 
   const handleSubscribe = async (planType: "basic" | "pro") => {
@@ -99,24 +117,27 @@ export default function Pricing() {
                   : "text-text-secondary hover:text-white"
               }`}
             >
-              {t("pricing.annually")} <span className="text-blue-600 ml-1">Save</span>
+              {t("pricing.annually")}{" "}
+              <span className="text-blue-600 ml-1">{tr("pricing.save")}</span>
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-bg-surface border border-border-subtle rounded-3xl p-8 flex flex-col">
-            <h3 className="text-xl font-bold mb-2">{BASIC_PLAN.name}</h3>
-            <p className="text-sm text-text-secondary mb-6">{BASIC_PLAN.description}</p>
+            <h3 className="text-xl font-bold mb-2">{tr(BASIC_PLAN.i18n.name)}</h3>
+            <p className="text-sm text-text-secondary mb-6">
+              {tr(BASIC_PLAN.i18n.description)}
+            </p>
             <div className="mb-6">
               <span className="text-4xl font-extrabold">${BASIC_PLAN.price.monthly}</span>
               <span className="text-text-secondary">{t("pricing.month")}</span>
             </div>
             <div className="text-sm text-text-secondary mb-8 pb-8 border-b border-border-subtle">
-              Monthly plan
+              {tr(BASIC_PLAN.i18n.billingLabel ?? "pricing.monthlyPlanLabel")}
             </div>
             <ul className="space-y-4 mb-8 flex-1">
-              {BASIC_PLAN.feature_description.map((f, i) => (
+              {basicFeatures.map((f, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <Check size={20} className="text-white shrink-0" /> <span>{f}</span>
                 </li>
@@ -136,11 +157,11 @@ export default function Pricing() {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wider uppercase">
               {t("pricing.mostPopular")}
             </div>
-            <h3 className="text-xl font-bold mb-2">{PREMIUM_PLAN.name}</h3>
+            <h3 className="text-xl font-bold mb-2">{tr(PREMIUM_PLAN.i18n.name)}</h3>
             <p className="text-sm text-white/70 mb-6">
-              {isAnnual
-                ? PREMIUM_PLAN.yearly_description ?? PREMIUM_PLAN.description
-                : PREMIUM_PLAN.description}
+              {isAnnual && PREMIUM_PLAN.i18n.yearlyDescription
+                ? tr(PREMIUM_PLAN.i18n.yearlyDescription)
+                : tr(PREMIUM_PLAN.i18n.description)}
             </p>
             <div className="mb-6 text-blue-50">
               <span className="text-4xl font-extrabold">
@@ -190,7 +211,9 @@ export default function Pricing() {
               ))}
             </ul>
             <button
-              onClick={() => (window.location.href = "mailto:contact@example.com")}
+              onClick={() =>
+                (window.location.href = "mailto:support@nanobanana2pro.space")
+              }
               className="w-full py-4 rounded-full border border-white/20 hover:bg-white/10 transition-colors font-bold"
             >
               {t("pricing.contactSales")}

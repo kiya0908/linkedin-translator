@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { Check, X } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 
-// 对比表格组件 - 四列对比 + 示例图片
+// 瀵规瘮琛ㄦ牸缁勪欢 - 鍥涘垪瀵规瘮 + 绀轰緥鍥剧墖
 export default function Comparison() {
     const { t } = useTranslation();
     const items = t('comparison.items');

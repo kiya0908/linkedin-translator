@@ -14,11 +14,11 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   const domain = matches[0]?.data?.DOMAIN ?? "https://nanobanana2pro.space";
 
   return [
-    { title: "Nano Banana 2 - AI 图像编辑与生成平台" },
+    { title: "NB2 Studio - Nano Banana 2 AI Image Editor (ZH)" },
     {
       name: "description",
       content:
-        "Nano Banana 2 是面向创作者的 AI 图像编辑平台。支持仅提示词或图片+提示词两种工作流，快速完成高质量图像生成与编辑。",
+        "NB2 Studio is an independent AI image platform for nano banana 2, gemini nano banana 2, and google nano banana 2 workflows. Not affiliated with Google.",
     },
     createCanonical("/zh", domain),
     createAlternate("/", domain, "en"),

@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { useTranslation } from '../i18n/LanguageContext';
 
-// 品牌故事组件 - 双栏布局含图片悬停效果
+// 鍝佺墝鏁呬簨缁勪欢 - 鍙屾爮甯冨眬鍚浘鐗囨偓鍋滄晥鏋?
 export default function BrandStory() {
     const { t } = useTranslation();
 
@@ -34,7 +34,7 @@ export default function BrandStory() {
                     >
                         <img
                             src="https://picsum.photos/seed/universe/800/800"
-                            alt="Nano Banana Universe"
+                            alt="NB2 Studio creative workspace"
                             className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000"
                             referrerPolicy="no-referrer"
                         />

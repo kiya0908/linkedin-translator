@@ -78,7 +78,6 @@ export default function EditorDemo() {
       : localizedDefaultPrompt;
 
   const [prompt, setPrompt] = useState(defaultPrompt);
-  const previousDefaultPromptRef = useRef(defaultPrompt);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -99,12 +98,7 @@ export default function EditorDemo() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setPrompt((currentPrompt) =>
-      currentPrompt === previousDefaultPromptRef.current
-        ? defaultPrompt
-        : currentPrompt
-    );
-    previousDefaultPromptRef.current = defaultPrompt;
+    setPrompt(defaultPrompt);
   }, [defaultPrompt, language]);
 
   useEffect(() => {

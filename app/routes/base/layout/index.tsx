@@ -42,6 +42,11 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
         list: [
           { to: "/legal/terms", label: "Terms of Use", target: "_blank" },
           { to: "/legal/privacy", label: "Privacy Policy", target: "_blank" },
+          {
+            to: "/legal/acceptable-use",
+            label: "Acceptable Use Policy",
+            target: "_blank",
+          },
           { to: "/legal/refund", label: "Refund Policy", target: "_blank" },
         ],
       },
