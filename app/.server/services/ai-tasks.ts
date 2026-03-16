@@ -1,9 +1,6 @@
 import { env } from "cloudflare:workers";
 
 import { nanoid } from "nanoid";
-import currency from "currency.js";
-
-import type { CreateAiHairstyleDTO } from "~/.server/schema/task";
 
 import {
   insertAiTaskBatch,
@@ -16,13 +13,8 @@ import { consumptionsCredits } from "./credits";
 import { uploadFiles, downloadFilesToBucket } from "./r2-bucket";
 import {
   KieAI,
-  type CreateKontextOptions,
-  type Create4oTaskOptions,
   type CreateNanoBananaOptions,
 } from "~/.server/aisdk";
-
-import { createAiHairstyleChangerPrompt } from "~/.server/prompt/ai-hairstyle";
-import { createAiHairstyleChangerPrompt as createHairstyleChangerKontext } from "~/.server/prompt/ai-hairstyle-kontext";
 import { NANO_BANANA_TASK_CREDITS } from "~/constants/tasks";
 
 export type AiTaskResult = Pick<
@@ -136,123 +128,6 @@ export const createAiTask = async (payload: InsertAiTask | InsertAiTask[]) => {
   return results.map(transformResult);
 };
 
-export const createAiHairstyle = async (
-  value: CreateAiHairstyleDTO,
-  user: User
-) => {
-  const { photo, hair_color, hairstyle, detail, type } = value;
-
-  const taskCredits = hairstyle.length;
-
-  // Deduct credits for the task batch.
-  const consumptionResult = await consumptionsCredits(user, {
-    credits: taskCredits,
-  });
-
-  const extName = photo.name.split(".").pop()!;
-  const newFileName = `${nanoid()}.${extName}`;
-  const file = new File([photo], newFileName);
-  const [R2Object] = await uploadFiles(file);
-
-  const fileUrl = new URL(R2Object.key, env.CDN_URL).toString();
-
-  let insertPayloads: InsertAiTask[] = [];
-  if (type === "gpt-4o") {
-    const aspect = "2:3";
-    const callbakUrl = new URL("/webhooks/kie-image", env.DOMAIN).toString();
-
-    insertPayloads = hairstyle.map<InsertAiTask>((style) => {
-      const inputParams = {
-        photo: fileUrl,
-        hair_color,
-        hairstyle: style,
-        detail,
-      };
-      const ext = {
-        hairstyle: style.name,
-        haircolor: hair_color.value ? hair_color.name : undefined,
-      };
-
-      const filesUrl = [fileUrl];
-      if (style.cover) filesUrl.push(style.cover);
-      if (hair_color.cover) filesUrl.push(hair_color.cover);
-
-      const params: Create4oTaskOptions = {
-        filesUrl: filesUrl,
-        prompt: createAiHairstyleChangerPrompt({
-          hairstyle: style.name,
-          haircolor: hair_color.name,
-          haircolorHex: hair_color.value,
-          withStyleReference: !!style.cover,
-          withColorReference: !!hair_color.cover,
-          detail: detail,
-        }),
-        size: aspect,
-        nVariants: "4",
-        callBackUrl: import.meta.env.PROD ? callbakUrl : undefined,
-      };
-
-      return {
-        user_id: user.id,
-        status: "pending",
-        estimated_start_at: new Date(),
-        input_params: inputParams,
-        ext,
-        aspect: aspect,
-        provider: "kie_4o",
-        request_param: params,
-      };
-    });
-  } else if (type === "kontext") {
-    const aspect = "3:4";
-    const callbakUrl = new URL("/webhooks/kie-image", env.DOMAIN).toString();
-
-    insertPayloads = hairstyle.map<InsertAiTask>((style) => {
-      const inputParams = {
-        photo: fileUrl,
-        hair_color,
-        hairstyle: style,
-        detail,
-      };
-      const ext = {
-        hairstyle: style.name,
-        haircolor: hair_color.value ? hair_color.name : undefined,
-      };
-
-      const filesUrl = [fileUrl];
-      if (style.cover) filesUrl.push(style.cover);
-      if (hair_color.cover) filesUrl.push(hair_color.cover);
-
-      const params: CreateKontextOptions = {
-        inputImage: fileUrl,
-        prompt: createHairstyleChangerKontext({
-          hairstyle: style.name,
-          haircolor: hair_color.name,
-          detail: detail,
-        }),
-        aspectRatio: aspect,
-        model: "flux-kontext-pro",
-        outputFormat: "png",
-        callBackUrl: import.meta.env.PROD ? callbakUrl : undefined,
-      };
-
-      return {
-        user_id: user.id,
-        status: "pending",
-        estimated_start_at: new Date(),
-        input_params: inputParams,
-        ext,
-        aspect: aspect,
-        provider: "kie_kontext",
-        request_param: params,
-      };
-    });
-  }
-
-  const tasks = await createAiTask(insertPayloads);
-  return { tasks, consumptionCredits: consumptionResult };
-};
-
 export const createNanoBananaTask = async (
   value: {
     prompt: string;
@@ -351,41 +226,20 @@ export const startTask = async (params: AiTask["task_no"] | AiTask) => {
     throw new RetryableStartTaskError("Not Allow to Start");
   }
 
-  const kie = new KieAI();
-  let newTask: AiTask;
-  if (task.provider === "kie_4o") {
-    const result = await kie.create4oTask(
-      task.request_param as Create4oTaskOptions
-    );
-    const res = await updateAiTask(task.task_no, {
-      task_id: result.taskId,
-      status: "running",
-      started_at: new Date(),
-    });
-    newTask = res[0];
-  } else if (task.provider === "kie_kontext") {
-    const result = await kie.createKontextTask(
-      task.request_param as CreateKontextOptions
-    );
-    const res = await updateAiTask(task.task_no, {
-      task_id: result.taskId,
-      status: "running",
-      started_at: new Date(),
-    });
-    newTask = res[0];
-  } else if (task.provider === "nanobanana_2") {
-    const result = await kie.createNanoBananaTask(
-      task.request_param as CreateNanoBananaOptions
-    );
-    const res = await updateAiTask(task.task_no, {
-      task_id: result.taskId,
-      status: "running",
-      started_at: new Date(),
-    });
-    newTask = res[0];
-  } else {
-    throw Error("Unvalid Task Provider");
+  if (task.provider !== "nanobanana_2") {
+    throw Error(`Unsupported task provider: ${task.provider}`);
   }
+
+  const kie = new KieAI();
+  const result = await kie.createNanoBananaTask(
+    task.request_param as CreateNanoBananaOptions
+  );
+  const res = await updateAiTask(task.task_no, {
+    task_id: result.taskId,
+    status: "running",
+    started_at: new Date(),
+  });
+  const newTask = res[0];
 
   return transformResult(newTask);
 };
@@ -468,168 +322,78 @@ export const updateTaskStatus = async (taskNo: AiTask["task_no"] | AiTask) => {
 
   if (!task.task_id) throw Error("Unvalid Task ID");
 
+  if (task.provider !== "nanobanana_2") {
+    const [failedTask] = await updateAiTask(task.task_no, {
+      status: "failed",
+      completed_at: new Date(),
+      fail_reason: `Unsupported task provider: ${task.provider}`,
+      result_data: {
+        stage: "queryTask",
+        error: { message: "Unsupported task provider" },
+      },
+    });
+
+    return { task: transformResult(failedTask ?? task), progress: 1 };
+  }
+
   try {
     const kie = new KieAI();
+    const result = await kie.queryNanoBananaTask({ taskId: task.task_id });
 
-    if (task.provider === "kie_4o") {
-      const result = await kie.query4oTaskDetail({ taskId: task.task_id });
-      if (result.status === "GENERATING") {
-        return {
-          task: transformResult(task),
-          progress: currency(result.progress).intValue,
-        };
-      } else if (result.status === "SUCCESS") {
-        let resultUrl = result.response?.resultUrls[0];
-        let newTask: AiTask;
-        if (!resultUrl) {
-          const [aiTask] = await updateAiTask(task.task_no, {
-            status: "failed",
-            completed_at: new Date(),
-            result_data: result,
-            result_url: resultUrl,
-            fail_reason: "Result url not retrieved",
-          });
-          newTask = aiTask;
-        } else {
-          if (import.meta.env.PROD) {
-            try {
-              const [file] = await downloadFilesToBucket(
-                [{ src: resultUrl, fileName: task.task_no, ext: "png" }],
-                "result/hairstyle"
-              );
-              if (file) resultUrl = new URL(file.key, env.CDN_URL).toString();
-            } catch { }
-          }
+    if (result.status === "PENDING" || result.status === "GENERATING") {
+      return {
+        task: transformResult(task),
+        progress: result.progress ?? 0,
+      };
+    } else if (result.status === "SUCCESS") {
+      let resultUrl =
+        result.response?.resultImageUrl ?? result.response?.originImageUrl;
+      let newTask: AiTask;
 
-          const [aiTask] = await updateAiTask(task.task_no, {
-            status: "succeeded",
-            completed_at: new Date(),
-            result_data: result,
-            result_url: resultUrl,
-          });
-          newTask = aiTask;
-        }
-
-        return { task: transformResult(newTask), progress: 1 };
-      } else {
-        const [newTask] = await updateAiTask(task.task_no, {
+      if (!resultUrl) {
+        const [aiTask] = await updateAiTask(task.task_no, {
           status: "failed",
           completed_at: new Date(),
-          fail_reason: result.errorMessage,
           result_data: result,
+          result_url: resultUrl,
+          fail_reason: "Result url not retrieved from Nano Banana 2",
         });
-
-        return { task: transformResult(newTask), progress: 1 };
-      }
-    } else if (task.provider === "kie_kontext") {
-      const result = await kie.queryKontextTask({ taskId: task.task_id });
-      if (result.successFlag === 0) {
-        return {
-          task: transformResult(task),
-          progress: 0,
-        };
-      } else if (result.successFlag === 1) {
-        let resultUrl =
-          result.response?.resultImageUrl ?? result.response?.originImageUrl;
-        let newTask: AiTask;
-        if (!resultUrl) {
-          const [aiTask] = await updateAiTask(task.task_no, {
-            status: "failed",
-            completed_at: new Date(),
-            result_data: result,
-            result_url: resultUrl,
-            fail_reason: "Result url not retrieved",
-          });
-          newTask = aiTask;
-        } else {
-          if (import.meta.env.PROD) {
-            try {
-              const [file] = await downloadFilesToBucket(
-                [{ src: resultUrl, fileName: task.task_no, ext: "png" }],
-                "result/hairstyle"
-              );
-              if (file) resultUrl = new URL(file.key, env.CDN_URL).toString();
-            } catch { }
-          }
-
-          const [aiTask] = await updateAiTask(task.task_no, {
-            status: "succeeded",
-            completed_at: new Date(),
-            result_data: result,
-            result_url: resultUrl,
-          });
-          newTask = aiTask;
+        newTask = aiTask;
+      } else {
+        if (import.meta.env.PROD) {
+          try {
+            const requestParams = task.request_param as
+              | CreateNanoBananaOptions
+              | undefined;
+            const outputExt =
+              requestParams?.outputFormat === "png" ? "png" : "jpg";
+            const [file] = await downloadFilesToBucket(
+              [{ src: resultUrl, fileName: task.task_no, ext: outputExt }],
+              "result/nanobanana"
+            );
+            if (file) resultUrl = new URL(file.key, env.CDN_URL).toString();
+          } catch { }
         }
 
-        return { task: transformResult(newTask), progress: 1 };
-      } else {
-        const [newTask] = await updateAiTask(task.task_no, {
-          status: "failed",
+        const [aiTask] = await updateAiTask(task.task_no, {
+          status: "succeeded",
           completed_at: new Date(),
-          fail_reason: result.errorMessage,
           result_data: result,
+          result_url: resultUrl,
         });
-
-        return { task: transformResult(newTask), progress: 1 };
+        newTask = aiTask;
       }
-    } else if (task.provider === "nanobanana_2") {
-      const result = await kie.queryNanoBananaTask({ taskId: task.task_id });
 
-      if (result.status === "PENDING" || result.status === "GENERATING") {
-        return {
-          task: transformResult(task),
-          progress: result.progress ?? 0,
-        };
-      } else if (result.status === "SUCCESS") {
-        let resultUrl =
-          result.response?.resultImageUrl ?? result.response?.originImageUrl;
-        let newTask: AiTask;
+      return { task: transformResult(newTask), progress: 1 };
+    } else {
+      const [newTask] = await updateAiTask(task.task_no, {
+        status: "failed",
+        completed_at: new Date(),
+        fail_reason: result.errorMessage ?? "Unknown Error",
+        result_data: result,
+      });
 
-        if (!resultUrl) {
-          const [aiTask] = await updateAiTask(task.task_no, {
-            status: "failed",
-            completed_at: new Date(),
-            result_data: result,
-            result_url: resultUrl,
-            fail_reason: "Result url not retrieved from Nano Banana 2",
-          });
-          newTask = aiTask;
-        } else {
-          if (import.meta.env.PROD) {
-            try {
-              const requestParams = task.request_param as
-                | CreateNanoBananaOptions
-                | undefined;
-              const outputExt =
-                requestParams?.outputFormat === "png" ? "png" : "jpg";
-              const [file] = await downloadFilesToBucket(
-                [{ src: resultUrl, fileName: task.task_no, ext: outputExt }],
-                "result/nanobanana"
-              );
-              if (file) resultUrl = new URL(file.key, env.CDN_URL).toString();
-            } catch { }
-          }
-
-          const [aiTask] = await updateAiTask(task.task_no, {
-            status: "succeeded",
-            completed_at: new Date(),
-            result_data: result,
-            result_url: resultUrl,
-          });
-          newTask = aiTask;
-        }
-
-        return { task: transformResult(newTask), progress: 1 };
-      } else {
-        const [newTask] = await updateAiTask(task.task_no, {
-          status: "failed",
-          completed_at: new Date(),
-          fail_reason: result.errorMessage ?? "Unknown Error",
-          result_data: result,
-        });
-
-        return { task: transformResult(newTask), progress: 1 };
-      }
+      return { task: transformResult(newTask), progress: 1 };
     }
   } catch (error) {
     const [failedTask] = await updateAiTask(task.task_no, {
@@ -646,7 +410,7 @@ export const updateTaskStatus = async (taskNo: AiTask["task_no"] | AiTask) => {
   }
 
   return {
-    task: transformResult(task),
+    task: transformResult(task!),
     progress: 1,
   };
 };

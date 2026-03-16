@@ -184,7 +184,7 @@ export const ai_tasks = sqliteTable("ai_tasks", {
   ext: text({ mode: "json" })
     .$type<Record<string, unknown>>()
     .notNull()
-    .default({}), // 额外的附加信息，例如 hairstyle_name / hairstyle_color
+    .default({}), // 额外的附加信息（任务上下文）
   // 系统内结果数据
   started_at: integer({ mode: "timestamp" }), // 实际任务开始时间
   completed_at: integer({ mode: "timestamp" }), // 任务完成时间

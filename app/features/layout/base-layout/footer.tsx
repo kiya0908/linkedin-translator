@@ -24,8 +24,7 @@ export const Footer = ({ navLinks }: FooterProps) => {
               <Logo />
             </Link>
             <p>
-              Fresh hair ideas and AI hairstyle try-on for you to find styles
-              that suit you best!
+              Create, edit, and ship AI visuals with a fast, modern workflow.
             </p>
           </aside>
           {navLinks.map((navLink, i) => (
