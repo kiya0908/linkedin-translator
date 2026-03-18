@@ -27,11 +27,11 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   const domain = matches[0]?.data?.DOMAIN ?? "https://nanobanana2pro.space";
 
   return [
-    { title: "NB2 Studio - Nano Banana 2 AI Image Editor & Generator" },
+    { title: "Nivra Brush Studio - AI Image Generator & Editor" },
     {
       name: "description",
       content:
-        "NB2 Studio is an independent AI image editor for nano banana 2, gemini nano banana 2, and google nano banana 2 workflow intents. Not affiliated with Google.",
+        "Nivra Brush Studio is an independent AI image generator and editor. Create, edit, and enhance images with advanced AI models. Not affiliated with Google.",
     },
     createCanonical("/", domain),
     createAlternate("/", domain, "en"),

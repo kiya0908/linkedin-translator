@@ -5,7 +5,7 @@ import { useUser } from '~/store/user';
 import { GoogleOAuth } from '~/features/oauth';
 import { Image } from '~/components/common';
 
-// 鐎佃壈鍩呴弽蹇曠矋娴?- 閸ュ搫鐣炬い鍫曞劥濮ｆ稓骞撻悹鍐╂櫏閺?
+
 export default function Navbar() {
     const { t, language, setLanguage } = useTranslation();
 
@@ -27,10 +27,10 @@ export default function Navbar() {
             <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-2 cursor-pointer">
-                        <div className="w-8 h-8 rounded-lg brand-gradient flex items-center justify-center font-bold text-white">
-                            NB
+                        <div className="w-8 h-8 rounded-lg brand-gradient flex items-center justify-center font-bold text-white text-xs">
+                            NvB
                         </div>
-                        <span className="font-bold text-xl tracking-tight">NB2 Studio</span>
+                        <span className="font-bold text-xl tracking-tight">Nivra Brush Studio</span>
                     </div>
                     <div className="hidden md:flex items-center gap-6 text-sm text-text-secondary">
                         <a href="#features" className="hover:text-white transition-colors">{t('nav.features')}</a>

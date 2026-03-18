@@ -8,11 +8,11 @@ import { createCanonical } from "~/utils/meta";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
     return [
-        { title: "Refund Policy - NB2 Studio" },
+        { title: "Refund Policy - Nivra Brush Studio" },
         {
             name: "description",
             content:
-                "Review the Refund Policy for NB2 Studio, outlining the conditions and procedures for refunds on our AI-powered platform.",
+                "Review the Refund Policy for Nivra Brush Studio, outlining the conditions and procedures for refunds on our AI-powered platform.",
         },
         createCanonical("/legal/refund", matches[0].data.DOMAIN),
     ];

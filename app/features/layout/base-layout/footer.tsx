@@ -49,7 +49,7 @@ export const Footer = ({ navLinks }: FooterProps) => {
       <div className="bg-neutral text-neutral-content border-t border-neutral-700">
         <div className="container text-sm p-4">
           <p className="text-center leading-none text-neutral-400">
-            © {new Date().getFullYear()} NB2 Studio. All Rights Reserved.
+            © {new Date().getFullYear()} Nivra Brush Studio. All Rights Reserved.
           </p>
         </div>
       </div>

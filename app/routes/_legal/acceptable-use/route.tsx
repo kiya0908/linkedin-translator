@@ -7,11 +7,11 @@ import { createCanonical } from "~/utils/meta";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   return [
-    { title: "Acceptable Use Policy - NB2 Studio" },
+    { title: "Acceptable Use Policy - Nivra Brush Studio" },
     {
       name: "description",
       content:
-        "Read the NB2 Studio Acceptable Use Policy, including prohibited content, NSFW restrictions, and enforcement rules.",
+        "Read the Nivra Brush Studio Acceptable Use Policy, including prohibited content, NSFW restrictions, and enforcement rules.",
     },
     createCanonical("/legal/acceptable-use", matches[0].data.DOMAIN),
   ];

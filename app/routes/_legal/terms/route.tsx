@@ -8,11 +8,11 @@ import { createCanonical } from "~/utils/meta";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   return [
-    { title: "Terms of Use - NB2 Studio" },
+    { title: "Terms of Use - Nivra Brush Studio" },
     {
       name: "description",
       content:
-        "Review the Terms of Use for NB2 Studio, including rules, responsibilities, and legal conditions for using our AI image platform.",
+        "Review the Terms of Use for Nivra Brush Studio, including rules, responsibilities, and legal conditions for using our AI image platform.",
     },
     createCanonical("/legal/terms", matches[0].data.DOMAIN),
   ];

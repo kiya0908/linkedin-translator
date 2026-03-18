@@ -4,11 +4,11 @@ Last updated: March 16, 2026
 
 ## 1. Overview
 
-Thank you for using **NB2 Studio**. This policy explains when refunds may be issued for subscriptions and credit purchases.
+Thank you for using **Nivra Brush Studio**. This policy explains when refunds may be issued for subscriptions and credit purchases.
 
 ## 2. General Rule
 
-Because NB2 Studio delivers digital services instantly and consumes compute resources, purchases are generally non-refundable after successful delivery.
+Because Nivra Brush Studio delivers digital services instantly and consumes compute resources, purchases are generally non-refundable after successful delivery.
 
 ## 3. Possible Refund Cases
 

@@ -9,10 +9,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 rounded-lg brand-gradient flex items-center justify-center font-bold text-white">
-                NB
+              <div className="w-8 h-8 rounded-lg brand-gradient flex items-center justify-center font-bold text-white text-xs">
+                NvB
               </div>
-              <span className="font-bold text-xl tracking-tight">NB2 Studio</span>
+              <span className="font-bold text-xl tracking-tight">Nivra Brush Studio</span>
             </div>
             <p className="text-text-secondary max-w-md">{t("footer.desc")}</p>
           </div>

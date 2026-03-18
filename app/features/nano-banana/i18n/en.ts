@@ -10,10 +10,10 @@ export const en = {
   },
   hero: {
     badge:
-      "Supports Nano Banana 2 and Gemini workflows. Independent product, not affiliated with Google.",
+      "AI Image Generator & Editor — supports multiple models including Nano Banana 2. Independent platform, not affiliated with Google.",
     title1: "Create Faster",
-    title2: "with NB2 Studio",
-    desc: "This website integrates Google's Nano Banana 2 image generation model. Based on Nano Banana 2, we provide a one-stop image generation workflow toolkit, including batch generation, templates, and project management features.",
+    title2: "with Nivra Brush Studio",
+    desc: "Nivra Brush Studio is an AI image generation and editing platform. We provide a one-stop workflow toolkit — batch generation, templates, and project management — powered by advanced AI models including Nano Banana 2.",
     tryBtn: "Try It Now",
     videoBtn: "Image to Video",
     feature1: "Prompt + Reference Editing",
@@ -25,9 +25,9 @@ export const en = {
     desc: "Test the core workflow directly in your browser.",
     modelSelect: "Model Selection",
     prompt: "Prompt",
-    promptPlaceholder: "Describe the nano banana2 image you want to create...",
+    promptPlaceholder: "Describe the AI image you want to create...",
     promptDefault:
-      "A cinematic portrait of a traveler standing in neon rain, realistic lighting, high detail, generated with a nano banana2-style workflow.",
+      "A cinematic portrait of a traveler standing in neon rain, realistic lighting, high detail, generated with an AI image workflow.",
     generate: "Generate Image",
     uploadRef: "Upload Reference",
     download: "Download",
@@ -55,7 +55,7 @@ export const en = {
     runWithCredits: "Run ({{credits}} credits)",
     outputTypeLabel: "output type",
     outputTypeImage: "image",
-    previewAlt: "NB2 Studio preview",
+    previewAlt: "Nivra Brush Studio preview",
     previewEmptyTitle: "Preview appears here",
     previewEmptyDesc:
       "Run with prompt only, or add reference images for guided editing.",
@@ -82,8 +82,8 @@ export const en = {
   brand: {
     title1: "Built for",
     title2: "Creative Control",
-    p1: "NB2 Studio focuses on practical, repeatable editing workflows for creators and teams.",
-    p2: "You keep creative ownership while using Nano Banana 2-powered workflows through our integrated toolchain.",
+    p1: "Nivra Brush Studio focuses on practical, repeatable editing workflows for creators and teams.",
+    p2: "You keep creative ownership while using AI-powered workflows through our integrated toolchain.",
   },
   howItWorks: {
     title: "How It Works",
@@ -135,7 +135,7 @@ export const en = {
   },
   comparison: {
     title: "Capability Checklist",
-    desc: "What you can do in NB2 Studio for nano banana 2 and gemini image workflows.",
+    desc: "What you can do in Nivra Brush Studio for AI image generation and editing workflows.",
     dimensions: "Capabilities",
     items: [
       "Prompt-only generation",
@@ -187,7 +187,7 @@ export const en = {
     basic: "Basic",
     starter: "Starter",
     starterDescription:
-      "Get started with NB2 Studio for free. Basic features with watermarks.",
+      "Get started with Nivra Brush Studio for free. Basic features with watermarks.",
     pro: "Pro",
     enterprise: "Enterprise",
     month: "/month",
@@ -247,33 +247,33 @@ export const en = {
   faq: {
     title: "FAQ",
     qs: [
-      "What is NB2 Studio?",
+      "What is Nivra Brush Studio?",
       "Is there a free trial?",
       "How does billing work?",
       "Is this affiliated with Google?",
-      "Do you support nano banana 2 / gemini nano banana 2 workflows?",
+      "What AI models do you support?",
       "How do you handle unsafe content?",
       "Where is your Acceptable Use Policy?",
     ],
     as: [
-      "NB2 Studio is an independent AI image generation and editing platform.",
+      "Nivra Brush Studio is an independent AI image generation and editing platform.",
       "New users receive free starter credits to test the workflow.",
       "Usage is credit-based. Plans and pricing are shown on this page.",
-      "No. NB2 Studio is independent and is not affiliated with, endorsed by, or sponsored by Google.",
-      "Yes. We support nano banana 2 style generation workflows and related editing tasks through integrated model APIs.",
+      "No. Nivra Brush Studio is independent and is not affiliated with, endorsed by, or sponsored by Google.",
+      "We currently support Nano Banana 2 and other AI image generation models through integrated APIs.",
       "We apply NSFW and policy filters to prompts and generated outputs and block prohibited requests.",
       "Our Acceptable Use Policy is available at /legal/acceptable-use.",
     ],
   },
   cta: {
     title1: "Start Building",
-    title2: "with NB2 Studio",
-    desc: "Create responsibly with clear policies, transparent pricing, and an independent brand.",
+    title2: "with Nivra Brush Studio",
+    desc: "Create responsibly with clear policies, transparent pricing, and an independent AI image platform.",
     signup: "Sign Up",
     demo: "Try Demo",
   },
   footer: {
-    desc: "NB2 Studio supports nano banana 2 and gemini workflows as an independent platform, and is not affiliated with Google.",
+    desc: "Nivra Brush Studio is an independent AI image generation platform. Supports multiple models. Not affiliated with Google.",
     related: "Compliance",
     legal: "Legal",
     privacy: "Privacy Policy",
@@ -281,7 +281,7 @@ export const en = {
     acceptableUse: "Acceptable Use Policy",
     refund: "Refund Policy",
     contact: "Contact Support",
-    rights: "Copyright (c) 2026 NB2 Studio. All rights reserved.",
+    rights: "Copyright (c) 2026 Nivra Brush Studio. All rights reserved.",
   },
 };
 

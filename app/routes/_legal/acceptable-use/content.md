@@ -4,13 +4,13 @@ Last updated: March 16, 2026
 
 ## 1. Scope
 
-This Acceptable Use Policy ("AUP") applies to all users of **NB2 Studio** and all content submitted to or generated through our platform.
+This Acceptable Use Policy ("AUP") applies to all users of **Nivra Brush Studio** and all content submitted to or generated through our platform.
 
-NB2 Studio is an independent product and is **not affiliated with, endorsed by, or sponsored by Google**.
+Nivra Brush Studio is an independent product and is **not affiliated with, endorsed by, or sponsored by Google**.
 
 ## 2. Prohibited Content and Behavior
 
-You may not use NB2 Studio to create, upload, request, or distribute:
+You may not use Nivra Brush Studio to create, upload, request, or distribute:
 
 - Sexually explicit, nude, or sexually suggestive content (including NSFW prompts and outputs)
 - Content involving minors in sexualized contexts
@@ -21,12 +21,12 @@ You may not use NB2 Studio to create, upload, request, or distribute:
 
 ## 3. NSFW and Safety Controls
 
-NB2 Studio enforces content safety controls on prompts and generated outputs, including NSFW filtering and policy checks.  
+Nivra Brush Studio enforces content safety controls on prompts and generated outputs, including NSFW filtering and policy checks.  
 Requests that violate this policy may be blocked, removed, or not returned to the user.
 
 ## 4. User Responsibilities
 
-By using NB2 Studio, you agree to:
+By using Nivra Brush Studio, you agree to:
 
 - Comply with all applicable laws and regulations
 - Use only content you are authorized to upload and process

@@ -1,4 +1,4 @@
-﻿export const zh = {
+export const zh = {
   nav: {
     features: "功能",
     useCases: "应用场景",
@@ -10,10 +10,10 @@
   },
   hero: {
     badge:
-      "支持 Nano Banana 2 与 Gemini 工作流。独立产品，与 Google 无官方关联。",
+      "AI 图像生成与编辑平台 — 支持 Nano Banana 2 等多种模型。独立平台，与 Google 无关联。",
     title1: "更快完成创作",
-    title2: "NB2 Studio",
-    desc: "本网站接入了 Google 的 Nano Banana 2 图像生成模型。我们基于 Nano Banana 2 提供一站式图像生成工作流工具（批量生图、模板、项目管理等服务）。",
+    title2: "Nivra Brush Studio",
+    desc: "Nivra Brush Studio 是 AI 图像生成与编辑平台。我们提供一站式工作流工具（批量生图、模板、项目管理等），基于 Nano Banana 2 等先进 AI 模型驱动。",
     tryBtn: "立即体验",
     videoBtn: "图像转视频",
     feature1: "提示词 + 参考图编辑",
@@ -22,12 +22,12 @@
   },
   editor: {
     title: "在线编辑器",
-    desc: "直接在浏览器体验 nano banana2 工作流。",
+    desc: "直接在浏览器体验 AI 图像生成工作流。",
     modelSelect: "模型选择",
     prompt: "提示词",
-    promptPlaceholder: "描述你想创建的 nano banana2 风格图像...",
+    promptPlaceholder: "描述你想创建的 AI 图像...",
     promptDefault:
-      "一个站在霓虹雨夜中的旅行者肖像，电影级光影，高细节，使用 nano banana2 风格工作流生成。",
+      "一个站在霓虹雨夜中的旅行者肖像，电影级光影，高细节，使用 AI 图像工作流生成。",
     generate: "生成图像",
     uploadRef: "上传参考图",
     download: "下载",
@@ -55,7 +55,7 @@
     runWithCredits: "运行（{{credits}} 积分）",
     outputTypeLabel: "输出类型",
     outputTypeImage: "图像",
-    previewAlt: "NB2 Studio 预览",
+    previewAlt: "Nivra Brush Studio 预览",
     previewEmptyTitle: "预览将在此处显示",
     previewEmptyDesc: "可仅输入提示词，也可上传参考图进行引导编辑。",
     generatingImage: "正在生成图像...",
@@ -81,8 +81,8 @@
   brand: {
     title1: "为高效创作打造",
     title2: "可控工作流",
-    p1: "NB2 Studio 聚焦稳定、可复现的图像编辑流程，适合个人与团队持续生产。",
-    p2: "你保留创作控制权，我们通过 Nano Banana 2 工作流工具链帮助你高效完成生产。",
+    p1: "Nivra Brush Studio 聚焦稳定、可复现的图像编辑流程，适合个人与团队持续生产。",
+    p2: "你保留创作控制权，我们通过 AI 工作流工具链帮助你高效完成生产。",
   },
   howItWorks: {
     title: "使用流程",
@@ -94,7 +94,7 @@
       },
       {
         title: "执行生成",
-        desc: "运行 nano banana2 风格工作流并实时查看结果。",
+        desc: "运行 AI 图像生成工作流并实时查看结果。",
       },
       {
         title: "迭代优化",
@@ -120,7 +120,7 @@
       },
       {
         title: "快速迭代",
-        desc: "围绕 nano banana2 工作流快速试错和优化。",
+        desc: "快速试错和优化 AI 图像生成结果。",
       },
       {
         title: "积分计费",
@@ -134,7 +134,7 @@
   },
   comparison: {
     title: "能力清单",
-    desc: "NB2 Studio 当前支持的 nano banana2 与 Gemini 相关图像工作流能力。",
+    desc: "Nivra Brush Studio 当前支持的 AI 图像生成与编辑工作流能力。",
     dimensions: "能力项",
     items: [
       "仅提示词生成",
@@ -181,7 +181,7 @@
     save: "省",
     basic: "基础版",
     starter: "入门版",
-    starterDescription: "免费开始使用 NB2 Studio，基础能力默认带水印。",
+    starterDescription: "免费开始使用 Nivra Brush Studio，基础能力默认带水印。",
     pro: "专业版",
     enterprise: "企业版",
     month: "/月",
@@ -239,33 +239,33 @@
   faq: {
     title: "常见问题",
     qs: [
-      "NB2 Studio 是什么？",
+      "Nivra Brush Studio 是什么？",
       "有免费试用吗？",
       "如何计费？",
       "与 Google 有官方关系吗？",
-      "是否支持 nano banana 2 / gemini nano banana 2 工作流？",
+      "支持哪些 AI 模型？",
       "如何处理不安全内容？",
       "AUP 在哪里查看？",
     ],
     as: [
-      "NB2 Studio 是独立的 AI 图像生成与编辑平台。",
+      "Nivra Brush Studio 是独立的 AI 图像生成与编辑平台。",
       "新用户可获得试用积分体验核心流程。",
       "采用积分计费，价格在页面可见。",
-      "没有。NB2 Studio 与 Google 不存在隶属、背书或赞助关系。",
-      "支持。我们通过集成模型 API 支持 nano banana2 相关生成与编辑任务。",
+      "没有。Nivra Brush Studio 与 Google 不存在隶属、背书或赞助关系。",
+      "目前支持 Nano Banana 2 等 AI 图像生成模型，通过集成 API 实现。",
       "我们对提示词与输出执行 NSFW 及违规内容过滤。",
       "可在 /legal/acceptable-use 查看可接受使用政策。",
     ],
   },
   cta: {
     title1: "立即开始创作",
-    title2: "NB2 Studio",
-    desc: "围绕 nano banana2 模型工作流，提供清晰定价与合规保障。",
+    title2: "Nivra Brush Studio",
+    desc: "独立 AI 图像生成平台，价格透明，合规保障完善。",
     signup: "注册",
     demo: "试用",
   },
   footer: {
-    desc: "NB2 Studio 作为独立平台支持 nano banana2 与 Gemini 工作流，与 Google 无官方关联。",
+    desc: "Nivra Brush Studio 是独立的 AI 图像生成平台，支持多种模型，与 Google 无官方关联。",
     related: "合规",
     legal: "法律信息",
     privacy: "隐私政策",
@@ -273,6 +273,6 @@
     acceptableUse: "可接受使用政策",
     refund: "退款政策",
     contact: "联系支持",
-    rights: "Copyright (c) 2026 NB2 Studio. All rights reserved.",
+    rights: "Copyright (c) 2026 Nivra Brush Studio. All rights reserved.",
   },
 };

@@ -4,9 +4,9 @@ Last updated: March 16, 2026
 
 ## 1. Introduction
 
-Welcome to **NB2 Studio**. These Terms of Use ("Terms") govern your access to and use of our AI image generation and editing services (the "Service").
+Welcome to **Nivra Brush Studio**. These Terms of Use ("Terms") govern your access to and use of our AI image generation and editing services (the "Service").
 
-NB2 Studio is an independent product and is **not affiliated with, endorsed by, or sponsored by Google**.
+Nivra Brush Studio is an independent product and is **not affiliated with, endorsed by, or sponsored by Google**.
 
 By using the Service, you agree to these Terms.
 
@@ -16,7 +16,7 @@ You must be at least 18 years old or the legal age in your jurisdiction to use t
 
 ## 3. Service Description
 
-NB2 Studio provides AI-powered image generation and image editing workflows using third-party model APIs.
+Nivra Brush Studio provides AI-powered image generation and image editing workflows using third-party model APIs.
 
 ## 4. Prohibited Use
 
@@ -34,7 +34,7 @@ Some features require paid plans or credits. Pricing is shown on the website and
 
 ## 6. Intellectual Property
 
-NB2 Studio and its software, UI, and service materials are protected by law. You retain rights to your uploaded content, subject to a limited license allowing us to process it to provide the Service.
+Nivra Brush Studio and its software, UI, and service materials are protected by law. You retain rights to your uploaded content, subject to a limited license allowing us to process it to provide the Service.
 
 ## 7. Privacy
 
@@ -46,7 +46,7 @@ The Service is provided "as is" and "as available". We do not guarantee uninterr
 
 ## 9. Limitation of Liability
 
-To the maximum extent permitted by law, NB2 Studio is not liable for indirect or consequential damages arising from use of the Service.
+To the maximum extent permitted by law, Nivra Brush Studio is not liable for indirect or consequential damages arising from use of the Service.
 
 ## 10. Changes to Terms
 

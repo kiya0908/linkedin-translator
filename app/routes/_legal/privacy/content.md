@@ -4,9 +4,9 @@ Last updated: March 16, 2026
 
 ## 1. Overview
 
-This Privacy Policy explains how **NB2 Studio** collects, uses, and protects your information.
+This Privacy Policy explains how **Nivra Brush Studio** collects, uses, and protects your information.
 
-NB2 Studio is an independent product and is **not affiliated with Google**.
+Nivra Brush Studio is an independent product and is **not affiliated with Google**.
 
 ## 2. Information We Collect
 

@@ -34,7 +34,7 @@ export default function BrandStory() {
                     >
                         <img
                             src="https://picsum.photos/seed/universe/800/800"
-                            alt="NB2 Studio creative workspace"
+                            alt="Nivra Brush Studio creative workspace"
                             className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000"
                             referrerPolicy="no-referrer"
                         />

@@ -60,7 +60,7 @@ export const FREE_PLAN: PLAN = {
   },
   name: "Starter",
   description:
-    "Get started with NB2 Studio for free. Basic features with watermarks.",
+    "Get started with Nivra Brush Studio for free. Basic features with watermarks.",
   feature_description: [
     "10 starter credits",
     "Basic generation quality",

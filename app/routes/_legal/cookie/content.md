@@ -4,7 +4,7 @@ Last updated: March 16, 2026
 
 ## 1. Overview
 
-This Cookie Policy explains how **NB2 Studio** uses cookies and similar technologies.
+This Cookie Policy explains how **Nivra Brush Studio** uses cookies and similar technologies.
 
 ## 2. What We Use Cookies For
 
@@ -18,7 +18,7 @@ You can control cookies via your browser settings. Blocking some cookies may aff
 
 ## 4. Third-Party Cookies
 
-Some cookies may be set by analytics or infrastructure providers that support NB2 Studio operations.
+Some cookies may be set by analytics or infrastructure providers that support Nivra Brush Studio operations.
 
 ## 5. Updates
 
