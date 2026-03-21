@@ -26,4 +26,4 @@ We may update this policy from time to time.
 
 ## 6. Contact
 
-- **Email:** [support@nanobanana2pro.space](mailto:support@nanobanana2pro.space)
+- **Email:** [support@linkedintranslator.online](mailto:support@linkedintranslator.online)

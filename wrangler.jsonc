@@ -13,11 +13,11 @@
   "upload_source_maps": true,
   "routes": [
     {
-      "pattern": "nanobanana2pro.space",
+      "pattern": "linkedintranslator.online",
       "custom_domain": true
     },
     {
-      "pattern": "www.nanobanana2pro.space",
+      "pattern": "www.linkedintranslator.online",
       "custom_domain": true
     }
   ],
@@ -34,8 +34,8 @@
 #   "SESSION_SECRET": "YOUR_SESSION_SECRET",
 #   
     // Other Parameters
-#   "CDN_URL": "https://cdn.nanobanana2pro.space",
-#   "DOMAIN": "https://nanobanana2pro.space/",
+#   "CDN_URL": "https://cdn.linkedintranslator.online",
+#   "DOMAIN": "https://linkedintranslator.online/",
 
 #   "GOOGLE_ANALYTICS_ID": "G-XXXXXXX",
 #   "GOOGLE_ADS_ID": "pub-xxxxxxxxxxxxxxxx",

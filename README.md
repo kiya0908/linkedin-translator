@@ -1,31 +1,46 @@
-# nano banana 2 - Advanced AI Image Editor
+# LinkedIn Translator - AI Tone Translator for LinkedIn Speak
 
-An next-generation AI image editor built with React and Cloudflare Workers, powered by the advanced Google Nano Banana Pro models. It offers unprecedented control over image generation and editing for modern digital creators.
+LinkedIn Translator is not just a language translator. It is an AI-powered **Tone Translator** built for workplace communication.
 
-[English](README.md) | [中文](README.zh-CN.md) | [Live Site](https://nanobanana2pro.space)
+It transforms casual wording into polished, engaging, professional LinkedIn-style copy for posts, profile summaries, and resume descriptions.
 
-## ✨ Features
+[English](README.md) | [中文](README.zh-CN.md) | [Live Site](https://linkedintranslator.online)
 
-- 🎨 **AI-Powered Image Generation**: Intelligent image design powered by Gemini and the nano banana 2 core engine.
-- 🧊 **3D Object Editing**: Advanced spatial understanding for precise object manipulation within 2D images.
-- 🔒 **Consistency Protection**: Maintains character, artistic style, and environment consistency throughout complex editing workflows.
-- 🧠 **Deep Prompt Understanding**: Leverages high-precision logical reasoning to handle multi-layered and complex visual tasks.
-- 📱 **Responsive Design**: Seamlessly optimized for both desktop and mobile creative processes.
-- ☁️ **Serverless Architecture**: Built on Cloudflare Workers for extreme performance and global scalability.
+- Website: `https://linkedintranslator.online`
+- Support: `support@linkedintranslator.online`
 
-## 🛠 Tech Stack
+## Positioning
 
-This project is built with a modern, high-performance stack:
+LinkedIn Translator is a leading **AI-powered LinkedIn speak translator**.
+Unlike traditional translation tools, this professional **English to LinkedIn translator** focuses on turning everyday descriptions into high-quality **professional LinkedIn posts**.
 
-- **[React](https://react.dev/)**: For building dynamic and responsive user interfaces.
-- **[React Router v7](https://reactrouter.com/)**: Handling application routing and unified server-side API logic.
-- **[Cloudflare Workers](https://workers.cloudflare.com/)**: High-performance serverless runtime.
-- **[Cloudflare D1](https://developers.cloudflare.com/d1/)**: Edge SQL database.
-- **[Cloudflare R2](https://developers.cloudflare.com/r2/)**: S3-compatible object storage.
-- **[Cloudflare KV](https://developers.cloudflare.com/kv/)**: Distributed key-value store for caching.
-- **[Tailwind CSS](https://tailwindcss.com/) & [DaisyUI](https://daisyui.com/)**: For rapid and consistent UI development.
+## Why It Is Different
 
-## 🚀 Getting Started
+- It is a **tone conversion** product, not a literal translation engine.
+- It understands workplace and recruiting context better than general tools such as Google Translate or Kagi Translate.
+- It automatically adds LinkedIn-native structure:
+  - hooks
+  - strategic line breaks
+  - professional emojis
+
+## Core Features
+
+- **Human to LinkedIn Speak**: Convert plain text into credible executive-style phrasing.
+- **LinkedIn Speak to Plain English**: Decode corporate jargon into clear and simple wording.
+- **AI Tone Control**: Keep original intent while upgrading voice, authority, and clarity.
+- **Fast Workflow**: Input, transform, and copy in seconds.
+
+## Tech Stack
+
+- [React](https://react.dev/)
+- [React Router v7](https://reactrouter.com/)
+- [Cloudflare Workers](https://workers.cloudflare.com/)
+- [Cloudflare D1](https://developers.cloudflare.com/d1/)
+- [Cloudflare KV](https://developers.cloudflare.com/kv/)
+- [Cloudflare R2](https://developers.cloudflare.com/r2/)
+- [Tailwind CSS](https://tailwindcss.com/) + [DaisyUI](https://daisyui.com/)
+
+## Getting Started
 
 ### Prerequisites
 
@@ -33,77 +48,36 @@ This project is built with a modern, high-performance stack:
 - pnpm
 - Cloudflare account
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/kiya0908/nano-banana2.git
-cd nano-banana2
-```
-
-### 2. Install Dependencies
+### 1. Install
 
 ```bash
 pnpm install
 ```
 
-### 3. Environment Setup
+### 2. Configure Environment
 
-Configure your environment variables in `wrangler.jsonc`:
+Set required variables in Cloudflare (or local `.dev.vars`) such as:
 
-#### Core Configuration
-- `KIEAI_APIKEY`: Your API key for core model requests.
-- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`: For Google OAuth authentication.
-- `SESSION_SECRET`: Secret key for session encryption.
-- `CDN_URL`: Your R2 bucket public URL (e.g., `https://cdn.nanobanana2pro.space`).
+- `KIEAI_APIKEY`
+- `SESSION_SECRET`
+- `DOMAIN` (recommended: `https://linkedintranslator.online`)
+- `CDN_URL` (if used)
 
-#### Cloudflare Services Initialization
-
-```bash
-# Create D1 Database
-wrangler d1 create nanobanana2pro
-
-# Create KV Namespace
-wrangler kv:namespace create "nanobanana2pro-kv"
-
-# Create R2 Bucket
-wrangler r2 bucket create nanobanana2pro
-```
-
-Update the IDs in `wrangler.jsonc` accordingly.
-
-### 4. Database Migration
-
-```bash
-pnpm run db:migrate:local # Local development
-pnpm run db:migrate       # Remote production
-```
-
-### 5. Local Development
+### 3. Run Locally
 
 ```bash
 pnpm run dev
 ```
 
-Visit `http://localhost:5173` to explore the nano banana 2 editor.
+Open `http://localhost:5173`.
 
-## 🌐 Deployment
-
-Deploy to Cloudflare Workers effortlessly:
+### 4. Build and Deploy
 
 ```bash
+pnpm run build
 pnpm run deploy
 ```
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Google Gemini](https://deepmind.google/technologies/gemini/) - Core logic and vision support.
-- [Cloudflare](https://cloudflare.com/) - High-performance edge infrastructure.
-- [Kie AI](https://kie.ai/) - AI service orchestration.
-
----
-
-⭐ If this project helps your creative workflow, please give it a star!
+MIT. See [LICENSE](LICENSE).

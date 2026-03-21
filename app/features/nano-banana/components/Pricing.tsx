@@ -212,7 +212,7 @@ export default function Pricing() {
             </ul>
             <button
               onClick={() =>
-                (window.location.href = "mailto:support@nanobanana2pro.space")
+                (window.location.href = "mailto:support@linkedintranslator.online")
               }
               className="w-full py-4 rounded-full border border-white/20 hover:bg-white/10 transition-colors font-bold"
             >

@@ -46,7 +46,7 @@ If we detect policy violations, we may take one or more actions:
 
 If you see activity that appears to violate this policy, contact:
 
-- **Email:** [support@nanobanana2pro.space](mailto:support@nanobanana2pro.space)
+- **Email:** [support@linkedintranslator.online](mailto:support@linkedintranslator.online)
 
 ## 7. Relationship to Other Policies
 

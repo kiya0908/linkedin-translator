@@ -47,7 +47,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:support@nanobanana2pro.space" className="hover:text-white transition-colors">
+                <a href="mailto:support@linkedintranslator.online" className="hover:text-white transition-colors">
                   {t("footer.contact")}
                 </a>
               </li>

@@ -15,9 +15,9 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
   const header: BaseLayoutProps["header"] = {
     navLinks: [
-      { label: "AI Generator", to: "/" },
+      { label: "Tone Translator", to: "/" },
       { label: "Pricing", to: "/#pricing" },
-      { label: "FAQs", to: "/#faqs" },
+      { label: "FAQs", to: "/#faq" },
     ],
   };
 
@@ -25,14 +25,14 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     navLinks: [
       {
         label: "Tools",
-        list: [{ to: "/", label: "AI Generator" }],
+        list: [{ to: "/", label: "Tone Translator" }],
       },
       {
         label: "Support",
         list: [
           {
-            to: "mailto:support@nanobanana2pro.space",
-            label: "support@nanobanana2pro.space",
+            to: "mailto:support@linkedintranslator.online",
+            label: "support@linkedintranslator.online",
             target: "_blank",
           },
         ],

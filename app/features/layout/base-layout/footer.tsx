@@ -24,7 +24,7 @@ export const Footer = ({ navLinks }: FooterProps) => {
               <Logo />
             </Link>
             <p>
-              Create, edit, and ship AI visuals with a fast, modern workflow.
+              Transform everyday writing into professional LinkedIn tone with a fast, modern workflow.
             </p>
           </aside>
           {navLinks.map((navLink, i) => (
@@ -49,10 +49,11 @@ export const Footer = ({ navLinks }: FooterProps) => {
       <div className="bg-neutral text-neutral-content border-t border-neutral-700">
         <div className="container text-sm p-4">
           <p className="text-center leading-none text-neutral-400">
-            © {new Date().getFullYear()} Nivra Brush Studio. All Rights Reserved.
+            © {new Date().getFullYear()} LinkedIn Translator. All Rights Reserved.
           </p>
         </div>
       </div>
     </Fragment>
   );
 };
+

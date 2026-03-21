@@ -56,4 +56,4 @@ We may update these Terms. Continued use after updates means you accept the revi
 
 For support or legal questions:
 
-- **Email:** [support@nanobanana2pro.space](mailto:support@nanobanana2pro.space)
+- **Email:** [support@linkedintranslator.online](mailto:support@linkedintranslator.online)

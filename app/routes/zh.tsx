@@ -11,14 +11,14 @@ const createAlternate = (pathname: string, domain: string, hrefLang: string) => 
 });
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedin-translator.app";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
 
   return [
-    { title: "LinkedIn Translator - LinkedIn 内容智能翻译与润色" },
+    { title: "LinkedIn Translator - AI 领英语调转换器" },
     {
       name: "description",
       content:
-        "使用 LinkedIn Translator 将日常表达快速转换为更专业、更有影响力的 LinkedIn 文案，适用于全球求职者与职场人士。",
+        "LinkedIn Translator 是一款 AI 语调转换器，可将日常表达改写为专业、吸引人的 LinkedIn 职场话术，并自动补全 hooks、换行和专业表情。",
     },
     createCanonical("/zh", domain),
     createAlternate("/", domain, "en"),

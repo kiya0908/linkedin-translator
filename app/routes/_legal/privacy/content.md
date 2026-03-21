@@ -41,7 +41,7 @@ Depending on your location, you may have rights to access, correct, delete, or e
 
 To submit a request, email:
 
-- **support@nanobanana2pro.space**
+- **support@linkedintranslator.online**
 
 ## 8. Policy Updates
 
@@ -49,4 +49,4 @@ We may update this Privacy Policy and will publish changes on this page.
 
 ## 9. Contact
 
-- **Email:** [support@nanobanana2pro.space](mailto:support@nanobanana2pro.space)
+- **Email:** [support@linkedintranslator.online](mailto:support@linkedintranslator.online)

@@ -20,7 +20,7 @@ export const Socials = ({
       className={clsx("flex items-center justify-center gap-3 mb-4", className)}
       {...props}
     >
-      <Link to="mailto:support@nanobanana2pro.space" title="Support Email">
+      <Link to="mailto:support@linkedintranslator.online" title="Support Email">
         <UserDetail
           strokeWidth={strokeWidth}
           width={iconSize}

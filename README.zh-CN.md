@@ -1,111 +1,82 @@
-# nano banana 2 - 下一代 AI 图像编辑器
+# LinkedIn Translator - 领英语调转换器
 
-一个基于 React 和 Cloudflare Workers 构建的尖端 AI 图像编辑平台，由先进的 Google Nano Banana Pro 模型驱动。专为追求极致自由和独特个性的创作者设计，提供超越想象的视觉创作体验。
+LinkedIn Translator 不是普通的语言翻译工具，而是一款面向职场表达的 AI **语调转换器（Tone Translator）**。
 
-[English](README.md) | [中文](README.zh-CN.md) | [在线访问](https://nanobanana2pro.space)
+它可以把日常大白话快速改写成更专业、更吸引人的 LinkedIn speak，用于领英动态、个人简介、简历描述等场景。
 
-## ✨ 功能特性
+[English](README.md) | [中文](README.zh-CN.md) | [在线访问](https://linkedintranslator.online)
 
-- 🎨 **AI 深度生成**: 基于 Gemini 和 nano banana 2 引擎，实现高质量的文生图与创意构思。
-- 🧊 **3D 物件编辑**: 具备深度空间理解能力，可在 2D 图像中实现精准的 3D 物件操作与调整。
-- � **全局一致性保护**: 在复杂的编辑过程中，完美保持角色、艺术风格和环境的视觉一致性。
-- 🧠 **复杂逻辑推理**: 利用高精度逻辑推理能力，精准理解并执行多层次的复杂提示词意图。
-- 📱 **响应式流体体验**: 完美适配桌面端和移动端，随时随地开启创意之旅。
-- ☁️ **原生云架构**: 基于 Cloudflare Workers 的无服务器架构，提供极速响应与全球分布支持。
+- 网站：`https://linkedintranslator.online`
+- 支持邮箱：`support@linkedintranslator.online`
 
-## 🛠 技术栈
+## 核心定位
 
-项目采用高性能的现代化技术栈：
+LinkedIn Translator 是一款领先的 AI-powered LinkedIn speak translator。不同于传统的翻译工具，这款专业的 English to LinkedIn translator 专注于将你的日常描述转化为高质量的 professional LinkedIn posts。无论你是想润色简历还是发布动态，LinkedIn Translator 都能精准捕捉职场精髓。
 
-- **[React](https://react.dev/)**: 响应式 UI 构建框架。
-- **[React Router v7](https://reactrouter.com/)**: 统一项目路由与服务端 API 逻辑。
-- **[Cloudflare Workers](https://workers.cloudflare.com/)**: 边缘计算无服务器运行环境。
-- **[Cloudflare D1](https://developers.cloudflare.com/d1/)**: 分布式 SQL 边缘数据库。
-- **[Cloudflare R2](https://developers.cloudflare.com/r2/)**: 兼容 S3 的大规模对象存储。
-- **[Cloudflare KV](https://developers.cloudflare.com/kv/)**: 用于高效缓存的分布式键值存储。
-- **[Tailwind CSS](https://tailwindcss.com/) & [DaisyUI](https://daisyui.com/)**: 原子化 CSS 框架与组件库。
+## 差异化优势
 
-## 🚀 快速开始
+- 它不是逐字翻译，而是针对语气和表达方式的智能重写。
+- 相比 Google Translate 或 Kagi Translate，它更理解职场语境和招聘语境。
+- 它会自动补全更适合 LinkedIn 的表达结构：
+  - 钩子（Hooks）
+  - 换行节奏
+  - 专业表情
 
-### 开发环境要求
+## 功能说明
 
-- Node.js 18+ 
+- **日常口语 -> LinkedIn 职场话术**：把普通表达升级成专业、可信、有影响力的文案。
+- **LinkedIn 话术 -> 大白话**：把复杂术语还原成清晰易懂的日常语言。
+- **AI 语调优化**：保留原意的同时增强专业度、清晰度和可读性。
+- **快速出稿**：输入即改写，秒级复制发布。
+
+## 技术栈
+
+- [React](https://react.dev/)
+- [React Router v7](https://reactrouter.com/)
+- [Cloudflare Workers](https://workers.cloudflare.com/)
+- [Cloudflare D1](https://developers.cloudflare.com/d1/)
+- [Cloudflare KV](https://developers.cloudflare.com/kv/)
+- [Cloudflare R2](https://developers.cloudflare.com/r2/)
+- [Tailwind CSS](https://tailwindcss.com/) + [DaisyUI](https://daisyui.com/)
+
+## 本地开发
+
+### 依赖
+
+- Node.js 18+
 - pnpm
-- Cloudflare 账户
+- Cloudflare 账号
 
-### 1. 克隆项目
-
-```bash
-git clone https://github.com/kiya0908/nano-banana2.git
-cd nano-banana2
-```
-
-### 2. 安装依赖
+### 1. 安装依赖
 
 ```bash
 pnpm install
 ```
 
-### 3. 环境配置
+### 2. 配置环境变量
 
-在 `wrangler.jsonc` 文件中配置以下环境变量：
+在 Cloudflare Dashboard（或本地 `.dev.vars`）中配置：
 
-#### 核心密钥配置
-- `KIEAI_APIKEY`: 您的核心 AI 模型接口密钥。
-- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`: Google OAuth 认证密钥。
-- `SESSION_SECRET`: 会话加密密钥。
-- `CDN_URL`: R2 存储桶的公共访问 URL (例如 `https://cdn.nanobanana2pro.space`)。
+- `KIEAI_APIKEY`
+- `SESSION_SECRET`
+- `DOMAIN`（建议：`https://linkedintranslator.online`）
+- `CDN_URL`（如需）
 
-#### Cloudflare 服务初始化
-
-```bash
-# 创建 D1 数据库
-wrangler d1 create nanobanana2pro
-
-# 创建 KV 命名空间
-wrangler kv:namespace create "nanobanana2pro-kv"
-
-# 创建 R2 存储桶
-wrangler r2 bucket create nanobanana2pro
-```
-
-完成后在 `wrangler.jsonc` 中更新对应的 ID 绑定。
-
-### 4. 数据库迁移
+### 3. 启动开发环境
 
 ```bash
-pnpm run db:migrate:local # 初始化本地数据库
-pnpm run db:migrate       # 更新生产环境数据库
+pnpm run dev
 ```
 
-### 5. 本地开发
+打开 `http://localhost:5173`。
+
+### 4. 构建与部署
 
 ```bash
 pnpm run build
-pnpm run dev
-pnpm run preview
-```
-
-访问 `http://localhost:5173` 即可立即体验 nano banana 2 编辑器。
-
-## 🌐 部署
-
-一键部署到 Cloudflare 全球边缘节点：
-
-```bash
 pnpm run deploy
 ```
 
-## 📄 许可证
+## License
 
-本项目基于 MIT 许可证开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
-## 🙏 致谢
-
-- [Google Gemini](https://deepmind.google/technologies/gemini/) - 提供核心逻辑与视觉模型支持。
-- [Cloudflare](https://cloudflare.com/) - 全球领先的基础设施平台。
-- [Kie AI](https://kie.ai/) - AI 服务调度与优化。
-
----
-
-⭐ 如果这个项目对您的创作有所启发，请给它一个 Star！
+MIT，详见 [LICENSE](LICENSE)。

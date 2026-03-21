@@ -65,12 +65,12 @@ const FAQS = [
     answer: "Yes, we provide a <strong>free LinkedIn translator</strong> tier for all users. This <strong>free LinkedIn translator</strong> option allows you to experience the power of a professional <strong>LinkedIn speak generator</strong> with a daily allowance (typically 2 to 3 free translations per day). For those who need to generate <strong>professional LinkedIn posts</strong> more frequently, we offer premium plans that unlock unlimited access and extreme intensity levels."
   },
   {
-    question: "Why should I use this instead of ChatGPT or Kagi LinkedIn speak?",
-    answer: "While generic AI tools focus on simple text generation, this <strong>LinkedIn speak generator</strong> uses specialized \"Matching Logic\" to optimize your content for actual recruiter behavior. Unlike <strong>Kagi LinkedIn speak</strong>, which is often used for humorous subculture parodies, our tool is purpose-built to rewrite your text into polished, high-impact <strong>professional LinkedIn posts</strong>. Furthermore, this <strong>LinkedIn speak translator app</strong> automatically integrates strategic hooks, emojis, and smart formatting that generic models often overlook."
+    question: "Why use this instead of Google Translate or Kagi Translate?",
+    answer: "Traditional translators are excellent for literal language conversion, but this <strong>LinkedIn speak generator</strong> is built for <strong>workplace tone transformation</strong>. It rewrites your raw draft into high-impact <strong>professional LinkedIn posts</strong> and automatically adds strategic hooks, clean line breaks, and professional emojis. In short, we optimize for career context, not just vocabulary."
   },
   {
     question: "Can this LinkedIn speak translator app help me write my resume summary?",
-    answer: "Absolutely. In 2026, your LinkedIn \"About\" section is no longer just a summary; it is your searchable career landing page. This <strong>LinkedIn speak translator app</strong> functions as an optimization engine that injects high-intent keywords to trigger recruiter search filters. By using the <strong>LinkedIn speak generator</strong>, you can transform a weak bio into one that highlights <strong>quantifiable achievements</strong>—such as \"reducing costs by 30%\"—instead of using overused, subjective fluff. This ensures you satisfy the <strong>AI-first matching logic</strong> used by modern hiring teams."
+    answer: "Absolutely. In 2026, your LinkedIn \"About\" section is no longer just a summary; it is your searchable career landing page. This <strong>LinkedIn speak translator app</strong> functions as an optimization engine that injects high-intent keywords to trigger recruiter search filters. By using the <strong>LinkedIn speak generator</strong>, you can transform a weak bio into one that highlights <strong>quantifiable achievements</strong> such as \"reducing costs by 30%\" instead of using overused, subjective fluff. This ensures you satisfy the <strong>AI-first matching logic</strong> used by modern hiring teams."
   },
   {
     question: "Does it help with decoding corporate jargon?",
@@ -171,7 +171,7 @@ export default function App() {
               transition={{ delay: 0.1 }}
               className="text-5xl md:text-7xl font-extrabold text-on-surface mb-8 leading-[1.1]"
             >
-              LinkedIn Translator – Translate Profiles, Posts & Messages Instantly
+              LinkedIn Translator - AI Tone Translator for LinkedIn Speak
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
@@ -179,7 +179,7 @@ export default function App() {
               transition={{ delay: 0.2 }}
               className="text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed"
             >
-              Use a LinkedIn translator to translate profiles, posts, and messages quickly and accurately. Ideal for professionals, recruiters, and global job seekers.
+              More than a language tool: this AI rewrites everyday wording into polished, engaging LinkedIn communication with workplace-aware tone, hooks, and formatting.
             </motion.p>
           </div>
 
@@ -287,7 +287,7 @@ export default function App() {
                 transition={{ delay: 0.2 }}
                 className="text-lg text-on-surface-variant max-w-4xl mx-auto leading-relaxed"
               >
-                An innovative <strong>AI-powered tool</strong> specifically designed for professionals to instantly transform everyday language, mundane task descriptions, or informal inspirations into highly attractive and etiquette-compliant <strong>professional LinkedIn posts</strong>. Unlike traditional translation software, this <strong>English to LinkedIn translator</strong> specializes in <strong>Tone Transformation</strong>, reshaping mediocre statements into authoritative narratives infused with a <strong>Growth Mindset</strong> and leadership flair.
+                LinkedIn Translator is a leading <strong>AI-powered LinkedIn speak translator</strong>. Unlike traditional translation tools, this professional <strong>English to LinkedIn translator</strong> converts everyday descriptions into high-quality <strong>professional LinkedIn posts</strong>. Whether you are polishing a resume or publishing an update, it captures workplace nuance and automatically adds hooks, line breaks, and professional emojis.
               </motion.p>
             </div>
 
@@ -322,7 +322,7 @@ export default function App() {
                 </div>
                 <h3 className="text-lg font-bold mb-3">Eliminating "Buzzword" Anxiety</h3>
                 <p className="text-sm text-on-surface-variant leading-relaxed flex-grow">
-                  Avoid <strong>overused buzzwords</strong>—such as "Strategic" or "Passionate"—which recruiters dismiss as subjective "fluff". Instead, use <strong>quantifiable achievements</strong> and evidence-based results to stand out.
+                  Avoid <strong>overused buzzwords</strong> such as "Strategic" or "Passionate", which recruiters dismiss as subjective "fluff". Instead, use <strong>quantifiable achievements</strong> and evidence-based results to stand out.
                 </p>
               </motion.div>
 
@@ -405,7 +405,7 @@ export default function App() {
               <div className="grid md:grid-cols-3 gap-12">
                 {[
                   { icon: FileText, title: "Step 1: Input Your Text", desc: "Paste your raw thoughts, daily \"micro-wins,\" or even a casual \"I finished a project\" into the input box." },
-                  { icon: ArrowRightLeft, title: "Step 2: Select Your Mode", desc: "Our tool features a powerful <strong>dual direction</strong> toggle. Choose <strong>Human → LinkedIn</strong> to <strong>translate to LinkedIn speak</strong> for your next post, or select <strong>LinkedIn → Human</strong> to perform a <strong>LinkedIn translate to English</strong> conversion." },
+                  { icon: ArrowRightLeft, title: "Step 2: Select Your Mode", desc: "Our tool features a powerful <strong>dual direction</strong> toggle. Choose <strong>Human -> LinkedIn</strong> to <strong>translate to LinkedIn speak</strong> for your next post, or select <strong>LinkedIn -> Human</strong> to perform a <strong>LinkedIn translate to English</strong> conversion." },
                   { icon: Sliders, title: "Step 3: Refine with Intensity Control", desc: "Use our precise <strong>tone adjustment</strong> settings to find your perfect voice. You can choose from <strong>Light</strong> (subtle polish), <strong>Standard</strong> (professional balance), or <strong>Extreme</strong> (full \"hustle culture\" immersion)." }
                 ].map((step, i) => (
                   <motion.div 
@@ -507,7 +507,7 @@ export default function App() {
                 className="mt-16 text-center max-w-3xl mx-auto bg-primary/5 p-8 rounded-2xl border border-primary/10"
               >
                 <p className="text-lg text-on-surface-variant leading-relaxed">
-                  By combining <strong>dual direction</strong> flexibility with granular <strong>intensity control</strong>, the <strong>LinkedIn Translator</strong> ensures every post you make—or read—aligns perfectly with your professional goals. Reach your peak performance today: simply input your text and <strong>translate to LinkedIn speak</strong> with a single click.
+                  By combining <strong>dual direction</strong> flexibility with granular <strong>intensity control</strong>, the <strong>LinkedIn Translator</strong> ensures every post you make or read aligns perfectly with your professional goals. Reach your peak performance today: simply input your text and <strong>translate to LinkedIn speak</strong> with a single click.
                 </p>
               </motion.div>
             </div>
@@ -613,7 +613,7 @@ export default function App() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">3. The "Anti-Fluff" Guide: How to Avoid Buzzwords</h3>
                 <p className="text-on-surface-variant leading-relaxed mb-6">
-                  Most professionals unknowingly sabotage their profiles with subjective clichés that recruiters dismiss as "fluff". The <strong>LinkedIn Translator</strong> helps you <strong>avoid buzzwords</strong> such as "specialized," "passionate," "creative," and "strategic"—terms that often trigger skepticism in hiring managers.
+                  Most professionals unknowingly sabotage their profiles with subjective cliches that recruiters dismiss as "fluff". The <strong>LinkedIn Translator</strong> helps you <strong>avoid buzzwords</strong> such as "specialized," "passionate," "creative," and "strategic" terms that often trigger skepticism in hiring managers.
                 </p>
                 <ul className="space-y-4 mt-auto">
                   <li className="flex items-start gap-3">
@@ -813,7 +813,7 @@ export default function App() {
                 transition={{ delay: 0.2 }}
                 className="text-lg text-on-surface-variant max-w-3xl mx-auto leading-relaxed"
               >
-                Our <strong>LinkedIn Translator</strong> is designed to be the most comprehensive <strong>LinkedIn speak generator</strong> on the market. Below are the answers to the most common questions regarding our <strong>free LinkedIn translator</strong> services, how we compare to <strong>Kagi LinkedIn speak</strong>, and how to handle <strong>corporate jargon</strong>.
+                Our <strong>LinkedIn Translator</strong> is designed to be a practical <strong>Tone Translator</strong> for modern professionals. Below are common questions about our <strong>free LinkedIn translator</strong>, how we compare with general tools like <strong>Google Translate</strong> and <strong>Kagi Translate</strong>, and how to handle <strong>corporate jargon</strong>.
               </motion.p>
             </div>
             
@@ -871,10 +871,10 @@ export default function App() {
               <span className="font-display font-bold text-lg text-primary">LinkedIn Translator</span>
             </div>
             <p className="text-sm text-on-surface-variant max-w-xs leading-relaxed">
-              Professional translation for the global executive. All rights reserved.
+              AI tone translation for modern professionals. All rights reserved.
             </p>
             <p className="text-[10px] text-on-surface-variant/40 mt-8">
-              © 2026 LinkedIn Translator. Professional translation for the global executive.
+              © 2026 LinkedIn Translator. All rights reserved.
             </p>
           </div>
           <div>
@@ -888,8 +888,8 @@ export default function App() {
           <div>
             <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">Support</h4>
             <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
-              <li><a href="#" className="hover:text-primary">Contact Support</a></li>
-              <li><a href="#" className="hover:text-primary">Accessibility</a></li>
+              <li><a href="mailto:support@linkedintranslator.online" className="hover:text-primary">support@linkedintranslator.online</a></li>
+              <li><a href="https://linkedintranslator.online" className="hover:text-primary">linkedintranslator.online</a></li>
             </ul>
           </div>
         </div>
@@ -897,3 +897,4 @@ export default function App() {
     </div>
   );
 }
+

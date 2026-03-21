@@ -11,14 +11,14 @@ const createAlternate = (pathname: string, domain: string, hrefLang: string) => 
 });
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedin-translator.app";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
 
   return [
-    { title: "LinkedIn Translator - Translate Profiles, Posts & Messages Instantly" },
+    { title: "LinkedIn Translator - AI Tone Translator for LinkedIn Speak" },
     {
       name: "description",
       content:
-        "Use LinkedIn Translator to transform everyday text into polished, professional LinkedIn communication with AI-powered tone optimization.",
+        "LinkedIn Translator is an AI tone translator that converts everyday wording into professional LinkedIn speak with hooks, smart line breaks, and workplace-ready polish.",
     },
     createCanonical("/", domain),
     createAlternate("/", domain, "en"),
