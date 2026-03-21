@@ -64,10 +64,18 @@ export const action = async ({ request, context }: Route.ActionArgs) => {
   if (json.type !== "google") throw Error("Unvalid login type");
 
   const [session, { commitSession }] = await getSessionHandler(request);
+  const env =
+    (context as { cloudflare?: { env?: Record<string, string | undefined> } })
+      .cloudflare?.env ?? {};
+  const googleClientId = env.GOOGLE_CLIENT_ID;
+
+  if (!googleClientId) {
+    throw new Response("GOOGLE_CLIENT_ID is not configured", { status: 500 });
+  }
 
   const userInfo = await handleGoogleOAuth(
     json.data,
-    context.cloudflare.env.GOOGLE_CLIENT_ID
+    googleClientId
   );
 
   const user = await googleOAuthLogin({

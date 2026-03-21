@@ -21,13 +21,18 @@ export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: stylesUrl },
 ];
 
-export const loader = async ({ context }: Route.LoaderArgs) => {
+export const loader = async ({ context, request }: Route.LoaderArgs) => {
+  const env =
+    (context as { cloudflare?: { env?: Record<string, string | undefined> } })
+      .cloudflare?.env ?? {};
+  const domainFallback = new URL(request.url).origin;
+
   return data({
-    DOMAIN: context.cloudflare.env.DOMAIN,
-    CDN_URL: context.cloudflare.env.CDN_URL,
-    GOOGLE_ANALYTICS_ID: context.cloudflare.env.GOOGLE_ANALYTICS_ID,
-    GOOGLE_ADS_ID: context.cloudflare.env.GOOGLE_ADS_ID,
-    GOOGLE_CLIENT_ID: context.cloudflare.env.GOOGLE_CLIENT_ID,
+    DOMAIN: env.DOMAIN ?? domainFallback,
+    CDN_URL: env.CDN_URL ?? "",
+    GOOGLE_ANALYTICS_ID: env.GOOGLE_ANALYTICS_ID ?? "",
+    GOOGLE_ADS_ID: env.GOOGLE_ADS_ID ?? "",
+    GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID ?? "",
   });
 };
 

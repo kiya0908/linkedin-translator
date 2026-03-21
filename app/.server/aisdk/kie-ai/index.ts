@@ -78,6 +78,35 @@ interface Get4oDirectDownloadURLOptions {
   url: string;
 }
 
+interface ChatCompletionMessage {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+
+interface CreateChatCompletionOptions {
+  model: string;
+  messages: ChatCompletionMessage[];
+  temperature?: number;
+  max_tokens?: number;
+}
+
+interface ChatCompletionResult {
+  id?: string;
+  choices?: Array<{
+    index?: number;
+    finish_reason?: string;
+    message?: {
+      role?: string;
+      content?:
+        | string
+        | Array<{
+            type?: string;
+            text?: string;
+          }>;
+    };
+  }>;
+}
+
 export class KieAI {
   private readonly API_URL: URL;
   private readonly config: KieAIModelConfig;
@@ -223,6 +252,16 @@ export class KieAI {
 
   async getCreditsRemaining() {
     const result = await this.fetch<number>("/api/v1/chat/credit");
+
+    return result.data;
+  }
+
+  async createChatCompletion(payload: CreateChatCompletionOptions) {
+    const result = await this.fetch<ChatCompletionResult>(
+      "/api/v1/chat/completions",
+      payload,
+      { method: "post" }
+    );
 
     return result.data;
   }

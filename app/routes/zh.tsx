@@ -1,6 +1,6 @@
 import type { Route } from "./+types/zh";
 
-import { LandingPage } from "./home";
+import LinkedinTranslatorLandingPage from "~/features/linkedin-translator/landing-page";
 import { createCanonical } from "~/utils/meta";
 
 const createAlternate = (pathname: string, domain: string, hrefLang: string) => ({
@@ -11,14 +11,14 @@ const createAlternate = (pathname: string, domain: string, hrefLang: string) => 
 });
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://nanobanana2pro.space";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedin-translator.app";
 
   return [
-    { title: "Nivra Brush Studio - AI 图像生成与编辑平台" },
+    { title: "LinkedIn Translator - LinkedIn 内容智能翻译与润色" },
     {
       name: "description",
       content:
-        "Nivra Brush Studio 是独立的 AI 图像生成与编辑平台，支持多种 AI 模型，提供批量生图、模板和项目管理功能。与 Google 无关联。",
+        "使用 LinkedIn Translator 将日常表达快速转换为更专业、更有影响力的 LinkedIn 文案，适用于全球求职者与职场人士。",
     },
     createCanonical("/zh", domain),
     createAlternate("/", domain, "en"),
@@ -28,5 +28,5 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 export default function ZhHomePage() {
-  return <LandingPage initialLanguage="zh" />;
+  return <LinkedinTranslatorLandingPage />;
 }
