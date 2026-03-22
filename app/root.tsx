@@ -5,7 +5,7 @@ import {
   isRouteErrorResponse,
   Outlet,
   data,
-  useLoaderData,
+  useRouteLoaderData,
   useLocation,
 } from "react-router";
 
@@ -37,7 +37,9 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
 };
 
 export const Layout = ({ children }: React.PropsWithChildren) => {
-  const data = useLoaderData<typeof loader>();
+  const data = useRouteLoaderData("root") as
+    | Awaited<ReturnType<typeof loader>>
+    | undefined;
   const { pathname } = useLocation();
   const lang = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
 

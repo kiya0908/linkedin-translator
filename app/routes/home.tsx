@@ -14,7 +14,7 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
 
   return [
-    { title: "LinkedIn Translator - AI Tone Translator for LinkedIn Speak" },
+    { title: "LinkedIn Translator – Translate Profiles, Posts & Messages Instantly" },
     {
       name: "description",
       content:

@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { 
   ChevronDown, 
-  Copy, 
-  Share2, 
   ArrowRight, 
   Zap, 
   Shield, 
@@ -30,6 +28,8 @@ import {
   Search
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+
+import { TranslationInterface } from './translation-interface';
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -62,71 +62,24 @@ const COMPARISONS = [
 const FAQS = [
   {
     question: "Is the LinkedIn Translator free to use?",
-    answer: "Yes, we provide a <strong>free LinkedIn translator</strong> tier for all users. This <strong>free LinkedIn translator</strong> option allows you to experience the power of a professional <strong>LinkedIn speak generator</strong> with a daily allowance (typically 2 to 3 free translations per day). For those who need to generate <strong>professional LinkedIn posts</strong> more frequently, we offer premium plans that unlock unlimited access and extreme intensity levels."
+    answer: "Yes, we provide a <strong>free LinkedIn translator</strong> tier for all users. This <strong>free LinkedIn translator</strong> option allows you to experience the power of a professional <strong>LinkedIn speak translator</strong> with a daily allowance (typically 2 to 3 free translations per day). For those who need to generate <strong>professional LinkedIn posts</strong> more frequently, we offer premium plans that unlock unlimited access and extreme intensity levels."
   },
   {
-    question: "Why use this instead of Google Translate or Kagi Translate?",
-    answer: "Traditional translators are excellent for literal language conversion, but this <strong>LinkedIn speak generator</strong> is built for <strong>workplace tone transformation</strong>. It rewrites your raw draft into high-impact <strong>professional LinkedIn posts</strong> and automatically adds strategic hooks, clean line breaks, and professional emojis. In short, we optimize for career context, not just vocabulary."
-  },
-  {
-    question: "Can this LinkedIn speak translator app help me write my resume summary?",
-    answer: "Absolutely. In 2026, your LinkedIn \"About\" section is no longer just a summary; it is your searchable career landing page. This <strong>LinkedIn speak translator app</strong> functions as an optimization engine that injects high-intent keywords to trigger recruiter search filters. By using the <strong>LinkedIn speak generator</strong>, you can transform a weak bio into one that highlights <strong>quantifiable achievements</strong> such as \"reducing costs by 30%\" instead of using overused, subjective fluff. This ensures you satisfy the <strong>AI-first matching logic</strong> used by modern hiring teams."
+    question: "Why should I use this instead of ChatGPT or Kagi LinkedIn speak?",
+    answer: "While generic AI tools focus on simple text generation, this <strong>LinkedIn speak generator</strong> uses specialized \"Matching Logic\" to optimize your content for actual recruiter behavior. Unlike <strong>Kagi LinkedIn speak</strong>, which is often used for humorous subculture parodies, our tool is purpose-built to rewrite your text into polished, high-impact <strong>professional LinkedIn posts</strong>. Furthermore, this <strong>LinkedIn translator</strong> automatically integrates strategic hooks, emojis, and smart formatting that generic models often overlook."
   },
   {
     question: "Does it help with decoding corporate jargon?",
-    answer: "Yes. One of the standout features of our <strong>LinkedIn speak translator app</strong> is its <strong>dual direction</strong> capability. Just as users utilize <strong>Kagi LinkedIn speak</strong> to understand complex posts, you can use our tool to <strong>LinkedIn translate to English</strong>. This allows you to strip away confusing <strong>corporate jargon</strong> and \"corporate nonsense\" to reveal the clear, plain English meaning behind executive communications."
+    answer: "Yes. One of the standout features of our <strong>LinkedIn translator</strong> is its <strong>dual direction</strong> capability. Just as users utilize <strong>Kagi LinkedIn speak</strong> to understand complex posts, you can use our tool to <strong>LinkedIn translate to English</strong>. This allows you to strip away confusing <strong>corporate jargon</strong> and \"corporate nonsense\" to reveal the clear, plain English meaning behind executive communications."
   },
   {
-    question: "Is my data safe with this LinkedIn speak generator?",
-    answer: "We take data safety seriously. Much like <strong>Kagi LinkedIn speak</strong>, which is a premium search service known for being pro-privacy, we have built our <strong>LinkedIn speak translator app</strong> with a focus on security. We maintain a strict privacy policy and ensure that while the AI processes your text to deliver the best <strong>LinkedIn speak generator</strong> results, your professional information remains protected. However, as with any online <strong>AI-powered tool</strong>, we recommend not pasting highly sensitive or confidential business data into public novelty features."
+    question: "Is my data safe with this LinkedIn speak translator?",
+    answer: "We take data safety seriously. Much like <strong>Kagi LinkedIn speak</strong>, which is a premium search service known for being pro-privacy, we have built our <strong>LinkedIn translator </strong> with a focus on security. We maintain a strict privacy policy and ensure that while the AI processes your text to deliver the best <strong>LinkedIn speak translator</strong> results, your professional information remains protected. However, as with any online <strong>AI-powered tool</strong>, we recommend not pasting highly sensitive or confidential business data into public novelty features."
   }
 ];
 
 export default function App() {
-  const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [sourceLang, setSourceLang] = useState('English');
-  const [copied, setCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  const handleTranslate = async () => {
-    if (!inputText.trim()) return;
-    setIsTranslating(true);
-
-    try {
-      const response = await fetch("/api/translate/linkedin", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          text: inputText,
-          mode: "human-to-linkedin",
-        }),
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage || "Translation request failed");
-      }
-
-      const result = (await response.json()) as { text?: string };
-      const translatedText = result.text?.trim();
-      setOutputText(translatedText || "Error: Empty response from translation service.");
-    } catch (error) {
-      console.error("Translation error:", error);
-      setOutputText("Error: Could not process translation. Please check your KIEAI_APIKEY configuration.");
-    } finally {
-      setIsTranslating(false);
-    }
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(outputText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -171,7 +124,7 @@ export default function App() {
               transition={{ delay: 0.1 }}
               className="text-5xl md:text-7xl font-extrabold text-on-surface mb-8 leading-[1.1]"
             >
-              LinkedIn Translator - AI Tone Translator for LinkedIn Speak
+              LinkedIn Translator – Translate Profiles, Posts & Messages Instantly
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
@@ -179,7 +132,7 @@ export default function App() {
               transition={{ delay: 0.2 }}
               className="text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed"
             >
-              More than a language tool: this AI rewrites everyday wording into polished, engaging LinkedIn communication with workplace-aware tone, hooks, and formatting.
+              Use a LinkedIn translator to translate profiles, posts, and messages quickly and accurately. Ideal for professionals, recruiters, and global job seekers.
             </motion.p>
           </div>
 
@@ -188,74 +141,8 @@ export default function App() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
-            className="max-w-5xl mx-auto bg-surface-container-lowest rounded-2xl ambient-shadow overflow-hidden border border-outline-variant"
           >
-            <div className="p-4 border-b border-outline-variant flex items-center justify-between bg-surface-container-low/50">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-outline-variant cursor-pointer hover:bg-surface-container-low transition-colors">
-                  <span className="text-sm font-medium">{sourceLang}</span>
-                  <ChevronDown className="w-4 h-4 text-on-surface-variant" />
-                </div>
-                <div className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-colors" title="Swap languages">
-                  <ArrowRightLeft className="w-4 h-4" />
-                </div>
-                <div className="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-lg uppercase tracking-wider">
-                  LinkedIn Speak
-                </div>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 min-h-[300px]">
-              <div className="p-8 border-r border-outline-variant flex flex-col">
-                <textarea 
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  placeholder="I'm not sure if this is a good idea, let's just do something else."
-                  className="flex-grow w-full resize-none text-lg text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none"
-                />
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xs text-on-surface-variant/50 font-mono">{inputText.length}/500</span>
-                  <button 
-                    onClick={handleTranslate}
-                    disabled={isTranslating || !inputText.trim()}
-                    className="bg-primary hover:bg-primary-container disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all"
-                  >
-                    {isTranslating ? (
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      <Zap className="w-4 h-4" />
-                    )}
-                    Translate
-                  </button>
-                </div>
-              </div>
-              <div className="p-8 bg-surface-container-low/30 flex flex-col">
-                <div className="flex-grow">
-                  {outputText ? (
-                    <p className="text-lg text-primary font-medium italic leading-relaxed">
-                      "{outputText}"
-                    </p>
-                  ) : (
-                    <p className="text-lg text-on-surface-variant/30 italic">
-                      Your executive translation will appear here...
-                    </p>
-                  )}
-                </div>
-                <div className="mt-4 flex items-center justify-end gap-3">
-                  <button 
-                    onClick={handleCopy}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-on-surface-variant hover:text-primary hover:bg-white rounded-lg transition-all"
-                  >
-                    {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                    {copied ? 'Copied' : 'Copy'}
-                  </button>
-                  <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-on-surface-variant hover:text-primary hover:bg-white rounded-lg transition-all">
-                    <Share2 className="w-4 h-4" />
-                    Share
-                  </button>
-                </div>
-              </div>
-            </div>
+            <TranslationInterface />
           </motion.div>
         </section>
 
@@ -287,7 +174,7 @@ export default function App() {
                 transition={{ delay: 0.2 }}
                 className="text-lg text-on-surface-variant max-w-4xl mx-auto leading-relaxed"
               >
-                LinkedIn Translator is a leading <strong>AI-powered LinkedIn speak translator</strong>. Unlike traditional translation tools, this professional <strong>English to LinkedIn translator</strong> converts everyday descriptions into high-quality <strong>professional LinkedIn posts</strong>. Whether you are polishing a resume or publishing an update, it captures workplace nuance and automatically adds hooks, line breaks, and professional emojis.
+                An innovative <strong>AI-powered tool</strong> specifically designed for professionals to instantly transform everyday language, mundane task descriptions, or informal inspirations into highly attractive and etiquette-compliant <strong>professional LinkedIn posts</strong>. Unlike traditional translation software, this <strong>LinkedIn translator</strong> specializes in <strong>Tone Transformation</strong>, reshaping mediocre statements into authoritative narratives infused with a <strong>Growth Mindset</strong> and leadership flair.
               </motion.p>
             </div>
 
@@ -813,7 +700,7 @@ export default function App() {
                 transition={{ delay: 0.2 }}
                 className="text-lg text-on-surface-variant max-w-3xl mx-auto leading-relaxed"
               >
-                Our <strong>LinkedIn Translator</strong> is designed to be a practical <strong>Tone Translator</strong> for modern professionals. Below are common questions about our <strong>free LinkedIn translator</strong>, how we compare with general tools like <strong>Google Translate</strong> and <strong>Kagi Translate</strong>, and how to handle <strong>corporate jargon</strong>.
+                Our <strong>LinkedIn Translator</strong> is designed to be a comprehensive <strong>LinkedIn speak Translator</strong> for modern professionals. Below are common questions about our <strong>free LinkedIn translator</strong>, how we compare with general tools like <strong>Google Translate</strong> and <strong>Kagi Translate</strong>, and how to handle <strong>corporate jargon</strong>.
               </motion.p>
             </div>
             

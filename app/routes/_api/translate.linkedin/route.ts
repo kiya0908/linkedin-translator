@@ -5,24 +5,24 @@ import { data } from "react-router";
 import { z } from "zod";
 
 import { KieAI } from "~/.server/aisdk";
+import {
+  getPromptProfile,
+  MAX_TRANSLATION_INPUT_CHARS,
+  type TranslationIntensity,
+  type TranslationMode,
+} from "~/features/linkedin-translator/config";
 
 const requestSchema = z.object({
   text: z
     .string()
     .trim()
     .min(1, "Text cannot be empty")
-    .max(5000, "Text is too long"),
+    .max(MAX_TRANSLATION_INPUT_CHARS, "Text is too long"),
   mode: z
     .enum(["human-to-linkedin", "linkedin-to-human"])
     .default("human-to-linkedin"),
+  intensity: z.enum(["light", "standard", "extreme"]).default("standard"),
 });
-
-const SYSTEM_PROMPTS = {
-  "human-to-linkedin":
-    "You are a world-class executive communication coach. Transform the user's casual or informal input into high-impact, professional, CEO-level communication suitable for LinkedIn or corporate environments. Maintain the original intent but use sophisticated, diplomatic, and authoritative language. Provide only the rewritten text.",
-  "linkedin-to-human":
-    "You are an expert plain-language editor. Convert corporate or LinkedIn-style jargon into concise, clear, plain English while preserving the original meaning and key facts. Provide only the rewritten text.",
-} as const;
 
 type CompletionContent =
   | string
@@ -56,13 +56,16 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
   const envVars = env as unknown as Record<string, string | undefined>;
   const model = envVars.KIE_LINKEDIN_MODEL || "gpt-4o-mini";
-  const systemPrompt = SYSTEM_PROMPTS[parsed.data.mode];
+  const { systemPrompt, temperature } = getPromptProfile(
+    parsed.data.mode as TranslationMode,
+    parsed.data.intensity as TranslationIntensity
+  );
 
   try {
     const kie = new KieAI();
     const completion = await kie.createChatCompletion({
       model,
-      temperature: 0.4,
+      temperature,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: parsed.data.text },
@@ -74,7 +77,13 @@ export const action = async ({ request }: Route.ActionArgs) => {
       throw new Error("Empty response from Kie AI");
     }
 
-    return data({ text });
+    return data({
+      text,
+      meta: {
+        mode: parsed.data.mode,
+        intensity: parsed.data.intensity,
+      },
+    });
   } catch (error) {
     console.error("LinkedIn translate error");
     console.error(error);

@@ -1,4 +1,4 @@
-# LinkedIn Translator - AI Tone Translator for LinkedIn Speak
+# LinkedIn Translator – Translate Profiles, Posts & Messages Instantly
 
 LinkedIn Translator is not just a language translator. It is an AI-powered **Tone Translator** built for workplace communication.
 
