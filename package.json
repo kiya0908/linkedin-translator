@@ -7,6 +7,7 @@
     "cf-typegen": "wrangler types --include-runtime false",
     "creem:heartbeat": "node scripts/creem-heartbeat.mjs",
     "deploy": "pnpm run build && wrangler deploy",
+    "deploy:versions": "wrangler versions upload --preview-alias production",
     "dev": "react-router dev",
     "dev:cf": "set CLOUDFLARE_DEV=1&& react-router dev",
     "postinstall": "npm run cf-typegen",

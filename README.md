@@ -129,6 +129,20 @@ pnpm run build
 pnpm run deploy
 ```
 
+### 4.1 Cloudflare Workers Builds (Deploy Command)
+
+To avoid the `invalid alias: HEAD` error in CI, set Cloudflare deploy command to:
+
+```bash
+pnpm run deploy:versions
+```
+
+Equivalent direct command:
+
+```bash
+npx wrangler versions upload --preview-alias production
+```
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
