@@ -52,27 +52,11 @@ const getGuestCookie = () =>
   });
 
 const getLimits = (): TranslationDailyLimits => {
-  const envVars = env as unknown as Record<string, string | number | undefined>;
-
-  const parseLimit = (key: string, fallback: number) => {
-    const raw = envVars[key];
-    const parsed = Number(raw);
-    return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : fallback;
-  };
-
   return {
-    free: parseLimit(
-      "LINKEDIN_TRANSLATOR_FREE_DAILY_LIMIT",
-      DEFAULT_FREE_DAILY_TRANSLATIONS
-    ),
-    trial: parseLimit(
-      "LINKEDIN_TRANSLATOR_TRIAL_DAILY_LIMIT",
-      DEFAULT_TRIAL_DAILY_TRANSLATIONS
-    ),
-    expired: parseLimit(
-      "LINKEDIN_TRANSLATOR_EXPIRED_DAILY_LIMIT",
-      DEFAULT_EXPIRED_DAILY_TRANSLATIONS
-    ),
+    // Guest free quota is intentionally disabled; free usage requires sign-in.
+    free: DEFAULT_FREE_DAILY_TRANSLATIONS,
+    trial: DEFAULT_TRIAL_DAILY_TRANSLATIONS,
+    expired: DEFAULT_EXPIRED_DAILY_TRANSLATIONS,
   };
 };
 

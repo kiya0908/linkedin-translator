@@ -16,7 +16,11 @@
     "db:generate": "drizzle-kit generate --config app/.server/drizzle/config.ts",
     "db:migrate": "drizzle-kit migrate --config app/.server/drizzle/config.ts",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
-    "db:migrate:remote": "wrangler d1 migrations apply DB --remote"
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "db:check:local": "node scripts/d1-check.mjs --local",
+    "db:check:remote": "node scripts/d1-check.mjs --remote",
+    "db:check": "pnpm run db:check:local && pnpm run db:check:remote",
+    "db:gate:remote": "node scripts/d1-gate-remote.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

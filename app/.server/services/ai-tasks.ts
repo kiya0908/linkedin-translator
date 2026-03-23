@@ -15,7 +15,7 @@ import {
   KieAI,
   type CreateNanoBananaOptions,
 } from "~/.server/aisdk";
-import { NANO_BANANA_TASK_CREDITS } from "~/constants/tasks";
+import { EVERY_TASK_CREDITS } from "~/constants/tasks";
 
 export type AiTaskResult = Pick<
   AiTask,
@@ -150,7 +150,7 @@ export const createNanoBananaTask = async (
     google_search = false,
   } = value;
 
-  const taskCredits = NANO_BANANA_TASK_CREDITS;
+  const taskCredits = EVERY_TASK_CREDITS;
   const consumptionResult = await consumptionsCredits(user, {
     credits: taskCredits,
   });

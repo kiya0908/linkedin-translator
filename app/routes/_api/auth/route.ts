@@ -43,14 +43,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     credits = balance;
   }
 
-  return Response.json(
-    { profile: user_info, credits },
-    {
-      headers: {
-        "Set-Cookie": await commitSession(session),
-      },
-    }
-  );
+  const headers = new Headers();
+  if (user) {
+    headers.set("Set-Cookie", await commitSession(session));
+  }
+
+  return Response.json({ profile: user_info, credits }, { headers });
 };
 
 export const action = async ({ request, context }: Route.ActionArgs) => {

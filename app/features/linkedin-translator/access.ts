@@ -44,7 +44,7 @@ const buildHelperText = (
   }
 
   if (state === "trial") {
-    return `Signed-in trial: ${remainingDaily ?? 0} daily translations left before you need credits.`;
+    return `Signed-in free quota: ${remainingDaily ?? 0} translations left today before you need paid credits.`;
   }
 
   if (state === "expired") {
@@ -53,9 +53,7 @@ const buildHelperText = (
       : "Paid credits are depleted and today's free backup quota is used up. Recharge to continue.";
   }
 
-  return remainingDaily && remainingDaily > 0
-    ? `Free access: ${remainingDaily} daily translations left. Sign in for a larger trial quota.`
-    : "Free daily quota is used up. Sign in or upgrade to continue.";
+  return "Sign in to unlock your starter credits and 5 free daily translations.";
 };
 
 export const deriveTranslationEntitlement = ({

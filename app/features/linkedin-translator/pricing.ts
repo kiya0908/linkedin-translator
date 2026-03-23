@@ -1,7 +1,6 @@
 import { CREEM_ACTIVE_PRODUCT_IDS } from "../../constants/pricing.js";
 
 import {
-  DEFAULT_FREE_DAILY_TRANSLATIONS,
   DEFAULT_TRIAL_DAILY_TRANSLATIONS,
 } from "./config.js";
 
@@ -26,7 +25,7 @@ export const LINKEDIN_TRANSLATOR_PRO_PACK = {
   features: [
     "200 credits included",
     "Extreme intensity unlocked immediately",
-    "Minimum 1 credit per successful paid translation",
+    "1 credit per successful paid translation",
     "Credits never expire",
     "Works across both translation directions",
   ],
@@ -47,7 +46,7 @@ export const LINKEDIN_TRANSLATOR_TEAM_PLAN = {
   features: [
     "500 credits included",
     "Extreme intensity unlocked immediately",
-    "Minimum 1 credit per successful paid translation",
+    "1 credit per successful paid translation",
     "Credits never expire",
     "Works across both translation directions",
   ],
@@ -60,11 +59,12 @@ export const LINKEDIN_TRANSLATOR_PRICING_CARDS = [
     badge: "No card required",
     priceLabel: "$0",
     description:
-      "Try both translation directions with the same production prompt system before you buy credits.",
+      "Sign in to activate your starter credits and daily free quota before buying extra credits.",
     ctaLabel: "Start Free",
     features: [
-      `${DEFAULT_FREE_DAILY_TRANSLATIONS} daily translations before sign-in`,
-      `${DEFAULT_TRIAL_DAILY_TRANSLATIONS} daily translations after sign-in`,
+      "Sign-in required for free usage",
+      `${DEFAULT_TRIAL_DAILY_TRANSLATIONS} free translations per day after sign-in`,
+      "5 starter credits for new accounts",
       "Light and Standard intensity",
       "Human -> LinkedIn and LinkedIn -> Human",
       "No payment required to validate the workflow",

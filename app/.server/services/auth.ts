@@ -11,7 +11,7 @@ import { insertCreditRecord } from "~/.server/model/credit_record";
 
 export const createUser = async (newUser: InsertUser) => {
   const [createdUser] = await insertUser(newUser);
-  const initialCredits = Number(env.INITLIZE_CREDITS ?? 0);
+  const initialCredits = Number(env.INITLIZE_CREDITS ?? 5);
 
   if (Number.isFinite(initialCredits) && initialCredits > 0) {
     await insertCreditRecord({

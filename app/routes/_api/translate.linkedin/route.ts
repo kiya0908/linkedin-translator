@@ -3,7 +3,6 @@ import { nanoid } from "nanoid";
 import { z } from "zod";
 
 import {
-  estimateTranslationCreditsUpperBound,
   MAX_TRANSLATION_INPUT_CHARS,
   type TranslationIntensity,
   type TranslationMode,
@@ -85,18 +84,10 @@ export const action = async ({ request }: Route.ActionArgs) => {
   }
 
   if (access.entitlement.state === "pro") {
-    const estimatedCreditsRequired = Math.max(
-      1,
-      estimateTranslationCreditsUpperBound(
-        parsed.data.mode as TranslationMode,
-        parsed.data.intensity as TranslationIntensity,
-        parsed.data.text
-      )
-    );
-
-    if (access.entitlement.credits < estimatedCreditsRequired) {
+    const creditsRequiredPerRequest = 1;
+    if (access.entitlement.credits < creditsRequiredPerRequest) {
       throw new Response(
-        `Not enough credits for this translation. At least ${estimatedCreditsRequired} credit${estimatedCreditsRequired > 1 ? "s are" : " is"} required.`,
+        "Not enough credits for this translation. At least 1 credit is required.",
         {
           status: 402,
           headers,
@@ -112,10 +103,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       intensity: parsed.data.intensity as TranslationIntensity,
     });
 
-    const chargedCredits =
-      access.entitlement.state === "pro"
-        ? Math.max(1, translation.creditsToCharge)
-        : 0;
+    const chargedCredits = access.entitlement.state === "pro" ? 1 : 0;
     const nextEntitlement = await settleLinkedinTranslationUsage(access, {
       creditsToCharge: chargedCredits,
       requestId,

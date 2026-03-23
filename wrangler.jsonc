@@ -53,7 +53,7 @@
 #   "CREEM_TEST_KEY": "creem_test_xxxxxxxxxx",
 #   "CREEM_WEBHOOK_SECRET": "xxxxxxxxxxx",
 #   // Default Values
-#   "INITLIZE_CREDITS": 10,
+#   "INITLIZE_CREDITS": 5,
 #   "R2_ACCOUNT_ID":"cxxxxxx",
 #   "R2_ACCESS_KEY_ID":"xxxxxxxxxxxxxxxx",
 #   "R2_SECRET_ACCESS_KEY":"xxx"

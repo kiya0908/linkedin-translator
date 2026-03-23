@@ -67,9 +67,10 @@ export const FREE_PLAN: PLAN = {
   },
   name: "Starter",
   description:
-    "Get started with Nivra Brush Studio for free. Basic features with watermarks.",
+    "Sign in to activate 5 starter credits and get 5 free credits refreshed daily.",
   feature_description: [
-    "10 starter credits",
+    "5 starter credits after sign-in",
+    "5 free daily credits after sign-in",
     "Basic generation quality",
     "Text-to-Image & Image-to-Image",
     "Watermark included",
@@ -79,7 +80,7 @@ export const FREE_PLAN: PLAN = {
     watermarks: true,
     highResolution: false,
     fullStyles: false,
-    credits: { monthly: 10, yearly: 10 },
+    credits: { monthly: 5, yearly: 5 },
     private: false,
     features: false,
   },

@@ -18,7 +18,7 @@ export const CREDITS_PRODUCT: PRODUCT = {
   product_id: LINKEDIN_TRANSLATOR_PRO_PACK.productId,
   product_name: LINKEDIN_TRANSLATOR_PRO_PACK.name,
   product_description:
-    "One-time LinkedIn Translator credit pack for usage-based rewriting. Unlocks Extreme intensity and deducts credits from real model token usage.",
+    "One-time LinkedIn Translator credit pack for usage-based rewriting. Unlocks Extreme intensity and deducts 1 credit per successful translation.",
   type: "once",
 };
 
@@ -30,7 +30,7 @@ export const TEAM_CREDITS_PRODUCT: PRODUCT | null =
         product_id: LINKEDIN_TRANSLATOR_TEAM_PLAN.productId,
         product_name: LINKEDIN_TRANSLATOR_TEAM_PLAN.name,
         product_description:
-          "Larger LinkedIn Translator credit pack for heavier usage. Unlocks Extreme intensity and deducts credits from successful paid translations.",
+          "Larger LinkedIn Translator credit pack for heavier usage. Unlocks Extreme intensity and deducts 1 credit per successful translation.",
         type: "once",
       }
     : null;

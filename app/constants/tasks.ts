@@ -1,2 +1,2 @@
-export const NANO_BANANA_TASK_CREDITS = 10;
-//每次用户生成图片扣减的积分数 10
+// Credits deducted for each Nano Banana generation task.
+export const EVERY_TASK_CREDITS = 1;

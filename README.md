@@ -68,7 +68,7 @@ Set required variables in Cloudflare (or local `.dev.vars`) such as:
 This project is bound to Cloudflare D1 via `wrangler.jsonc`.
 
 - `binding`: `DB`
-- `database_name`: `nanobanana2pro`
+- `database_name`: `linkedintranslator`
 - `database_id`: `4e83da95-b2db-49e3-8017-6c9c284afa8e`
 
 For Drizzle CLI commands (`pnpm run db:generate` / `pnpm run db:migrate`), set:
@@ -84,10 +84,40 @@ pnpm run db:migrate:local
 pnpm run db:migrate:remote
 ```
 
+### 2.2 D1 Local-First Workflow (Recommended)
+
+Use local D1 as default during development, and keep only schema/migrations synced to remote.
+
+- Default DB-backed dev command: `pnpm run dev:cf`
+- Local D1 state path: `.wrangler/state/v3/d1/`
+- Do not copy local business rows (users/orders/credits) into remote manually.
+
+Check where data is being written:
+
+```bash
+pnpm run db:check:local
+pnpm run db:check:remote
+```
+
+Release gate for remote D1 (required tables + migration alignment):
+
+```bash
+pnpm run db:gate:remote
+```
+
+When schema changes:
+
+```bash
+pnpm run db:migrate:local
+pnpm run db:migrate:remote
+```
+
+Use remote D1 only for integration scenarios (for example payment callback/webhook) or production issue reproduction, then switch back to local-first mode.
+
 ### 3. Run Locally
 
 ```bash
-pnpm run dev
+pnpm run dev:cf
 ```
 
 Open `http://localhost:5173`.

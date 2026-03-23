@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "../i18n/LanguageContext";
 import { useEffect, useRef, useState } from "react";
-import { NANO_BANANA_TASK_CREDITS } from "~/constants/tasks";
+import { EVERY_TASK_CREDITS } from "~/constants/tasks";
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 const MAX_IMAGE_COUNT = 14;
@@ -607,7 +607,7 @@ export default function EditorDemo() {
                   <>
                     <Wand2 size={16} />{" "}
                     {formatText(tr("editorPanel.runWithCredits"), {
-                      credits: NANO_BANANA_TASK_CREDITS,
+                      credits: EVERY_TASK_CREDITS,
                     })}
                   </>
                 )}

@@ -191,7 +191,7 @@ export const env = {
   GOOGLE_ANALYTICS_ID: localProcessEnv.GOOGLE_ANALYTICS_ID ?? "",
   GOOGLE_ADS_ID: localProcessEnv.GOOGLE_ADS_ID ?? "",
   GOOGLE_CLIENT_ID: localProcessEnv.GOOGLE_CLIENT_ID ?? "",
-  INITLIZE_CREDITS: localProcessEnv.INITLIZE_CREDITS ?? 0,
+  INITLIZE_CREDITS: localProcessEnv.INITLIZE_CREDITS ?? 5,
   KIEAI_APIKEY: localProcessEnv.KIEAI_APIKEY ?? "",
   CREEM_KEY: localProcessEnv.CREEM_KEY ?? "",
   CREEM_TEST_KEY: localProcessEnv.CREEM_TEST_KEY ?? "",

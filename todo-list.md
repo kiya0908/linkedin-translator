@@ -248,3 +248,13 @@
 - [ ] Follow-up when back home:
 - implement callback idempotency fix and add regression test
 - run one end-to-end payment simulation (checkout.completed + callback + credits refresh)
+
+## 2026-03-23 Latest updates (credits rules + naming)
+
+- [x] Free plan rule updated: free usage now requires sign-in.
+- [x] New-account initial credits standardized to `INITLIZE_CREDITS = 5`.
+- [x] Guest daily free quota removed (`DEFAULT_FREE_DAILY_TRANSLATIONS = 0`).
+- [x] Signed-in daily free quota standardized to `5` (`DEFAULT_TRIAL_DAILY_TRANSLATIONS = 5`).
+- [x] Translation paid billing standardized to fixed `1 credit` per successful request.
+- [x] Task-level credits constant renamed from `NANO_BANANA_TASK_CREDITS` to `EVERY_TASK_CREDITS`.
+- [x] All related references updated and `pnpm run typecheck` passed.

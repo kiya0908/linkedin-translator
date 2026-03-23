@@ -350,13 +350,13 @@ export function TranslationInterface() {
                 ? "Extreme unlocks when your credit balance is above zero."
                 : !entitlement.canTranslate
                   ? entitlement.isAuthenticated
-                    ? "Today's quota is used up. Recharge credits to keep going."
-                    : "Today's guest quota is used up. Sign in for a larger daily trial or add credits."
+                    ? "Today's free quota is used up. Recharge credits to keep going."
+                    : "Sign in to unlock 5 free translations per day and your starter credits."
                   : hasPaidAccess
-                    ? "This request will bill from your current credit balance after the model responds."
+                    ? "Each successful request deducts 1 credit from your balance."
                     : entitlement.state === "trial"
-                      ? "Signed-in trial covers Light and Standard. Add credits to unlock Extreme."
-                      : "Free access includes Light and Standard. Sign in or upgrade when you need more."}
+                      ? "Signed-in free quota covers Light and Standard. Add credits to unlock Extreme."
+                      : "Sign in to start your free daily quota."}
             </p>
 
             <button

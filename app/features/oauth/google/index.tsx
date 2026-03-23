@@ -33,12 +33,22 @@ export const GoogleOAuth = forwardRef<GoogleOAuthBtnRef, GoogleOAuthProps>(
       };
 
       setSigning(true);
-      const res = await fetch("/api/auth", {
-        method: "post",
-        body: JSON.stringify(values),
-      }).finally(() => setSigning(false));
+      try {
+        const res = await fetch("/api/auth", {
+          method: "post",
+          credentials: "same-origin",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
 
-      if (res.ok) {
+        if (!res.ok) {
+          const message = await res.text().catch(() => "");
+          console.error("[auth] Google login failed", res.status, message);
+          return;
+        }
+
         const { profile, credits } = (await res.json()) as {
           profile: UserInfo;
           credits: number;
@@ -50,6 +60,10 @@ export const GoogleOAuth = forwardRef<GoogleOAuthBtnRef, GoogleOAuthProps>(
         setTimeout(() => {
           onSuccess?.();
         }, 16);
+      } catch (error) {
+        console.error("[auth] Google login request error", error);
+      } finally {
+        setSigning(false);
       }
     };
     return (

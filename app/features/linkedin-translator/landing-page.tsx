@@ -70,15 +70,15 @@ const COMPARISONS = [
 const FAQS = [
   {
     question: "Is the LinkedIn Translator free to use?",
-    answer: "Yes. Guest visitors receive a small <strong>daily free quota</strong>, and signed-in users receive a slightly larger <strong>trial quota</strong>. You can validate both translation directions before paying. Paid access starts when you buy credits, which unlocks <strong>Extreme</strong> intensity and usage-based billing."
+    answer: "Yes. Free usage now requires sign-in. New accounts get <strong>5 starter credits</strong>, and signed-in users receive <strong>5 free translations per day</strong> before paid credits are needed."
   },
   {
     question: "How are credits billed?",
-    answer: "Each successful paid translation deducts at least <strong>1 credit</strong> from your balance. The app still tracks provider usage internally, but the credit packs are designed to feel simple and predictable."
+    answer: "Each successful paid translation deducts exactly <strong>1 credit</strong> from your balance, making usage simple and predictable."
   },
   {
     question: "What happens when credits run out?",
-    answer: "When your paid balance hits zero, <strong>Extreme</strong> locks again automatically and the product falls back to a smaller <strong>daily backup quota</strong>. That means the workflow still works for quick checks, while heavier usage moves back onto credits."
+    answer: "When your paid balance hits zero, <strong>Extreme</strong> locks again automatically. Signed-in users can still use their <strong>5 free daily translations</strong> for quick checks."
   },
   {
     question: "Do you offer refunds or team plans?",
@@ -623,7 +623,7 @@ export default function App() {
             <div className="text-center mb-20">
               <h2 className="text-4xl font-bold mb-4">Pricing That Matches Real Usage</h2>
               <p className="text-on-surface-variant max-w-3xl mx-auto">
-                Free and trial traffic stay on daily quota. Paid usage moves onto credits and bills from real provider token usage, so the UI, checkout flow, and entitlement rules stay in sync.
+                Signed-in users get 5 free translations per day. Paid usage is straightforward: each successful request deducts 1 credit.
               </p>
             </div>
 
@@ -726,7 +726,7 @@ export default function App() {
             </div>
 
             <div className="mt-10 rounded-2xl border border-outline-variant bg-white/80 p-6 text-sm leading-7 text-on-surface-variant">
-              Billing note: each successful paid translation deducts at least <strong>1 credit</strong> from your balance, and both one-time packs unlock <strong>Extreme</strong> immediately after purchase.
+              Billing note: each successful paid translation deducts exactly <strong>1 credit</strong> from your balance, and both one-time packs unlock <strong>Extreme</strong> immediately after purchase.
             </div>
           </div>
         </section>
