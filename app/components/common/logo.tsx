@@ -6,11 +6,15 @@ type LogoSize = "sm" | "base" | "lg";
 interface LogoProps extends React.ComponentProps<"div"> {
   size?: LogoSize;
   iconSize?: LogoSize;
+  label?: string;
+  imageAlt?: string;
 }
 
 export const Logo = ({
   size = "base",
   iconSize,
+  label = "HairRoom",
+  imageAlt = "HairRoom, Try-on AI Hairstyle",
   className,
   ...rest
 }: LogoProps) => {
@@ -35,10 +39,10 @@ export const Logo = ({
         <Image
           className="w-full h-full object-cover"
           src="/assets/logo.webp"
-          alt="HairRoom, Try-on AI Hairstyle"
+          alt={imageAlt}
         />
       </div>
-      <div className={clsx("font-title", sizeStyles[size].text)}>HairRoom</div>
+      <div className={clsx("font-title", sizeStyles[size].text)}>{label}</div>
     </div>
   );
 };

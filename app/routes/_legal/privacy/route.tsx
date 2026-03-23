@@ -8,11 +8,11 @@ import { createCanonical } from "~/utils/meta";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   return [
-    { title: "Privacy Policy - Nivra Brush Studio" },
+    { title: "Privacy Policy - LinkedIn Translator" },
     {
       name: "description",
       content:
-        "Learn how Nivra Brush Studio collects, uses, and protects your personal data.",
+        "Learn how LinkedIn Translator collects, uses, and protects your personal data.",
     },
     createCanonical("/legal/privacy", matches[0].data.DOMAIN),
   ];
@@ -26,4 +26,3 @@ export const loader = ({}: Route.LoaderArgs) => {
 export default function Page({ loaderData: { node } }: Route.ComponentProps) {
   return <Legal node={node} />;
 }
-

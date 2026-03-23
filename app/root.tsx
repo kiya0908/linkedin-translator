@@ -4,9 +4,8 @@ import stylesUrl from "~/app.css?url";
 import {
   isRouteErrorResponse,
   Outlet,
-  data,
-  useRouteLoaderData,
   useLocation,
+  useRouteLoaderData,
 } from "react-router";
 
 import { useEffect } from "react";
@@ -17,29 +16,40 @@ import { Document } from "~/features/document";
 import "@fontsource/libre-baskerville/400.css";
 import "@fontsource/libre-baskerville/700.css";
 
+type RootLoaderData = {
+  DOMAIN: string;
+  CDN_URL: string;
+  GOOGLE_ANALYTICS_ID: string;
+  GOOGLE_ADS_ID: string;
+  GOOGLE_CLIENT_ID: string;
+};
+
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: stylesUrl },
 ];
 
-export const loader = async ({ context, request }: Route.LoaderArgs) => {
+export const loader = async ({
+  context,
+  request,
+}: Route.LoaderArgs): Promise<RootLoaderData> => {
   const env =
-    (context as { cloudflare?: { env?: Record<string, string | undefined> } })
-      .cloudflare?.env ?? {};
+    context.cloudflare?.env ??
+    (typeof process !== "undefined"
+      ? (process.env as Record<string, string | undefined>)
+      : {});
   const domainFallback = new URL(request.url).origin;
 
-  return data({
+  return {
     DOMAIN: env.DOMAIN ?? domainFallback,
     CDN_URL: env.CDN_URL ?? "",
     GOOGLE_ANALYTICS_ID: env.GOOGLE_ANALYTICS_ID ?? "",
     GOOGLE_ADS_ID: env.GOOGLE_ADS_ID ?? "",
     GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID ?? "",
-  });
+  };
 };
 
 export const Layout = ({ children }: React.PropsWithChildren) => {
-  const data = useRouteLoaderData("root") as
-    | Awaited<ReturnType<typeof loader>>
-    | undefined;
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
   const { pathname } = useLocation();
   const lang = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
 
@@ -47,14 +57,14 @@ export const Layout = ({ children }: React.PropsWithChildren) => {
     <Document
       lang={lang}
       theme="cupcake"
-      DOMAIN={data?.DOMAIN}
-      // GOOGLE_ADS_ID={data?.GOOGLE_ADS_ID} // 控制是否加载 AdSense 的自动广告
-      GOOGLE_ANALYTICS_ID={data?.GOOGLE_ANALYTICS_ID}
+      DOMAIN={rootData?.DOMAIN}
+      GOOGLE_ANALYTICS_ID={rootData?.GOOGLE_ANALYTICS_ID}
     >
       {children}
     </Document>
   );
 };
+
 export default function App({}: Route.ComponentProps) {
   const setUser = useUser((state) => state.setUser);
   const setCredits = useUser((state) => state.setCredits);
@@ -62,10 +72,10 @@ export default function App({}: Route.ComponentProps) {
   useEffect(() => {
     fetch("/api/auth").then(async (res) => {
       if (res.ok) {
-        const data = await res.json<{
+        const data = (await res.json()) as {
           profile: UserInfo | null;
           credits: number;
-        }>();
+        };
         setUser(data.profile);
         setCredits(data.credits);
       } else {

@@ -1,34 +1,34 @@
 # Refund Policy
 
-Last updated: March 16, 2026
+Last updated: March 23, 2026
 
 ## 1. Overview
 
-Thank you for using **Nivra Brush Studio**. This policy explains when refunds may be issued for subscriptions and credit purchases.
+Thank you for using **LinkedIn Translator**. This policy explains when refunds may be considered for paid credits and other digital purchases on our Service.
 
 ## 2. General Rule
 
-Because Nivra Brush Studio delivers digital services instantly and consumes compute resources, purchases are generally non-refundable after successful delivery.
+LinkedIn Translator delivers digital services and credits instantly. Because value is provisioned immediately and compute resources are consumed at use time, completed purchases are generally non-refundable.
 
 ## 3. Possible Refund Cases
 
-We may review refunds in cases such as:
+We may review refund requests in situations such as:
 
 1. Duplicate billing caused by our system
-2. Extended service outage that prevents normal usage
-3. Verified billing or technical failures where no usable service was delivered
+2. Verified payment or technical failures where no usable service or credits were delivered
+3. Extended service outage that materially prevented normal use after purchase
 
 ## 4. Request Window
 
-Please contact us within **7 days** of the charge with:
+Please contact us within **7 days** of the original charge and include:
 
 - Account email
-- Order/transaction ID
+- Order or transaction ID
 - Description of the issue
 
 ## 5. Processing
 
-After review, approved refunds are issued to the original payment method. Processing times depend on your payment provider.
+If approved, refunds are issued to the original payment method. Final settlement timing depends on your payment provider.
 
 ## 6. Contact
 

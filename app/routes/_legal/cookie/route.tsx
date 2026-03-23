@@ -8,11 +8,11 @@ import { createCanonical } from "~/utils/meta";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   return [
-    { title: "Cookie Policy - Nivra Brush Studio" },
+    { title: "Cookie Policy - LinkedIn Translator" },
     {
       name: "description",
       content:
-        "Find out how Nivra Brush Studio uses cookies and similar technologies and how you can manage cookie preferences.",
+        "Learn how LinkedIn Translator uses cookies and similar technologies, and how you can manage cookie preferences.",
     },
     createCanonical("/legal/cookie", matches[0].data.DOMAIN),
   ];
@@ -26,4 +26,3 @@ export const loader = ({}: Route.LoaderArgs) => {
 export default function Page({ loaderData: { node } }: Route.ComponentProps) {
   return <Legal node={node} />;
 }
-

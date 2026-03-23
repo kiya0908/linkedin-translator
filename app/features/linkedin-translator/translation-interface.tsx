@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRightLeft, Check, Copy, Lock, Sparkles, Zap } from "lucide-react";
 
 import { useUser } from "~/store";
 
 import {
+  deriveTranslationEntitlement,
+  type TranslationEntitlement,
+} from "./access";
+import {
   DEFAULT_INTENSITY_BY_MODE,
   getIntensityConfig,
   getModeConfig,
-  GUEST_FREE_TRANSLATIONS_PER_DAY,
-  GUEST_QUOTA_STORAGE_KEY,
   isLockedIntensity,
   MAX_TRANSLATION_INPUT_CHARS,
   TRANSLATION_INTENSITIES,
@@ -19,9 +21,11 @@ import {
 
 type IntensityByMode = Record<TranslationMode, TranslationIntensity>;
 
-interface GuestQuotaState {
-  date: string;
-  remaining: number;
+interface TranslationApiResponse {
+  text?: string;
+  meta?: {
+    entitlement?: TranslationEntitlement;
+  };
 }
 
 const INITIAL_INTENSITY_BY_MODE: IntensityByMode = {
@@ -29,57 +33,15 @@ const INITIAL_INTENSITY_BY_MODE: IntensityByMode = {
   "linkedin-to-human": DEFAULT_INTENSITY_BY_MODE["linkedin-to-human"],
 };
 
-const getTodayKey = () => new Date().toISOString().slice(0, 10);
-
-const readGuestQuota = (): GuestQuotaState => {
-  if (typeof window === "undefined") {
-    return {
-      date: getTodayKey(),
-      remaining: GUEST_FREE_TRANSLATIONS_PER_DAY,
-    };
-  }
-
-  try {
-    const raw = window.localStorage.getItem(GUEST_QUOTA_STORAGE_KEY);
-    if (!raw) {
-      return {
-        date: getTodayKey(),
-        remaining: GUEST_FREE_TRANSLATIONS_PER_DAY,
-      };
-    }
-
-    const parsed = JSON.parse(raw) as Partial<GuestQuotaState>;
-    const today = getTodayKey();
-    if (parsed.date !== today) {
-      return {
-        date: today,
-        remaining: GUEST_FREE_TRANSLATIONS_PER_DAY,
-      };
-    }
-
-    return {
-      date: today,
-      remaining:
-        typeof parsed.remaining === "number"
-          ? Math.max(0, Math.min(parsed.remaining, GUEST_FREE_TRANSLATIONS_PER_DAY))
-          : GUEST_FREE_TRANSLATIONS_PER_DAY,
-    };
-  } catch {
-    return {
-      date: getTodayKey(),
-      remaining: GUEST_FREE_TRANSLATIONS_PER_DAY,
-    };
-  }
-};
-
-const persistGuestQuota = (quota: GuestQuotaState) => {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(GUEST_QUOTA_STORAGE_KEY, JSON.stringify(quota));
-};
+const INITIAL_ENTITLEMENT = deriveTranslationEntitlement({
+  isAuthenticated: false,
+  credits: 0,
+  dailyUsed: 0,
+});
 
 export function TranslationInterface() {
-  const credits = useUser((state) => state.credits);
   const user = useUser((state) => state.user);
+  const setCredits = useUser((state) => state.setCredits);
 
   const [mode, setMode] = useState<TranslationMode>("human-to-linkedin");
   const [intensityByMode, setIntensityByMode] = useState<IntensityByMode>(
@@ -92,48 +54,67 @@ export function TranslationInterface() {
   );
   const [errorMessage, setErrorMessage] = useState("");
   const [copied, setCopied] = useState(false);
-  const [guestQuota, setGuestQuota] = useState<GuestQuotaState>({
-    date: getTodayKey(),
-    remaining: GUEST_FREE_TRANSLATIONS_PER_DAY,
-  });
+  const [accessLoading, setAccessLoading] = useState(true);
+  const [entitlement, setEntitlement] =
+    useState<TranslationEntitlement>(INITIAL_ENTITLEMENT);
+
+  const refreshEntitlement = async () => {
+    setAccessLoading(true);
+
+    try {
+      const response = await fetch("/api/entitlement/linkedin");
+      if (!response.ok) {
+        throw new Error("Failed to load access state.");
+      }
+
+      const result = (await response.json()) as {
+        entitlement?: TranslationEntitlement;
+      };
+
+      if (result.entitlement) {
+        setEntitlement(result.entitlement);
+        if (user) {
+          setCredits(result.entitlement.credits);
+        }
+      }
+    } catch {
+      setEntitlement((current) =>
+        deriveTranslationEntitlement({
+          isAuthenticated: Boolean(user),
+          credits: current.credits,
+          dailyUsed: current.dailyUsed,
+          hasPaidHistory: current.hasPaidHistory,
+        })
+      );
+    } finally {
+      setAccessLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const quota = readGuestQuota();
-    setGuestQuota(quota);
-    persistGuestQuota(quota);
-  }, []);
+    void refreshEntitlement();
+  }, [user?.email]);
 
   const selectedIntensity = intensityByMode[mode];
   const modeConfig = getModeConfig(mode);
-  const hasPaidAccess = Boolean(user) && credits > 0;
+  const hasPaidAccess = entitlement.state === "pro";
   const selectedIntensityLocked = isLockedIntensity(
     selectedIntensity,
-    hasPaidAccess
+    entitlement.canUseExtreme
   );
-  const hasFreeQuota = guestQuota.remaining > 0;
   const translateDisabled =
     status === "loading" ||
+    accessLoading ||
     !inputText.trim() ||
-    selectedIntensityLocked ||
-    (!hasPaidAccess && !hasFreeQuota);
+    (!entitlement.canTranslate && !selectedIntensityLocked);
 
-  const helperCopy = useMemo(() => {
-    if (hasPaidAccess) {
-      return `Credits available: ${credits}. Extreme mode is unlocked.`;
-    }
-
-    if (guestQuota.remaining > 0) {
-      return `Free today: ${guestQuota.remaining}/${GUEST_FREE_TRANSLATIONS_PER_DAY} translations left.`;
-    }
-
-    return "Free daily quota used up. Upgrade to keep translating and unlock Extreme.";
-  }, [credits, guestQuota.remaining, hasPaidAccess]);
-
-  const translateLabel = selectedIntensityLocked
-    ? "Upgrade to use Extreme"
-    : status === "loading"
-      ? "Translating..."
-      : "Translate";
+  const translateLabel = accessLoading
+    ? "Loading access..."
+    : selectedIntensityLocked
+      ? "Upgrade to use Extreme"
+      : status === "loading"
+        ? "Translating..."
+        : "Translate";
 
   const handleModeChange = (nextMode: TranslationMode) => {
     setMode(nextMode);
@@ -149,7 +130,7 @@ export function TranslationInterface() {
   };
 
   const handleIntensityChange = (nextIntensity: TranslationIntensity) => {
-    if (isLockedIntensity(nextIntensity, hasPaidAccess)) {
+    if (isLockedIntensity(nextIntensity, entitlement.canUseExtreme)) {
       window.location.hash = "pricing";
       return;
     }
@@ -158,19 +139,6 @@ export function TranslationInterface() {
       ...current,
       [mode]: nextIntensity,
     }));
-  };
-
-  const consumeGuestQuota = () => {
-    if (hasPaidAccess) return;
-
-    setGuestQuota((current) => {
-      const nextQuota = {
-        date: getTodayKey(),
-        remaining: Math.max(0, current.remaining - 1),
-      };
-      persistGuestQuota(nextQuota);
-      return nextQuota;
-    });
   };
 
   const handleTranslate = async () => {
@@ -193,18 +161,27 @@ export function TranslationInterface() {
       });
 
       if (!response.ok) {
-        throw new Error((await response.text()) || "Translation request failed");
+        const message =
+          (await response.text()) || "Translation request failed";
+        await refreshEntitlement();
+        throw new Error(message);
       }
 
-      const result = (await response.json()) as { text?: string };
+      const result = (await response.json()) as TranslationApiResponse;
       const translatedText = result.text?.trim();
       if (!translatedText) {
         throw new Error("Empty response from translation service.");
       }
 
+      if (result.meta?.entitlement) {
+        setEntitlement(result.meta.entitlement);
+        if (user) {
+          setCredits(result.meta.entitlement.credits);
+        }
+      }
+
       setOutputText(translatedText);
       setStatus("success");
-      consumeGuestQuota();
     } catch (error) {
       setStatus("error");
       setErrorMessage(
@@ -222,6 +199,8 @@ export function TranslationInterface() {
     setCopied(true);
     window.setTimeout(() => setCopied(false), 2000);
   };
+
+  const helperCopy = accessLoading ? "Checking access..." : entitlement.helperText;
 
   return (
     <div className="max-w-5xl mx-auto rounded-[28px] border border-outline-variant bg-surface-container-lowest shadow-[0_24px_80px_rgba(8,26,39,0.08)] overflow-hidden">
@@ -288,7 +267,10 @@ export function TranslationInterface() {
         <div className="mt-5 grid gap-3 lg:grid-cols-3">
           {TRANSLATION_INTENSITIES.map((item) => {
             const active = item.value === selectedIntensity;
-            const locked = isLockedIntensity(item.value, hasPaidAccess);
+            const locked = isLockedIntensity(
+              item.value,
+              entitlement.canUseExtreme
+            );
 
             return (
               <button
@@ -365,19 +347,29 @@ export function TranslationInterface() {
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-on-surface-variant">
               {selectedIntensityLocked
-                ? "Extreme is locked on free access. Upgrade below to unlock it."
-                : !hasPaidAccess && !hasFreeQuota
-                  ? "Daily free quota reached. Upgrade to continue."
-                  : "Light and Standard stay free. Extreme is reserved for upgraded access."}
+                ? "Extreme unlocks when your credit balance is above zero."
+                : !entitlement.canTranslate
+                  ? entitlement.isAuthenticated
+                    ? "Today's quota is used up. Recharge credits to keep going."
+                    : "Today's guest quota is used up. Sign in for a larger daily trial or add credits."
+                  : hasPaidAccess
+                    ? "This request will bill from your current credit balance after the model responds."
+                    : entitlement.state === "trial"
+                      ? "Signed-in trial covers Light and Standard. Add credits to unlock Extreme."
+                      : "Free access includes Light and Standard. Sign in or upgrade when you need more."}
             </p>
 
             <button
               type="button"
-              onClick={selectedIntensityLocked ? () => (window.location.hash = "pricing") : handleTranslate}
+              onClick={
+                selectedIntensityLocked
+                  ? () => (window.location.hash = "pricing")
+                  : handleTranslate
+              }
               disabled={translateDisabled && !selectedIntensityLocked}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {status === "loading" ? (
+              {status === "loading" || accessLoading ? (
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
               ) : selectedIntensityLocked ? (
                 <Lock className="h-4 w-4" />
@@ -416,14 +408,14 @@ export function TranslationInterface() {
           </div>
 
           <div className="mt-5 min-h-[320px] rounded-3xl border border-dashed border-outline-variant bg-white/90 p-5">
-            {status === "loading" ? (
+            {status === "loading" || accessLoading ? (
               <div className="flex h-full min-h-[280px] items-center justify-center text-center">
                 <div>
                   <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Zap className="h-5 w-5" />
                   </span>
                   <p className="mt-4 text-base font-semibold text-on-surface">
-                    {modeConfig.loadingState}
+                    {accessLoading ? "Checking access and quota..." : modeConfig.loadingState}
                   </p>
                 </div>
               </div>

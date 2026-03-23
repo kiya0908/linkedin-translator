@@ -50,5 +50,5 @@ export interface CreateCheckoutsResponse {
   unit: number | null;
   status: string;
   checkout_url: string;
-  mode: "prod";
+  mode: "prod" | "test" | "local";
 }

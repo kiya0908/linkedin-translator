@@ -1,6 +1,12 @@
 import { env } from "cloudflare:workers";
 
-export async function uploadFiles(files: File | File[], folder = "cache") {
+const isDefined = <T>(value: T | null | undefined): value is T =>
+  value !== null && value !== undefined;
+
+export async function uploadFiles(
+  files: File | File[],
+  folder = "cache"
+): Promise<R2Object[]> {
   const fileList = Array.isArray(files) ? Array.from(files) : [files];
 
   const uploadPromises = fileList.map((file) => {
@@ -9,13 +15,13 @@ export async function uploadFiles(files: File | File[], folder = "cache") {
   });
 
   const results = await Promise.all(uploadPromises);
-  return results.filter((result) => !!result);
+  return results.filter(isDefined);
 }
 
 export async function downloadFilesToBucket(
   files: { src: string; fileName: string; ext: string }[],
   type: string
-) {
+): Promise<R2Object[]> {
   const results = await Promise.all(
     files.map(async (file) => {
       const response = await fetch(file.src);
@@ -27,7 +33,7 @@ export async function downloadFilesToBucket(
     })
   );
 
-  return results.filter((result) => !!result);
+  return results.filter(isDefined);
 }
 
 export async function getFile(env: Env, key: string) {

@@ -53,7 +53,7 @@ export interface NanoBananaTask {
 }
 
 interface KieAIModelConfig {
-  accessKey: string;
+  accessKey?: string;
   baseUrl: string;
 }
 
@@ -92,6 +92,7 @@ interface CreateChatCompletionOptions {
 
 interface ChatCompletionResult {
   id?: string;
+  model?: string;
   choices?: Array<{
     index?: number;
     finish_reason?: string;
@@ -105,6 +106,46 @@ interface ChatCompletionResult {
           }>;
     };
   }>;
+  usage?: {
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    total_tokens?: number;
+  };
+}
+
+type GeminiTextContent = {
+  type: "text";
+  text: string;
+};
+
+type GeminiMessage = {
+  role: "developer" | "system" | "user" | "assistant";
+  content: GeminiTextContent[];
+};
+
+interface GeminiStructuredOutputSchema {
+  type: "object";
+  properties: Record<string, unknown>;
+  required: string[];
+  title: string;
+  description: string;
+  additionalProperties?: boolean;
+}
+
+interface GeminiResponseFormat {
+  type: "json_schema";
+  json_schema: {
+    name: string;
+    strict: boolean;
+    schema: GeminiStructuredOutputSchema;
+  };
+}
+
+interface CreateGemini25FlashCompletionOptions {
+  messages: GeminiMessage[];
+  stream?: boolean;
+  include_thoughts?: boolean;
+  response_format?: GeminiResponseFormat;
 }
 
 export class KieAI {
@@ -216,6 +257,84 @@ export class KieAI {
     return json;
   }
 
+  private async fetchOpenAI<
+    TResponse = any,
+    TBody extends object = Record<string, unknown>,
+  >(
+    path: string,
+    data?: TBody,
+    init: RequestInit = {}
+  ) {
+    if (!this.config.accessKey) {
+      throw Error("KIEAI_APIKEY is not configured");
+    }
+
+    const { headers, method = "get", ...rest } = init;
+    const url = new URL(path, this.API_URL);
+
+    const response = await fetch(url, {
+      ...rest,
+      method,
+      headers: {
+        "content-type": "application/json",
+        ...headers,
+        Authorization: `Bearer ${this.config.accessKey}`,
+      },
+      body: data ? JSON.stringify(data) : undefined,
+    });
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      let errorBody: Record<string, unknown> | null = null;
+
+      try {
+        errorBody = responseText
+          ? (JSON.parse(responseText) as Record<string, unknown>)
+          : null;
+      } catch {
+        errorBody = null;
+      }
+
+      const nestedError =
+        errorBody && typeof errorBody.error === "object" && errorBody.error
+          ? (errorBody.error as Record<string, unknown>)
+          : null;
+
+      throw {
+        code:
+          (typeof errorBody?.code === "number" && errorBody.code) ||
+          (typeof nestedError?.code === "number" && nestedError.code) ||
+          response.status,
+        message:
+          (typeof nestedError?.message === "string" && nestedError.message) ||
+          (typeof errorBody?.msg === "string" && errorBody.msg) ||
+          responseText ||
+          response.statusText ||
+          "Request failed",
+        data: errorBody ?? responseText ?? null,
+      };
+    }
+
+    if (!responseText) {
+      throw {
+        code: response.status,
+        message: "Empty response from KieAI",
+        data: null,
+      };
+    }
+
+    try {
+      return JSON.parse(responseText) as TResponse;
+    } catch {
+      throw {
+        code: response.status,
+        message: "Invalid JSON response from KieAI",
+        data: responseText,
+      };
+    }
+  }
+
   async create4oTask(payload: Create4oTaskOptions) {
     const result = await this.fetch<CreateTaskResult>(
       "/api/v1/gpt4o-image/generate",
@@ -264,6 +383,20 @@ export class KieAI {
     );
 
     return result.data;
+  }
+
+  async createGemini25FlashCompletion(
+    payload: CreateGemini25FlashCompletionOptions,
+    init: RequestInit = {}
+  ) {
+    return this.fetchOpenAI<
+      ChatCompletionResult,
+      CreateGemini25FlashCompletionOptions
+    >(
+      "/gemini-2.5-flash/v1/chat/completions",
+      payload,
+      { ...init, method: "post" }
+    );
   }
 
   async createKontextTask(payload: CreateKontextOptions) {

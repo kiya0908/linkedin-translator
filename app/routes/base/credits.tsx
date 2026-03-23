@@ -1,6 +1,6 @@
-import { useLoaderData, useOutletContext } from "react-router";
+import { useOutletContext } from "react-router";
 import type { Route } from "./+types/credits";
-import type { User, CreditRecord } from "~/.server/libs/db";
+import type { Credit, User } from "~/.server/libs/db";
 import { listCreditRecordsByUser } from "~/.server/model/credit_record";
 import { getSessionHandler } from "~/.server/libs/session";
 import { redirect } from "react-router";
@@ -15,7 +15,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 export default function Credits({ loaderData }: Route.ComponentProps) {
-    const { user } = useOutletContext<{ user: User }>();
+    useOutletContext<{ user: User }>();
     const { records } = loaderData;
 
     const getBalance = () => {
@@ -56,7 +56,7 @@ export default function Credits({ loaderData }: Route.ComponentProps) {
                             </thead>
                             <tbody>
                                 {records && records.length > 0 ? (
-                                    records.map((record: any) => (
+                                    records.map((record: Credit) => (
                                         <tr key={record.id}>
                                             <td>{new Date(record.created_at).toLocaleDateString()}</td>
                                             <td>

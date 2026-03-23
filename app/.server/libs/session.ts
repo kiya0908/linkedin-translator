@@ -9,9 +9,11 @@ type SessionData = {
   user: User;
 };
 
+const sessionSecret = env.SESSION_SECRET ?? "local-dev-session-secret";
+
 export function cookieWrapper() {
   return createCookie("__session", {
-    secrets: [env.SESSION_SECRET],
+    secrets: [sessionSecret],
     path: "/",
     sameSite: "strict",
     httpOnly: true,

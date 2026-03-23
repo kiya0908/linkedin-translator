@@ -5,11 +5,13 @@
   "scripts": {
     "build": "react-router build",
     "cf-typegen": "wrangler types --include-runtime false",
+    "creem:heartbeat": "node scripts/creem-heartbeat.mjs",
     "deploy": "pnpm run build && wrangler deploy",
     "dev": "react-router dev",
     "dev:cf": "set CLOUDFLARE_DEV=1&& react-router dev",
     "postinstall": "npm run cf-typegen",
     "preview": "pnpm run build && wrangler dev --local",
+    "test:unit": "tsc -p tsconfig.tests.json && node .temp/tests/tests/unit/index.test.js",
     "typecheck": "npm run cf-typegen && react-router typegen && tsc -b",
     "db:generate": "drizzle-kit generate --config app/.server/drizzle/config.ts",
     "db:migrate": "drizzle-kit migrate --config app/.server/drizzle/config.ts",

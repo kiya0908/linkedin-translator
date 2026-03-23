@@ -1,16 +1,18 @@
-import { env } from "cloudflare:workers";
-
 import type { Route } from "./+types/route";
-import { data } from "react-router";
+import { nanoid } from "nanoid";
 import { z } from "zod";
 
-import { KieAI } from "~/.server/aisdk";
 import {
-  getPromptProfile,
+  estimateTranslationCreditsUpperBound,
   MAX_TRANSLATION_INPUT_CHARS,
   type TranslationIntensity,
   type TranslationMode,
 } from "~/features/linkedin-translator/config";
+import {
+  resolveLinkedinTranslationAccess,
+  settleLinkedinTranslationUsage,
+} from "~/.server/services/linkedin-translator";
+import { translateLinkedinText } from "~/.server/services/linkedin-translation-provider";
 
 const requestSchema = z.object({
   text: z
@@ -24,28 +26,34 @@ const requestSchema = z.object({
   intensity: z.enum(["light", "standard", "extreme"]).default("standard"),
 });
 
-type CompletionContent =
-  | string
-  | Array<{
-      text?: string;
-      type?: string;
-    }>
-  | undefined;
-
-const extractMessageText = (content: CompletionContent): string => {
-  if (!content) return "";
-  if (typeof content === "string") return content.trim();
-
-  return content
-    .map((part) => (typeof part.text === "string" ? part.text : ""))
-    .join("")
-    .trim();
-};
+export interface LinkedinTranslateResult {
+  text: string;
+  meta: {
+    requestId: string;
+    latencyMs: number;
+    mode: TranslationMode;
+    intensity: TranslationIntensity;
+    chargedCredits: number;
+    providerModel: string;
+    usage: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+    entitlement: Awaited<
+      ReturnType<typeof settleLinkedinTranslationUsage>
+    >;
+  };
+}
 
 export const action = async ({ request }: Route.ActionArgs) => {
   if (request.method.toLowerCase() !== "post") {
     throw new Response("Not Found", { status: 404 });
   }
+
+  const requestId = nanoid();
+  const startedAt = Date.now();
+  const headers = new Headers();
 
   const body = await request.json().catch(() => null);
   const parsed = requestSchema.safeParse(body);
@@ -54,40 +62,113 @@ export const action = async ({ request }: Route.ActionArgs) => {
     throw new Response(message, { status: 400 });
   }
 
-  const envVars = env as unknown as Record<string, string | undefined>;
-  const model = envVars.KIE_LINKEDIN_MODEL || "gpt-4o-mini";
-  const { systemPrompt, temperature } = getPromptProfile(
-    parsed.data.mode as TranslationMode,
-    parsed.data.intensity as TranslationIntensity
-  );
+  const access = await resolveLinkedinTranslationAccess(request);
+  if (access.cookieHeader) {
+    headers.set("Set-Cookie", access.cookieHeader);
+  }
+
+  if (
+    parsed.data.intensity === "extreme" &&
+    !access.entitlement.canUseExtreme
+  ) {
+    throw new Response("Extreme mode requires paid credits.", {
+      status: 402,
+      headers,
+    });
+  }
+
+  if (!access.entitlement.canTranslate) {
+    throw new Response("Daily quota reached. Upgrade to continue.", {
+      status: 402,
+      headers,
+    });
+  }
+
+  if (access.entitlement.state === "pro") {
+    const estimatedCreditsRequired = Math.max(
+      1,
+      estimateTranslationCreditsUpperBound(
+        parsed.data.mode as TranslationMode,
+        parsed.data.intensity as TranslationIntensity,
+        parsed.data.text
+      )
+    );
+
+    if (access.entitlement.credits < estimatedCreditsRequired) {
+      throw new Response(
+        `Not enough credits for this translation. At least ${estimatedCreditsRequired} credit${estimatedCreditsRequired > 1 ? "s are" : " is"} required.`,
+        {
+          status: 402,
+          headers,
+        }
+      );
+    }
+  }
 
   try {
-    const kie = new KieAI();
-    const completion = await kie.createChatCompletion({
-      model,
-      temperature,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: parsed.data.text },
-      ],
+    const translation = await translateLinkedinText({
+      text: parsed.data.text,
+      mode: parsed.data.mode as TranslationMode,
+      intensity: parsed.data.intensity as TranslationIntensity,
     });
 
-    const text = extractMessageText(completion.choices?.[0]?.message?.content);
-    if (!text) {
-      throw new Error("Empty response from Kie AI");
-    }
-
-    return data({
-      text,
-      meta: {
-        mode: parsed.data.mode,
-        intensity: parsed.data.intensity,
-      },
+    const chargedCredits =
+      access.entitlement.state === "pro"
+        ? Math.max(1, translation.creditsToCharge)
+        : 0;
+    const nextEntitlement = await settleLinkedinTranslationUsage(access, {
+      creditsToCharge: chargedCredits,
+      requestId,
+      mode: parsed.data.mode as TranslationMode,
+      intensity: parsed.data.intensity as TranslationIntensity,
     });
+    const latencyMs = Date.now() - startedAt;
+
+    console.info("linkedin_translation_success", {
+      requestId,
+      latencyMs,
+      mode: parsed.data.mode,
+      intensity: parsed.data.intensity,
+      state: access.entitlement.state,
+      chargedCredits,
+      inputChars: parsed.data.text.length,
+      promptTokens: translation.usage.promptTokens,
+      completionTokens: translation.usage.completionTokens,
+      providerModel: translation.providerModel,
+    });
+
+    return Response.json(
+      {
+        text: translation.text,
+        meta: {
+          requestId,
+          latencyMs,
+          mode: parsed.data.mode,
+          intensity: parsed.data.intensity,
+          chargedCredits,
+          providerModel: translation.providerModel,
+          usage: translation.usage,
+          entitlement: nextEntitlement,
+        },
+      } satisfies LinkedinTranslateResult,
+      { headers }
+    );
   } catch (error) {
-    console.error("LinkedIn translate error");
-    console.error(error);
-
+    const latencyMs = Date.now() - startedAt;
+    const status =
+      typeof error === "object" &&
+      error !== null &&
+      "status" in error &&
+      typeof error.status === "number"
+        ? error.status
+        : 500;
+    const code =
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      typeof error.code !== "undefined"
+        ? String(error.code)
+        : "translation_failed";
     const message =
       error instanceof Error
         ? error.message
@@ -98,8 +179,17 @@ export const action = async ({ request }: Route.ActionArgs) => {
           ? error.message
           : "Translation request failed";
 
-    throw new Response(message, { status: 500 });
+    console.error("linkedin_translation_error", {
+      requestId,
+      latencyMs,
+      mode: parsed.data.mode,
+      intensity: parsed.data.intensity,
+      state: access.entitlement.state,
+      inputChars: parsed.data.text.length,
+      errorCode: code,
+      message,
+    });
+
+    throw new Response(message, { status, headers });
   }
 };
-
-export type LinkedinTranslateResult = Awaited<ReturnType<typeof action>>["data"];

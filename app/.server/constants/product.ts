@@ -1,4 +1,7 @@
-import { CREEM_ACTIVE_PRODUCT_IDS } from "~/constants/pricing";
+import {
+  LINKEDIN_TRANSLATOR_PRO_PACK,
+  LINKEDIN_TRANSLATOR_TEAM_PLAN,
+} from "~/features/linkedin-translator/pricing";
 
 export interface PRODUCT {
   price: number;
@@ -10,13 +13,28 @@ export interface PRODUCT {
 }
 
 export const CREDITS_PRODUCT: PRODUCT = {
-  price: 4.9,
-  credits: 200,
-  product_id: CREEM_ACTIVE_PRODUCT_IDS.credits,
-  product_name: "Credit Top-up",
+  price: LINKEDIN_TRANSLATOR_PRO_PACK.price,
+  credits: LINKEDIN_TRANSLATOR_PRO_PACK.credits,
+  product_id: LINKEDIN_TRANSLATOR_PRO_PACK.productId,
+  product_name: LINKEDIN_TRANSLATOR_PRO_PACK.name,
   product_description:
-    "Perfect for quick top-ups when you need a few more AI image generations. No subscription required - just buy credits and start creating instantly.",
+    "One-time LinkedIn Translator credit pack for usage-based rewriting. Unlocks Extreme intensity and deducts credits from real model token usage.",
   type: "once",
 };
 
-export const PRODUCTS_LIST = [CREDITS_PRODUCT];
+export const TEAM_CREDITS_PRODUCT: PRODUCT | null =
+  LINKEDIN_TRANSLATOR_TEAM_PLAN.productId
+    ? {
+        price: LINKEDIN_TRANSLATOR_TEAM_PLAN.price,
+        credits: LINKEDIN_TRANSLATOR_TEAM_PLAN.credits,
+        product_id: LINKEDIN_TRANSLATOR_TEAM_PLAN.productId,
+        product_name: LINKEDIN_TRANSLATOR_TEAM_PLAN.name,
+        product_description:
+          "Larger LinkedIn Translator credit pack for heavier usage. Unlocks Extreme intensity and deducts credits from successful paid translations.",
+        type: "once",
+      }
+    : null;
+
+export const PRODUCTS_LIST = [CREDITS_PRODUCT, TEAM_CREDITS_PRODUCT].filter(
+  (item): item is PRODUCT => Boolean(item)
+);

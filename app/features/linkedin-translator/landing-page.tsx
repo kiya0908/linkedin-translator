@@ -29,7 +29,15 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+import { GoogleOAuth } from "~/features/oauth/google";
+import { useUser } from "~/store";
+
 import { TranslationInterface } from './translation-interface';
+import {
+  LINKEDIN_TRANSLATOR_PRICING_CARDS,
+  LINKEDIN_TRANSLATOR_PRO_PACK,
+  LINKEDIN_TRANSLATOR_SUPPORT_EMAIL,
+} from "./pricing";
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -62,24 +70,67 @@ const COMPARISONS = [
 const FAQS = [
   {
     question: "Is the LinkedIn Translator free to use?",
-    answer: "Yes, we provide a <strong>free LinkedIn translator</strong> tier for all users. This <strong>free LinkedIn translator</strong> option allows you to experience the power of a professional <strong>LinkedIn speak translator</strong> with a daily allowance (typically 2 to 3 free translations per day). For those who need to generate <strong>professional LinkedIn posts</strong> more frequently, we offer premium plans that unlock unlimited access and extreme intensity levels."
+    answer: "Yes. Guest visitors receive a small <strong>daily free quota</strong>, and signed-in users receive a slightly larger <strong>trial quota</strong>. You can validate both translation directions before paying. Paid access starts when you buy credits, which unlocks <strong>Extreme</strong> intensity and usage-based billing."
   },
   {
-    question: "Why should I use this instead of ChatGPT or Kagi LinkedIn speak?",
-    answer: "While generic AI tools focus on simple text generation, this <strong>LinkedIn speak generator</strong> uses specialized \"Matching Logic\" to optimize your content for actual recruiter behavior. Unlike <strong>Kagi LinkedIn speak</strong>, which is often used for humorous subculture parodies, our tool is purpose-built to rewrite your text into polished, high-impact <strong>professional LinkedIn posts</strong>. Furthermore, this <strong>LinkedIn translator</strong> automatically integrates strategic hooks, emojis, and smart formatting that generic models often overlook."
+    question: "How are credits billed?",
+    answer: "Each successful paid translation deducts at least <strong>1 credit</strong> from your balance. The app still tracks provider usage internally, but the credit packs are designed to feel simple and predictable."
   },
   {
-    question: "Does it help with decoding corporate jargon?",
-    answer: "Yes. One of the standout features of our <strong>LinkedIn translator</strong> is its <strong>dual direction</strong> capability. Just as users utilize <strong>Kagi LinkedIn speak</strong> to understand complex posts, you can use our tool to <strong>LinkedIn translate to English</strong>. This allows you to strip away confusing <strong>corporate jargon</strong> and \"corporate nonsense\" to reveal the clear, plain English meaning behind executive communications."
+    question: "What happens when credits run out?",
+    answer: "When your paid balance hits zero, <strong>Extreme</strong> locks again automatically and the product falls back to a smaller <strong>daily backup quota</strong>. That means the workflow still works for quick checks, while heavier usage moves back onto credits."
   },
   {
-    question: "Is my data safe with this LinkedIn speak translator?",
-    answer: "We take data safety seriously. Much like <strong>Kagi LinkedIn speak</strong>, which is a premium search service known for being pro-privacy, we have built our <strong>LinkedIn translator </strong> with a focus on security. We maintain a strict privacy policy and ensure that while the AI processes your text to deliver the best <strong>LinkedIn speak translator</strong> results, your professional information remains protected. However, as with any online <strong>AI-powered tool</strong>, we recommend not pasting highly sensitive or confidential business data into public novelty features."
+    question: "Do you offer refunds or team plans?",
+    answer: "Refund handling follows our posted <strong>Refund Policy</strong>. We now offer a self-serve <strong>500-credit Team pack</strong>, and if you need custom volume or rollout support you can still contact us at <strong>support@linkedintranslator.online</strong>."
   }
 ];
 
 export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [checkouting, setCheckouting] = useState(false);
+  const [pricingMessage, setPricingMessage] = useState("");
+  const user = useUser((state) => state.user);
+  const credits = useUser((state) => state.credits);
+
+  const handleCheckout = async (productId: string) => {
+    setPricingMessage("");
+    setCheckouting(true);
+
+    try {
+      const response = await fetch("/api/create-order", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ product_id: productId }),
+      });
+
+      if (response.status === 401) {
+        setPricingMessage("Sign in first, then come back here to complete checkout.");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error((await response.text()) || "Unable to start checkout.");
+      }
+
+      const session = (await response.json()) as { checkout_url?: string };
+      if (!session.checkout_url) {
+        throw new Error("Invalid checkout session.");
+      }
+
+      window.location.href = session.checkout_url;
+    } catch (error) {
+      setPricingMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to start checkout right now."
+      );
+    } finally {
+      setCheckouting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -87,9 +138,11 @@ export default function App() {
       <nav className="sticky top-0 z-50 glass border-b border-outline-variant">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Languages className="text-white w-5 h-5" />
-            </div>
+            <img
+              src="/assets/logo.webp"
+              alt="LinkedIn Translator logo"
+              className="w-8 h-8 rounded-lg object-cover"
+            />
             <span className="font-display font-bold text-xl text-primary">LinkedIn Translator</span>
           </div>
           
@@ -101,9 +154,16 @@ export default function App() {
             ))}
           </div>
 
-          <button className="bg-primary hover:bg-primary-container text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm">
-            Get Started
-          </button>
+          {user ? (
+            <a
+              href="/base/credits"
+              className="bg-primary hover:bg-primary-container text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm"
+            >
+              Credits: {credits}
+            </a>
+          ) : (
+            <GoogleOAuth />
+          )}
         </div>
       </nav>
 
@@ -561,113 +621,112 @@ export default function App() {
         <section id="pricing" className="py-32 px-6 bg-surface">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-20">
-              <h2 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
-              <p className="text-on-surface-variant">One-time purchase credits. No subscriptions, no hidden fees.</p>
+              <h2 className="text-4xl font-bold mb-4">Pricing That Matches Real Usage</h2>
+              <p className="text-on-surface-variant max-w-3xl mx-auto">
+                Free and trial traffic stay on daily quota. Paid usage moves onto credits and bills from real provider token usage, so the UI, checkout flow, and entitlement rules stay in sync.
+              </p>
             </div>
-            
+
+            {pricingMessage ? (
+              <div className="mb-8 rounded-2xl border border-primary/20 bg-primary/5 px-5 py-4 text-sm text-on-surface-variant">
+                {pricingMessage}
+              </div>
+            ) : null}
+
             <div className="grid md:grid-cols-3 gap-8">
-              {/* Free Tier */}
-              <motion.div 
-                whileHover={{ y: -8 }}
-                className="bg-white p-10 rounded-2xl border border-outline-variant flex flex-col h-full"
-              >
-                <div className="mb-8">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">Free</h3>
-                  <div className="text-4xl font-extrabold text-primary mb-6">$0</div>
-                  <p className="text-sm text-on-surface-variant leading-relaxed mb-2">Fun, fast, and shareable for everyday use.</p>
-                  <p className="text-sm text-on-surface-variant font-medium">No credit card required</p>
-                </div>
-                
-                <button className="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-lg font-bold text-sm mb-10 transition-all">
-                  Start Free
-                </button>
-                
-                <div className="space-y-4 flex-grow">
-                  <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">Includes</div>
-                  {[
-                    "10 free translations",
-                    "Polished and Satirical styles",
-                    "Human -> LinkedIn and LinkedIn -> Human",
-                    "Light and Standard intensity",
-                    "Fast standard model output"
-                  ].map((feature, i) => (
-                    <div key={i} className="flex items-start gap-3 text-sm text-on-surface-variant">
-                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+              {LINKEDIN_TRANSLATOR_PRICING_CARDS.map((card) => {
+                const isPrimary = card.id === LINKEDIN_TRANSLATOR_PRO_PACK.id;
+                const isTeamContactOnly =
+                  card.id === "team" && !("productId" in card);
 
-              {/* Starter Tier */}
-              <motion.div 
-                whileHover={{ y: -8 }}
-                className="bg-white p-10 rounded-2xl border border-primary/20 ambient-shadow flex flex-col h-full relative"
-              >
-                <div className="mb-8">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">Starter</h3>
-                  <div className="text-4xl font-extrabold text-primary mb-6">$9.9</div>
-                  <p className="text-sm text-on-surface-variant leading-relaxed mb-2">Sharper, more consistent output for regular users.</p>
-                  <p className="text-sm text-on-surface-variant font-medium">One-time purchase, no subscription</p>
-                </div>
-                
-                <button className="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-lg font-bold text-sm mb-10 transition-all flex items-center justify-center gap-2">
-                  <Zap className="w-4 h-4" />
-                  Get Starter
-                </button>
-                
-                <div className="space-y-4 flex-grow">
-                  <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">Everything in Free, plus</div>
-                  {[
-                    "5,000 translations",
-                    "Unlock Extreme intensity",
-                    "Stronger premium model output",
-                    "Better translation quality",
-                    "Credits never expire"
-                  ].map((feature, i) => (
-                    <div key={i} className="flex items-start gap-3 text-sm text-on-surface-variant">
-                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+                return (
+                  <motion.div
+                    key={card.id}
+                    whileHover={{ y: -8 }}
+                    className={[
+                      "bg-white p-10 rounded-2xl flex flex-col h-full relative",
+                      isPrimary
+                        ? "border border-primary/30 ambient-shadow"
+                        : "border border-outline-variant",
+                    ].join(" ")}
+                  >
+                    {isPrimary ? (
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-400 to-pink-500 text-white text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                        Unlocks Extreme
+                      </div>
+                    ) : null}
 
-              {/* Pro Tier */}
-              <motion.div 
-                whileHover={{ y: -8 }}
-                className="bg-white p-10 rounded-2xl border border-primary/40 ambient-shadow flex flex-col h-full relative"
-              >
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-400 to-pink-500 text-white text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">
-                  Best Value
-                </div>
-                <div className="mb-8">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">Pro</h3>
-                  <div className="text-4xl font-extrabold text-primary mb-6">$19.9</div>
-                  <p className="text-sm text-on-surface-variant leading-relaxed mb-2">Best value for power users who want maximum control.</p>
-                  <p className="text-sm text-on-surface-variant font-medium">One-time purchase, no subscription</p>
-                </div>
-                
-                <button className="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-lg font-bold text-sm mb-10 transition-all flex items-center justify-center gap-2">
-                  <Zap className="w-4 h-4" />
-                  Get Pro
-                </button>
-                
-                <div className="space-y-4 flex-grow">
-                  <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">Everything in Starter, plus</div>
-                  {[
-                    "15,000 translations",
-                    "Premium-quality model output",
-                    "Best translation quality",
-                    "Credits never expire"
-                  ].map((feature, i) => (
-                    <div key={i} className="flex items-start gap-3 text-sm text-on-surface-variant">
-                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>{feature}</span>
+                    <div className="mb-8">
+                      <h3 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">
+                        {card.name}
+                      </h3>
+                      <div className="text-4xl font-extrabold text-primary mb-3">
+                        {card.priceLabel}
+                      </div>
+                      <p className="text-sm text-on-surface-variant leading-relaxed mb-2">
+                        {card.description}
+                      </p>
+                      <p className="text-sm text-on-surface-variant font-medium">
+                        {card.badge}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              </motion.div>
+
+                    {isTeamContactOnly ? (
+                      <a
+                        href={`mailto:${LINKEDIN_TRANSLATOR_SUPPORT_EMAIL}?subject=LinkedIn Translator Team Plan`}
+                        className="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-lg font-bold text-sm mb-10 transition-all inline-flex items-center justify-center gap-2"
+                      >
+                        {card.ctaLabel}
+                      </a>
+                    ) : "productId" in card && card.productId ? (
+                      user ? (
+                        <button
+                          type="button"
+                          onClick={() => handleCheckout(card.productId!)}
+                          disabled={checkouting}
+                          className="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-lg font-bold text-sm mb-10 transition-all inline-flex items-center justify-center gap-2 disabled:opacity-60"
+                        >
+                          <Zap className="w-4 h-4" />
+                          {checkouting ? "Starting checkout..." : card.ctaLabel}
+                        </button>
+                      ) : (
+                        <div className="mb-10 space-y-3">
+                          <div className="[&_button]:w-full [&_button]:justify-center">
+                            <GoogleOAuth />
+                          </div>
+                          <p className="text-xs text-on-surface-variant">
+                            Sign in first, then complete checkout in one step.
+                          </p>
+                        </div>
+                      )
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                        className="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-lg font-bold text-sm mb-10 transition-all"
+                      >
+                        {card.ctaLabel}
+                      </button>
+                    )}
+
+                    <div className="space-y-4 flex-grow">
+                      <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">
+                        Includes
+                      </div>
+                      {card.features.map((feature) => (
+                        <div key={feature} className="flex items-start gap-3 text-sm text-on-surface-variant">
+                          <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <div className="mt-10 rounded-2xl border border-outline-variant bg-white/80 p-6 text-sm leading-7 text-on-surface-variant">
+              Billing note: each successful paid translation deducts at least <strong>1 credit</strong> from your balance, and both one-time packs unlock <strong>Extreme</strong> immediately after purchase.
             </div>
           </div>
         </section>
@@ -767,9 +826,9 @@ export default function App() {
           <div>
             <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">Legal</h4>
             <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
-              <li><a href="#" className="hover:text-primary">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-primary">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-primary">Cookie Policy</a></li>
+              <li><a href="/legal/privacy" className="hover:text-primary">Privacy Policy</a></li>
+              <li><a href="/legal/terms" className="hover:text-primary">Terms of Service</a></li>
+              <li><a href="/legal/cookie" className="hover:text-primary">Cookie Policy</a></li>
             </ul>
           </div>
           <div>

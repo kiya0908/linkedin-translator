@@ -18,7 +18,7 @@ export const meta: Route.MetaFunction = ({ matches }) => {
     {
       name: "description",
       content:
-        "LinkedIn Translator is an AI tone translator that converts everyday wording into professional LinkedIn speak with hooks, smart line breaks, and workplace-ready polish.",
+        "LinkedIn Translator is an AI translator that converts everyday wording into professional LinkedIn speak with hooks, smart line breaks, and workplace-ready polish.",
     },
     createCanonical("/", domain),
     createAlternate("/", domain, "en"),

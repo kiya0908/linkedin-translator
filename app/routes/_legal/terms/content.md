@@ -1,58 +1,56 @@
 # Terms of Use
 
-Last updated: March 16, 2026
+Last updated: March 23, 2026
 
 ## 1. Introduction
 
-Welcome to **Nivra Brush Studio**. These Terms of Use ("Terms") govern your access to and use of our AI image generation and editing services (the "Service").
+Welcome to **LinkedIn Translator**. These Terms of Use ("Terms") govern your access to and use of our AI-powered text rewriting and tone-conversion services (the "Service").
 
-Nivra Brush Studio is an independent product and is **not affiliated with, endorsed by, or sponsored by Google**.
+LinkedIn Translator is an independent product and is not affiliated with or endorsed by LinkedIn Corporation.
 
 By using the Service, you agree to these Terms.
 
 ## 2. Eligibility
 
-You must be at least 18 years old or the legal age in your jurisdiction to use the Service.
+You must be at least 18 years old, or the legal age of majority in your jurisdiction, to use the Service.
 
 ## 3. Service Description
 
-Nivra Brush Studio provides AI-powered image generation and image editing workflows using third-party model APIs.
+LinkedIn Translator helps users transform everyday text into professional LinkedIn-style language and convert complex corporate language into clearer plain English.
 
-## 4. Prohibited Use
+## 4. Accounts and Billing
 
-You may not use the Service to create or distribute:
+Some features require login, paid credits, or other paid access. Prices and product details are shown on the website and may change over time.
 
-- Sexually explicit, nude, or sexually suggestive (NSFW) content
-- Illegal, abusive, hateful, or fraudulent content
-- Content that infringes third-party intellectual property rights
+## 5. Acceptable Use
 
-Detailed restrictions are listed in our [Acceptable Use Policy](/legal/acceptable-use).
+You may not use the Service for illegal, abusive, deceptive, infringing, or harmful activity. Additional restrictions are listed in our [Acceptable Use Policy](/legal/acceptable-use).
 
-## 5. Accounts and Billing
+## 6. User Content and Output
 
-Some features require paid plans or credits. Pricing is shown on the website and may be updated from time to time.
+You retain rights to the content you submit. You grant us a limited license to process your input and generate output solely to operate and improve the Service. You are responsible for reviewing outputs before publishing or relying on them.
 
-## 6. Intellectual Property
+## 7. Intellectual Property
 
-Nivra Brush Studio and its software, UI, and service materials are protected by law. You retain rights to your uploaded content, subject to a limited license allowing us to process it to provide the Service.
+LinkedIn Translator, including its software, UI, and related materials, is protected by applicable intellectual property laws.
 
-## 7. Privacy
+## 8. Privacy
 
 Your data is handled according to our [Privacy Policy](/legal/privacy).
 
-## 8. Disclaimer
+## 9. Disclaimer
 
-The Service is provided "as is" and "as available". We do not guarantee uninterrupted operation or output suitability for any specific purpose.
+The Service is provided "as is" and "as available." We do not guarantee uninterrupted availability or that outputs will meet every specific requirement.
 
-## 9. Limitation of Liability
+## 10. Limitation of Liability
 
-To the maximum extent permitted by law, Nivra Brush Studio is not liable for indirect or consequential damages arising from use of the Service.
+To the maximum extent permitted by law, LinkedIn Translator is not liable for indirect, incidental, special, or consequential damages arising from use of the Service.
 
-## 10. Changes to Terms
+## 11. Changes to Terms
 
-We may update these Terms. Continued use after updates means you accept the revised Terms.
+We may update these Terms from time to time. Continued use of the Service after updates means you accept the revised Terms.
 
-## 11. Contact
+## 12. Contact
 
 For support or legal questions:
 

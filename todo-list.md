@@ -79,14 +79,14 @@
 **Tests**：
 - 定价卡展示权益与后端校验一致
 - 升级按钮跳转到正确 checkout 链路
-**Status**：Not Started
+**Status**：Completed
 
 ### Stage 2 任务拆解
 
-- [ ] 重新定义套餐矩阵（功能、额度、限制）
-- [ ] 改写定价文案（价值导向，不是功能堆砌）
-- [ ] 对齐 UI 与真实 entitlement
-- [ ] 增加 FAQ（退款、取消订阅、额度重置）
+- [x] 重新定义套餐矩阵（功能、额度、限制）
+- [x] 改写定价文案（价值导向，不是功能堆砌）
+- [x] 对齐 UI 与真实 entitlement
+- [x] 增加 FAQ（已覆盖退款、额度/credits 规则与 Team 说明；当前 credits pack 主路径不涉及取消订阅）
 
 ## Stage 3：KIE AI API 接入 + Prompt 体系
 
@@ -100,15 +100,15 @@
 - 单测：prompt 选择逻辑（mode/intensity）
 - 集成测试：请求成功、超时、限流、无权限
 - 回归：相同输入在同配置下输出风格稳定
-**Status**：Not Started
+**Status**：Completed
 
 ### Stage 3 任务拆解
 
-- [ ] 设计接口契约：`POST /api/translate`
-- [ ] 配置环境变量（禁止硬编码 API Key）
-- [ ] 落地 Prompt 模板（按模式 + 强度）
-- [ ] 增加输出后处理（去脏词/去空行/长度裁剪）
-- [ ] 增加日志与观测字段（requestId、latency、errorCode）
+- [x] 设计接口契约：`POST /api/translate.linkedin`
+- [x] 配置环境变量（禁止硬编码 API Key）
+- [x] 落地 Prompt 模板（按模式 + 强度）
+- [x] 增加输出后处理（去脏词/去空行/长度裁剪）
+- [x] 增加日志与观测字段（requestId、latency、errorCode）
 
 ### Prompt 设计建议（先定规则再写词）
 
@@ -133,15 +133,15 @@
 - 测试支付成功/失败/取消
 - webhook 重放幂等测试
 - 权益更新后的前端可见性测试
-**Status**：Not Started
+**Status**：Mostly Completed
 
 ### Stage 4 任务拆解
 
-- [ ] 定义 entitlement 状态机（free/trial/pro/expired）
-- [ ] 接入 checkout API
-- [ ] 实现 webhook 验签与幂等处理
-- [ ] 落库订阅状态与到期时间
-- [ ] 前端按 entitlement 控制 Extreme 与配额
+- [x] 定义 entitlement 状态机（free/trial/pro/expired）
+- [x] 接入 checkout API
+- [x] 实现 webhook 验签与幂等处理
+- [ ] 落库订阅状态与到期时间（当前 LinkedIn Translator 主售卖路径已改为一次性 credits pack，这项不是当前上线阻塞；若恢复订阅 SKU 再补强）
+- [x] 前端按 entitlement 控制 Extreme 与配额
 
 ## 必须补的“框架外”任务（不做会翻车）
 
@@ -171,3 +171,73 @@
 - [ ] KIE API 接口可用且有错误兜底
 - [ ] Creem 支付后权益可正确生效
 - [ ] Pricing 内容与真实权益 100% 一致
+
+## 2026-03-23 实施进展（Codex）
+
+- [x] Stage 3 已按 `doc/gemini 2.5 flash.md` 改为走 `Gemini 2.5 Flash` 专用接口路径，而不是旧的通用 chat 路径。
+- [x] 已重写 prompt 体系：按 `mode + intensity` 输出不同约束，显式限制事实保真、输出格式、长度与语气边界。
+- [x] 已增加 structured output + 纯文本双轨兜底；当 `response_format` 不可用或响应为空时，会自动降级。
+- [x] 已增加输出后处理：去 JSON 包裹、去代码块、去 `Translation:` 前缀、压缩空行、超长裁剪。
+- [x] 已增加日志与观测字段：`requestId`、`latencyMs`、`providerModel`、`usage`、`chargedCredits`。
+- [x] 已把 provider token usage 映射到平台 credits，采用 `Input 18 credits / M` 与 `Output 150 credits / M` 的计费规则，并保留最小 1 credit 成功计费单位。
+- [x] Stage 4 已落地最小可用 entitlement 状态机：`free / trial / pro / expired`。
+- [x] 已新增后端 `/api/entitlement/linkedin`，前端翻译面板不再只依赖本地 quota，而是以服务端 entitlement 为准。
+- [x] 已把翻译接口接上真实 entitlement 校验：`Extreme` 需要 credits，免费/试用/过期态受日配额限制。
+- [x] 已把成功翻译后的配额消耗与 credits 扣减收口到服务端统一处理。
+- [x] 已复用现有 Creem 下单能力，把 LinkedIn Translator 的 `Pro Credit Pack` 接入真实 checkout 创建链路。
+- [x] 已重写首页 Pricing Section，使 Free / Pro Credit Pack / Team 的展示、CTA、FAQ 与真实 entitlement 规则一致。
+- [x] 已在首页加入登录后购买路径；未登录时先走 Google Sign-In，再回到定价区完成购买。
+- [x] 已补轻量单测基建：`pnpm run test:unit`。
+- [x] 已将 Creem test 环境的 `credit-200` / `credit-500` 商品接入本项目：`$4.9 / 200 credits` 与 `$9.9 / 500 credits` 均已映射到真实 checkout product id。
+- [x] 已把 `LINKEDIN_TRANSLATOR_TEAM_PLAN` 改成和 `LINKEDIN_TRANSLATOR_PRO_PACK` 同结构的一次性 credit pack，并接入第二个 checkout 商品，而不再只是 `mailto` 联系销售入口。
+- [x] 已为 checkout 创建请求补齐 `request_id`、`referenceId`、`userId`、`orderNo` 等 metadata，方便 Creem callback / webhook 与本地订单对账。
+- [x] 已补本地 Creem 配置与监控脚本：新增 `.dev.vars` 中的 test store / test key 占位，新增 `pnpm run creem:heartbeat` 与 heartbeat state file，便于后续做 store 监控。
+- [x] 已把正式环境 `credit-200` / `credit-500` Product ID 写入代码映射；生产环境下 Team 500-credit pack 不再回退成联系销售。
+- [ ] 待将生产环境 `CREEM_KEY` 与 `CREEM_WEBHOOK_SECRET` 真正写入 Cloudflare Worker secrets；本机 `wrangler whoami` 当前访问 Cloudflare API 时出现 `terminated`，本轮未自动完成。
+- [ ] 如果产品规则要严格改成“每次成功运行固定扣 1 积分”，还需把当前服务端的 token-usage 计费逻辑改成固定 1 credit；本轮完成的是商品、价格卡、checkout 映射与文案收口。
+- [x] 本轮验证结果：
+  - [x] `pnpm run test:unit` 通过（当前 9 条用例，覆盖 Stage 2 / 3 / 4 的核心纯逻辑）
+  - [x] `pnpm run build` 通过
+  - [x] `pnpm run typecheck` 已通过；本轮额外补齐了本地 Cloudflare runtime 声明，并清理了 React Router / fetch 的类型问题
+
+### 本轮产品决策（已落地）
+
+- 付费主路径采用 `credits pack`，而不是强依赖订阅闭环；这样可以最快把 `Extreme` 解锁、真实计费与 webhook 落地。
+- `free` 定义为匿名访客；`trial` 定义为已登录但无付费历史/余额用户；`pro` 定义为当前有 credits；`expired` 定义为有付费历史但余额已归零。
+- 当前售卖项已落地为两个一次性 credits pack：`Pro Credit Pack`（`$4.9 / 200 credits`）与 `Team Credit Pack`（`$9.9 / 500 credits`）；两者均走 Creem checkout，credits 不过期。
+- Team 不再只是联系销售入口；如后续还要保留 enterprise / custom-volume 方案，可继续通过 support 邮件承接更高量需求。
+
+### 补充记录：法务静态页与 Logo（2026-03-23）
+
+- [x] 已将 `app/routes/_legal` 下 5 个法务静态页内容统一为 LinkedIn Translator 语境：`acceptable-use`、`cookie`、`privacy`、`refund`、`terms`。
+- [x] 已同步更新上述 5 个页面的 `route.tsx` 元信息（`title` / `description`），移除旧品牌与旧产品描述，避免支付审核中的品牌不一致问题。
+- [x] 已修复法务页顶部品牌元素显示为 `HairRoom` 的问题；现在法务页头部显示 `LinkedIn Translator`。
+- [x] 已改造通用 Logo 组件：`app/components/common/logo.tsx` 新增 `label` 与 `imageAlt` 可选参数（默认值保持原行为，不影响其他页面）。
+- [x] 已在法务页面组件 `app/components/pages/legal/index.tsx` 对 `Logo` 传入 `label="LinkedIn Translator"` 与 `imageAlt="LinkedIn Translator logo"`，实现仅法务页覆盖品牌文案。
+
+### 下次改这块时的入口（避免重复排查）
+
+- 需要修改法务正文时：直接改 `app/routes/_legal/*/content.md`。
+- 需要修改法务页 SEO 文案时：改对应 `app/routes/_legal/*/route.tsx` 的 `meta`。
+- 需要调整法务页顶部品牌字样时：优先改 `app/components/pages/legal/index.tsx` 里传给 `Logo` 的 `label` / `imageAlt`。
+- 如果要全站统一品牌字样（而非仅法务页）：再改 `app/components/common/logo.tsx` 的默认 `label` / `imageAlt`。
+
+## 2026-03-23 Codex review follow-up (to do later)
+
+- [x] Verification run completed: pnpm run test:unit (9/9), pnpm run typecheck, pnpm run build.
+- [x] Credits flow files confirmed:
+- purchase/create order: app/routes/_api/create-order/route.ts, app/.server/services/order.ts
+- consume/deduct on translation: app/routes/_api/translate.linkedin/route.ts, app/.server/services/linkedin-translator.ts, app/.server/services/credits.ts
+- webhook/refund: app/routes/_webhooks/payment/route.ts, app/.server/services/order.ts
+- DB schema/migrations: app/.server/drizzle/schema.ts, app/.server/drizzle/migrations/0000_workable_quentin_quire.sql
+- [ ] Critical fix pending: callback idempotency.
+- app/routes/_callback/payment/route.tsx currently always calls handleOrderComplete(rest.checkout_id).
+- If webhook already completed the order first, handleOrderComplete throws "Transaction is completed", and callback may show Payment Failed incorrectly.
+- Fix direction: make callback idempotent (completed order should still render success), only fail on real signature/order errors.
+- [ ] Local migration runtime check is blocked in current environment.
+- Command attempted: pnpm exec wrangler d1 migrations apply nanobanana2pro --local --persist-to .temp/wrangler-d1-check
+- Result here: Workers runtime crash (access violation), not a business-logic failure.
+- [ ] Follow-up when back home:
+- implement callback idempotency fix and add regression test
+- rerun local D1 migrations on home machine/runtime
+- run one end-to-end payment simulation (checkout.completed + callback + credits refresh)

@@ -73,6 +73,14 @@ export const createOrder = async (
   const creem = createCreem();
   const session = await creem.createCheckout({
     product_id: order.product_id,
+    request_id: order.order_no,
+    metadata: {
+      referenceId: user.id,
+      userId: user.id,
+      userEmail: user.email,
+      orderNo: order.order_no,
+      source: "linkedin-translator",
+    },
     customer: { email: user.email },
     success_url: new URL(
       "/callback/payment",

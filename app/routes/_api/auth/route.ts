@@ -65,8 +65,10 @@ export const action = async ({ request, context }: Route.ActionArgs) => {
 
   const [session, { commitSession }] = await getSessionHandler(request);
   const env =
-    (context as { cloudflare?: { env?: Record<string, string | undefined> } })
-      .cloudflare?.env ?? {};
+    context.cloudflare?.env ??
+    (typeof process !== "undefined"
+      ? (process.env as Record<string, string | undefined>)
+      : {});
   const googleClientId = env.GOOGLE_CLIENT_ID;
 
   if (!googleClientId) {
@@ -155,7 +157,7 @@ const getTokenInfo = async (token: string) => {
     `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
   );
   if (!res.ok) throw new Error("Invalid ID token");
-  const payload = await res.json<GoogleTokenInfo>();
+  const payload = (await res.json()) as GoogleTokenInfo;
 
   return payload;
 };
@@ -169,6 +171,6 @@ const getUserInfo = async (access_token: string) => {
 
   if (!res.ok) throw new Error("Failed to fetch Google user info");
 
-  const user = await res.json<GoogleUserInfo>();
+  const user = (await res.json()) as GoogleUserInfo;
   return user;
 };

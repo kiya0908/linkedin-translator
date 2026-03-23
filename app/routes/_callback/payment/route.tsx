@@ -7,6 +7,17 @@ import { createCreem } from "~/.server/libs/creem";
 import { getSessionHandler } from "~/.server/libs/session";
 import { getUserCredits } from "~/.server/services/credits";
 
+type PaymentCallbackLoaderData =
+  | {
+      success: true;
+      credits: number;
+      orderId: string;
+    }
+  | {
+      success: false;
+      message: string;
+    };
+
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const searchParams = new URL(request.url).searchParams;
   const paramsRecord: Record<string, string> = {};
@@ -36,7 +47,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       latestCredits = balance;
     }
 
-    return data({
+    return data<PaymentCallbackLoaderData>({
       success: true,
       credits: latestCredits,
       orderId: rest.order_id || rest.checkout_id,
@@ -46,7 +57,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     console.log("Error Event: ", paramsRecord);
     console.log("Error Message: ", message);
 
-    return data({
+    return data<PaymentCallbackLoaderData>({
       success: false,
       message,
     });
@@ -54,10 +65,11 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 export default function PaymentCallback({ loaderData }: Route.ComponentProps) {
-  const { success } = loaderData;
-  const credits = success ? loaderData.credits : 0;
-  const orderId = success ? loaderData.orderId : null;
-  const message = !success ? loaderData.message : "";
+  const payload = loaderData as PaymentCallbackLoaderData;
+  const success = payload.success;
+  const credits = payload.success ? payload.credits : 0;
+  const orderId = payload.success ? payload.orderId : null;
+  const message = payload.success ? "" : payload.message;
 
   // 可以在这里通过 useEffect 同步最新 credits 到 Zustand userStore，
   // 但更推荐由 Navbar 自身负责轮询/查询刷新，这里仅作结果展示。
@@ -78,7 +90,7 @@ export default function PaymentCallback({ loaderData }: Route.ComponentProps) {
                 </div>
                 < h1 className="text-2xl md:text-3xl font-bold mb-4" > Payment Successful! </h1>
                 < p className="text-text-secondary mb-8" >
-                  Thank you for your subscription.Your payment has been processed successfully.
+                  Your payment has been processed successfully and your credit balance is ready to use.
                 </p>
 
                 < div className="w-full bg-bg-base rounded-xl p-4 mb-8 border border-border-subtle/50 text-left space-y-3" >

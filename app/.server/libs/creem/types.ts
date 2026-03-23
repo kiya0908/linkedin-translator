@@ -1,7 +1,10 @@
 interface Metadata {
-  user_id: string;
-  user_email?: string;
-  transactions_id: string | number;
+  referenceId?: string;
+  userId?: string;
+  userEmail?: string;
+  orderNo?: string;
+  source?: string;
+  [key: string]: string | number | undefined;
 }
 
 export interface Order {

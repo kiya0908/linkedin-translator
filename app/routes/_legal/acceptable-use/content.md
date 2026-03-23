@@ -1,54 +1,46 @@
 # Acceptable Use Policy
 
-Last updated: March 16, 2026
+Last updated: March 23, 2026
 
 ## 1. Scope
 
-This Acceptable Use Policy ("AUP") applies to all users of **Nivra Brush Studio** and all content submitted to or generated through our platform.
-
-Nivra Brush Studio is an independent product and is **not affiliated with, endorsed by, or sponsored by Google**.
+This Acceptable Use Policy ("AUP") applies to all users of **LinkedIn Translator** and to all text submitted to or generated through our Service.
 
 ## 2. Prohibited Content and Behavior
 
-You may not use Nivra Brush Studio to create, upload, request, or distribute:
+You may not use LinkedIn Translator to create, request, or distribute:
 
-- Sexually explicit, nude, or sexually suggestive content (including NSFW prompts and outputs)
-- Content involving minors in sexualized contexts
-- Harassment, threats, hate speech, or extremist propaganda
-- Illegal content, fraud, impersonation, or deceptive activity
-- Content that infringes third-party intellectual property rights
-- Malware, phishing, or abusive automation
+- Illegal, fraudulent, deceptive, or impersonating content
+- Harassment, hate speech, threats, or extremist content
+- Defamatory or knowingly false claims presented as factual professional statements
+- Spam, phishing, malware, or abusive automation
+- Content that infringes third-party intellectual property, privacy, or confidentiality rights
+- Attempts to bypass security controls, abuse rate limits, or interfere with platform operations
 
-## 3. NSFW and Safety Controls
+## 3. User Responsibilities
 
-Nivra Brush Studio enforces content safety controls on prompts and generated outputs, including NSFW filtering and policy checks.  
-Requests that violate this policy may be blocked, removed, or not returned to the user.
+By using LinkedIn Translator, you agree to:
 
-## 4. User Responsibilities
+- Comply with applicable laws and regulations
+- Submit only content you are authorized to use and process
+- Review AI-generated output before publishing or sharing
+- Take responsibility for how generated content is used in professional contexts
 
-By using Nivra Brush Studio, you agree to:
+## 4. Enforcement
 
-- Comply with all applicable laws and regulations
-- Use only content you are authorized to upload and process
-- Avoid attempts to bypass moderation or safety mechanisms
-- Respect the rights and safety of other users and third parties
+If we detect violations, we may take one or more actions:
 
-## 5. Enforcement
-
-If we detect policy violations, we may take one or more actions:
-
-- Block or remove prompts, uploads, or outputs
-- Temporarily limit generation features
+- Block specific requests or outputs
+- Restrict or rate-limit access
 - Suspend or terminate accounts
-- Report severe or illegal activity to relevant authorities when required
+- Report severe or unlawful activity to relevant authorities when legally required
 
-## 6. Reporting Violations
+## 5. Reporting Violations
 
-If you see activity that appears to violate this policy, contact:
+If you believe this policy is being violated, contact:
 
 - **Email:** [support@linkedintranslator.online](mailto:support@linkedintranslator.online)
 
-## 7. Relationship to Other Policies
+## 6. Relationship to Other Policies
 
 This AUP supplements our [Terms of Use](/legal/terms), [Privacy Policy](/legal/privacy), and [Refund Policy](/legal/refund).
-

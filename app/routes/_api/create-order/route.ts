@@ -7,7 +7,7 @@ import { createOrder } from "~/.server/services/order";
 import { PRODUCTS_LIST, PRICING_LIST } from "~/.server/constants";
 
 export async function action({ request }: Route.ActionArgs) {
-  const raw = await request.json<{ product_id?: string }>();
+  const raw = (await request.json()) as { product_id?: string };
   const productId = raw.product_id;
   const successOrigin = new URL(request.url).origin;
 

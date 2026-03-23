@@ -12,7 +12,12 @@ export const Legal = ({ node }: LegalProps) => {
       <div className="max-w-3xl mx-auto relative">
         <div className="flex justify-center mb-4 sm:mb-6 md:mb-8">
           <Link to="/">
-            <Logo className="mr-2" size="lg" />
+            <Logo
+              className="mr-2"
+              size="lg"
+              label="LinkedIn Translator"
+              imageAlt="LinkedIn Translator logo"
+            />
           </Link>
         </div>
         <MarkdownArticle className="bg-white p-4 sm:p-6 md:p-8" node={node} />

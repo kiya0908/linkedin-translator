@@ -14,8 +14,10 @@ interface GoogleOAuthProps {
 export const GoogleOAuth = forwardRef<GoogleOAuthBtnRef, GoogleOAuthProps>(
   ({ useOneTap, onSuccess }, ref) => {
     const matches = useMatches();
-    const rootMatch = matches[0].data as { GOOGLE_CLIENT_ID: string };
-    const clientId = rootMatch.GOOGLE_CLIENT_ID;
+    const rootMatch = matches.find((match) => match.id === "root");
+    const clientId =
+      (rootMatch?.data as { GOOGLE_CLIENT_ID?: string } | undefined)
+        ?.GOOGLE_CLIENT_ID ?? "";
 
     const setUser = useUser((state) => state.setUser);
     const setCredits = useUser((state) => state.setCredits);
@@ -37,10 +39,10 @@ export const GoogleOAuth = forwardRef<GoogleOAuthBtnRef, GoogleOAuthProps>(
       }).finally(() => setSigning(false));
 
       if (res.ok) {
-        const { profile, credits } = await res.json<{
+        const { profile, credits } = (await res.json()) as {
           profile: UserInfo;
           credits: number;
-        }>();
+        };
 
         setUser(profile);
         setCredits(credits);

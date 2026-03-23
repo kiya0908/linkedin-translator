@@ -1,6 +1,6 @@
-import { useOutletContext, Link } from "react-router";
+import { useOutletContext } from "react-router";
 import type { Route } from "./+types/subscription";
-import type { User, Subscription } from "~/.server/libs/db";
+import type { User } from "~/.server/libs/db";
 import { getActiveSubscriptionsByUserId } from "~/.server/model/subscriptions";
 import { getSessionHandler } from "~/.server/libs/session";
 import { redirect } from "react-router";
@@ -21,10 +21,14 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 export default function SubscriptionPage({ loaderData }: Route.ComponentProps) {
-    const { user } = useOutletContext<{ user: User }>();
+    useOutletContext<{ user: User }>();
     const { subscription } = loaderData;
 
     const isActive = subscription?.status === "active";
+    const renewalDate =
+        isActive && subscription?.expired_at
+            ? new Date(subscription.expired_at).toLocaleDateString()
+            : null;
 
     return (
         <div className="space-y-6">
@@ -41,9 +45,9 @@ export default function SubscriptionPage({ loaderData }: Route.ComponentProps) {
                             <span className={`badge ${isActive ? "badge-success" : "badge-ghost"}`}>
                                 {isActive ? "Pro Member" : "Free Plan"}
                             </span>
-                            {isActive && (
+                            {renewalDate && (
                                 <span className="text-sm text-base-content/70">
-                                    Renews on {new Date(subscription.current_period_end).toLocaleDateString()}
+                                    Renews on {renewalDate}
                                 </span>
                             )}
                         </div>

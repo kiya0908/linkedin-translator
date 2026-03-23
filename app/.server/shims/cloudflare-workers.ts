@@ -21,7 +21,10 @@ const getRecord = (key: string) => {
 };
 
 const localKV = {
-  async get(key: string, type?: string) {
+  async get(
+    key: string,
+    type?: "text" | "json" | "arrayBuffer" | "stream"
+  ) {
     const record = getRecord(key);
     if (!record) return null;
 
@@ -38,8 +41,18 @@ const localKV = {
 
     return record.value;
   },
-  async getWithMetadata(key: string, type?: string) {
-    const value = await localKV.get(key, type);
+  async getWithMetadata(
+    key: string,
+    type?: "text" | "json" | "arrayBuffer" | "stream"
+  ) {
+    const value =
+      type === "json"
+        ? await localKV.get(key, "json")
+        : type === "arrayBuffer"
+          ? await localKV.get(key, "arrayBuffer")
+          : type === "stream"
+            ? await localKV.get(key, "stream")
+            : await localKV.get(key);
     const record = getRecord(key);
 
     return {
@@ -165,22 +178,28 @@ const createR2Stub = () =>
     },
   } as unknown as R2Bucket);
 
+const localProcessEnv =
+  typeof process !== "undefined"
+    ? (process.env as Record<string, string | undefined>)
+    : {};
+
 export const env = {
-  SESSION_SECRET: "local-dev-session-secret",
-  DOMAIN: "http://localhost:5173",
-  CDN_URL: "http://localhost:5173",
-  GOOGLE_ANALYTICS_ID: "",
-  GOOGLE_ADS_ID: "",
-  GOOGLE_CLIENT_ID: "",
-  INITLIZE_CREDITS: 0,
-  KIEAI_APIKEY: "",
-  CREEM_KEY: "",
-  CREEM_TEST_KEY: "",
-  CREEM_WEBHOOK_SECRET: "",
-  CREEM_STORE_ID: "",
-  R2_ACCOUNT_ID: "",
-  R2_ACCESS_KEY_ID: "",
-  R2_SECRET_ACCESS_KEY: "",
+  SESSION_SECRET:
+    localProcessEnv.SESSION_SECRET ?? "local-dev-session-secret",
+  DOMAIN: localProcessEnv.DOMAIN ?? "http://localhost:5173",
+  CDN_URL: localProcessEnv.CDN_URL ?? "http://localhost:5173",
+  GOOGLE_ANALYTICS_ID: localProcessEnv.GOOGLE_ANALYTICS_ID ?? "",
+  GOOGLE_ADS_ID: localProcessEnv.GOOGLE_ADS_ID ?? "",
+  GOOGLE_CLIENT_ID: localProcessEnv.GOOGLE_CLIENT_ID ?? "",
+  INITLIZE_CREDITS: localProcessEnv.INITLIZE_CREDITS ?? 0,
+  KIEAI_APIKEY: localProcessEnv.KIEAI_APIKEY ?? "",
+  CREEM_KEY: localProcessEnv.CREEM_KEY ?? "",
+  CREEM_TEST_KEY: localProcessEnv.CREEM_TEST_KEY ?? "",
+  CREEM_WEBHOOK_SECRET: localProcessEnv.CREEM_WEBHOOK_SECRET ?? "",
+  CREEM_STORE_ID: localProcessEnv.CREEM_STORE_ID ?? "",
+  R2_ACCOUNT_ID: localProcessEnv.R2_ACCOUNT_ID ?? "",
+  R2_ACCESS_KEY_ID: localProcessEnv.R2_ACCESS_KEY_ID ?? "",
+  R2_SECRET_ACCESS_KEY: localProcessEnv.R2_SECRET_ACCESS_KEY ?? "",
   DB: createD1Stub(),
   R2: createR2Stub(),
   KV: localKV,

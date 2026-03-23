@@ -20,8 +20,8 @@ export class CreemApiClient {
 
   constructor(baseUrl?: string, apiKey?: string, webhookSecret?: string) {
     this.baseUrl = baseUrl || "https://api.creem.io";
-    this.apiKey = apiKey || env.CREEM_KEY;
-    this.webhookSecret = webhookSecret || env.CREEM_WEBHOOK_SECRET;
+    this.apiKey = apiKey ?? env.CREEM_KEY ?? "";
+    this.webhookSecret = webhookSecret ?? env.CREEM_WEBHOOK_SECRET ?? "";
   }
 
   /**
@@ -33,6 +33,10 @@ export class CreemApiClient {
     method: "GET" | "POST" = "GET",
     options: FetcherOptions = {}
   ): Promise<T> {
+    if (!this.apiKey) {
+      throw new Error("CREEM_KEY is not configured");
+    }
+
     let url = new URL(path, this.baseUrl).toString();
 
     const headers = {
@@ -58,7 +62,7 @@ export class CreemApiClient {
 
     try {
       const response = await fetch(url, config);
-      const responseData = await response.json<T>();
+      const responseData = (await response.json()) as T;
 
       if (!response.ok) {
         const error = new Error("API request failed") as FetcherError;
