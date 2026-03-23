@@ -234,10 +234,17 @@
 - app/routes/_callback/payment/route.tsx currently always calls handleOrderComplete(rest.checkout_id).
 - If webhook already completed the order first, handleOrderComplete throws "Transaction is completed", and callback may show Payment Failed incorrectly.
 - Fix direction: make callback idempotent (completed order should still render success), only fail on real signature/order errors.
-- [ ] Local migration runtime check is blocked in current environment.
-- Command attempted: pnpm exec wrangler d1 migrations apply nanobanana2pro --local --persist-to .temp/wrangler-d1-check
-- Result here: Workers runtime crash (access violation), not a business-logic failure.
+- [x] Local migration runtime check completed.
+- Command executed: npm run db:migrate:local (wrangler d1 migrations apply DB --local).
+- Result: migrations `0000` to `0004` applied; subsequent run shows `No migrations to apply!`.
+- [x] Remote D1 migration pushed successfully.
+- Command executed: npm run db:migrate:remote (wrangler d1 migrations apply DB --remote).
+- Result: migrations `0000` to `0004` applied on database `4e83da95-b2db-49e3-8017-6c9c284afa8e`.
+- [x] Remote table verification completed.
+- Command executed: pnpm exec wrangler d1 execute DB --remote --command "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;".
+- Tables confirmed: `users`, `user_auth`, `signin_logs`, `orders`, `credit_records`, `credit_consumptions`, `subscriptions`, `ai_tasks`, `d1_migrations`.
+- [x] Migration scripts aligned to binding name.
+- `package.json` updated: `db:migrate:local` and `db:migrate:remote` now use `DB` binding instead of old `nanobanana2pro`.
 - [ ] Follow-up when back home:
 - implement callback idempotency fix and add regression test
-- rerun local D1 migrations on home machine/runtime
 - run one end-to-end payment simulation (checkout.completed + callback + credits refresh)

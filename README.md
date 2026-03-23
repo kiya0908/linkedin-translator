@@ -63,6 +63,27 @@ Set required variables in Cloudflare (or local `.dev.vars`) such as:
 - `DOMAIN` (recommended: `https://linkedintranslator.online`)
 - `CDN_URL` (if used)
 
+### 2.1 Configure D1 Database
+
+This project is bound to Cloudflare D1 via `wrangler.jsonc`.
+
+- `binding`: `DB`
+- `database_name`: `nanobanana2pro`
+- `database_id`: `4e83da95-b2db-49e3-8017-6c9c284afa8e`
+
+For Drizzle CLI commands (`pnpm run db:generate` / `pnpm run db:migrate`), set:
+
+- `ACCOUNT_ID`
+- `ACCOUNT_TOKEN`
+- `DATABASE_ID` (same as above)
+
+Apply migrations:
+
+```bash
+pnpm run db:migrate:local
+pnpm run db:migrate:remote
+```
+
 ### 3. Run Locally
 
 ```bash

@@ -15,8 +15,8 @@
     "typecheck": "npm run cf-typegen && react-router typegen && tsc -b",
     "db:generate": "drizzle-kit generate --config app/.server/drizzle/config.ts",
     "db:migrate": "drizzle-kit migrate --config app/.server/drizzle/config.ts",
-    "db:migrate:local": "wrangler d1 migrations apply nanobanana2pro --local",
-    "db:migrate:remote": "wrangler d1 migrations apply nanobanana2pro --remote"
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
