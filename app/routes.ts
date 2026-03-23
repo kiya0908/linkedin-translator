@@ -24,7 +24,6 @@ export default [
       route("credits", "./routes/base/credits.tsx"),
       route("orders", "./routes/base/orders.tsx"),
       route("subscription", "./routes/base/subscription.tsx"),
-      route("gallery", "./routes/base/gallery.tsx"),
     ]),
   ]),
   ...prefix("api", apiRoutes),

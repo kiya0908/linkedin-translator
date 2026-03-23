@@ -6,7 +6,6 @@ export const Sidebar = () => {
         { label: "Credits & History", to: "/base/credits" },
         { label: "Orders", to: "/base/orders" },
         { label: "Subscription", to: "/base/subscription" },
-        { label: "Gallery", to: "/base/gallery" },
     ];
 
     return (
