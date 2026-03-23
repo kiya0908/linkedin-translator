@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import { KieAI } from "~/.server/aisdk";
 
 import {
@@ -31,6 +32,8 @@ export interface LinkedinTranslationProviderError {
   message: string;
 }
 
+const envVars = env as unknown as Record<string, string | undefined>;
+
 const STRUCTURED_OUTPUT_SCHEMA = {
   type: "json_schema" as const,
   json_schema: {
@@ -51,6 +54,55 @@ const STRUCTURED_OUTPUT_SCHEMA = {
     },
   },
 };
+
+const RETRYABLE_PROVIDER_CODES = new Set([
+  "408",
+  "425",
+  "429",
+  "500",
+  "502",
+  "503",
+  "504",
+  "520",
+  "522",
+  "523",
+  "524",
+]);
+
+const parseIntegerEnv = (options: {
+  rawValue: string | undefined;
+  fallback: number;
+  min: number;
+  max: number;
+}) => {
+  if (!options.rawValue) return options.fallback;
+
+  const parsed = Number.parseInt(options.rawValue, 10);
+  if (!Number.isFinite(parsed)) return options.fallback;
+
+  return Math.min(options.max, Math.max(options.min, parsed));
+};
+
+const TRANSLATION_REQUEST_TIMEOUT_MS = parseIntegerEnv({
+  rawValue: envVars.LINKEDIN_TRANSLATION_TIMEOUT_MS,
+  fallback: 35_000,
+  min: 10_000,
+  max: 60_000,
+});
+
+const TRANSLATION_MAX_ATTEMPTS = parseIntegerEnv({
+  rawValue: envVars.LINKEDIN_TRANSLATION_MAX_ATTEMPTS,
+  fallback: 2,
+  min: 1,
+  max: 4,
+});
+
+const TRANSLATION_RETRY_BASE_DELAY_MS = parseIntegerEnv({
+  rawValue: envVars.LINKEDIN_TRANSLATION_RETRY_BASE_DELAY_MS,
+  fallback: 400,
+  min: 100,
+  max: 2_000,
+});
 
 const extractMessageText = (content: CompletionContent) => {
   if (!content) return "";
@@ -100,6 +152,73 @@ const runWithTimeout = async <T>(
   }
 };
 
+const delay = (ms: number) =>
+  new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+const containsRetryableNetworkMessage = (message: string) => {
+  const normalized = message.toLowerCase();
+
+  return (
+    normalized.includes("linkedin_translation_timeout") ||
+    normalized.includes("fetch failed") ||
+    normalized.includes("terminated") ||
+    normalized.includes("socket") ||
+    normalized.includes("network") ||
+    normalized.includes("econnreset")
+  );
+};
+
+const isRetryableProviderFailure = (error: unknown) => {
+  if (error instanceof Error) {
+    if (containsRetryableNetworkMessage(error.message)) {
+      return true;
+    }
+  }
+
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const code =
+    "code" in error && typeof error.code !== "undefined"
+      ? String(error.code)
+      : null;
+  const message =
+    "message" in error && typeof error.message === "string"
+      ? error.message
+      : "";
+
+  return (
+    (code ? RETRYABLE_PROVIDER_CODES.has(code) : false) ||
+    containsRetryableNetworkMessage(message)
+  );
+};
+
+const runWithRetry = async <T>(task: (signal: AbortSignal) => Promise<T>) => {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= TRANSLATION_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      return await runWithTimeout(task, TRANSLATION_REQUEST_TIMEOUT_MS);
+    } catch (error) {
+      lastError = error;
+
+      if (
+        attempt === TRANSLATION_MAX_ATTEMPTS ||
+        !isRetryableProviderFailure(error)
+      ) {
+        throw error;
+      }
+
+      await delay(TRANSLATION_RETRY_BASE_DELAY_MS * attempt);
+    }
+  }
+
+  throw lastError;
+};
+
 const shouldFallbackToPlainText = (error: unknown) => {
   if (!error || typeof error !== "object") return false;
 
@@ -123,6 +242,18 @@ const normalizeProviderError = (error: unknown): LinkedinTranslationProviderErro
       status: 504,
       code: "timeout",
       message: "Translation timed out. Please try again in a moment.",
+    };
+  }
+
+  if (
+    error instanceof Error &&
+    containsRetryableNetworkMessage(error.message)
+  ) {
+    return {
+      status: 503,
+      code: "provider_network",
+      message:
+        "Translation service connection was interrupted. Please retry in a moment.",
     };
   }
 
@@ -161,6 +292,14 @@ const normalizeProviderError = (error: unknown): LinkedinTranslationProviderErro
     }
 
     if (code === "455" || code === "505") {
+      return {
+        status: 503,
+        code,
+        message: "Translation service is temporarily unavailable.",
+      };
+    }
+
+    if (RETRYABLE_PROVIDER_CODES.has(code)) {
       return {
         status: 503,
         code,
@@ -223,7 +362,7 @@ export const translateLinkedinText = async (payload: {
     | Awaited<ReturnType<KieAI["createGemini25FlashCompletion"]>>
     | undefined;
   try {
-    completion = await runWithTimeout(
+    completion = await runWithRetry(
       (signal) =>
         kie.createGemini25FlashCompletion(
           {
@@ -231,11 +370,13 @@ export const translateLinkedinText = async (payload: {
             response_format: STRUCTURED_OUTPUT_SCHEMA,
           },
           { signal }
-        ),
-      20_000
+        )
     );
   } catch (error) {
-    if (!shouldFallbackToPlainText(error)) {
+    if (
+      !shouldFallbackToPlainText(error) &&
+      !isRetryableProviderFailure(error)
+    ) {
       throw normalizeProviderError(error);
     }
   }
@@ -249,12 +390,11 @@ export const translateLinkedinText = async (payload: {
 
   if (!translatedText) {
     try {
-      completion = await runWithTimeout(
+      completion = await runWithRetry(
         (signal) =>
           kie.createGemini25FlashCompletion(baseRequest, {
             signal,
-          }),
-        20_000
+          })
       );
       translatedText = extractSanitizedText(
         completion.choices?.[0]?.message?.content,

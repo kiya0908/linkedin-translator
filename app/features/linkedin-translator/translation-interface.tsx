@@ -39,6 +39,42 @@ const INITIAL_ENTITLEMENT = deriveTranslationEntitlement({
   dailyUsed: 0,
 });
 
+const DEFAULT_TRANSLATION_ERROR_MESSAGE =
+  "Translation failed. Please try again in a moment.";
+
+const normalizeTranslationErrorMessage = (error: unknown) => {
+  if (!(error instanceof Error)) {
+    return DEFAULT_TRANSLATION_ERROR_MESSAGE;
+  }
+
+  const message = error.message.trim();
+  if (!message) {
+    return DEFAULT_TRANSLATION_ERROR_MESSAGE;
+  }
+
+  const normalized = message.toLowerCase();
+  if (
+    normalized === "failed to fetch" ||
+    normalized.includes("fetch failed")
+  ) {
+    return "Network connection failed while contacting the translation service. Please retry.";
+  }
+
+  if (
+    normalized.includes("gateway timeout") ||
+    normalized.includes("timed out") ||
+    normalized.includes("timeout")
+  ) {
+    return "Translation timed out. Please try again in a moment.";
+  }
+
+  if (normalized.startsWith("<!doctype") || normalized.startsWith("<html")) {
+    return "Translation service is temporarily unavailable. Please retry shortly.";
+  }
+
+  return message;
+};
+
 export function TranslationInterface() {
   const user = useUser((state) => state.user);
   const setCredits = useUser((state) => state.setCredits);
@@ -161,8 +197,15 @@ export function TranslationInterface() {
       });
 
       if (!response.ok) {
-        const message =
-          (await response.text()) || "Translation request failed";
+        const rawMessage = (await response.text()).trim();
+        const fallbackByStatus =
+          response.status === 504
+            ? "Translation timed out. Please try again in a moment."
+            : response.status >= 500
+              ? "Translation service is temporarily unavailable. Please retry shortly."
+              : "Translation request failed";
+        const message = rawMessage || fallbackByStatus;
+
         await refreshEntitlement();
         throw new Error(message);
       }
@@ -184,11 +227,7 @@ export function TranslationInterface() {
       setStatus("success");
     } catch (error) {
       setStatus("error");
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Translation failed. Please try again in a moment."
-      );
+      setErrorMessage(normalizeTranslationErrorMessage(error));
     }
   };
 
