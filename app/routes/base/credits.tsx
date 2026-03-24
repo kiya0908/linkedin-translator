@@ -1,6 +1,7 @@
 import { redirect } from "react-router";
 import type { Route } from "./+types/credits";
 import type { Credit } from "~/.server/libs/db";
+import { shouldRequireBaseAuth } from "~/.server/libs/base-auth";
 import { listCreditRecordsByUser } from "~/.server/model/credit_record";
 import { getSessionHandler } from "~/.server/libs/session";
 import { getUserCredits } from "~/.server/services/credits";
@@ -42,10 +43,18 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   ];
 };
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+export const loader = async ({ request, context }: Route.LoaderArgs) => {
   const [session] = await getSessionHandler(request);
-  const user = session.get("user");
-  if (!user) throw redirect("/?login=true");
+  const user = session.get("user") ?? null;
+  const requireAuth = shouldRequireBaseAuth(context);
+  if (!user && requireAuth) throw redirect("/?login=true");
+
+  if (!user) {
+    return {
+      records: [] as Credit[],
+      balance: 0,
+    };
+  }
 
   const [records, creditsSummary] = await Promise.all([
     listCreditRecordsByUser(user.id),

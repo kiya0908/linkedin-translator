@@ -25,32 +25,61 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 export default function Profile() {
-  const { user } = useOutletContext<{ user: User }>();
+  const { user, isGuestPreview } = useOutletContext<{
+    user: User | null;
+    isGuestPreview: boolean;
+  }>();
 
-  const displayName = user.nickname?.trim() || "New User";
+  const displayName = user?.nickname?.trim() || "Local Preview User";
+  const accountEmail = user?.email ?? "--";
+  const memberSince = user ? formatDate(user.created_at) : "--";
   const avatar =
-    user.avatar_url ||
+    user?.avatar_url ||
     `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(displayName)}`;
 
   return (
     <div className="space-y-6">
       <PageIntro
         title="Profile"
-        description="Review your account identity and sign-in details."
-        action={{ label: "Subscription status", to: "/base/subscription" }}
+        description={
+          isGuestPreview
+            ? "Local preview mode is enabled. Sign in to view your real account identity."
+            : "Review your account identity and sign-in details."
+        }
+        action={
+          isGuestPreview
+            ? { label: "Sign in to continue", to: "/?login=true" }
+            : { label: "Subscription status", to: "/base/subscription" }
+        }
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        <StatTile label="Account Email" value={user.email} helper="Primary login identity" />
+        <StatTile
+          label="Account Email"
+          value={accountEmail}
+          helper={
+            isGuestPreview
+              ? "Guest preview mode; no account is signed in."
+              : "Primary login identity"
+          }
+        />
         <StatTile
           label="Member Since"
-          value={formatDate(user.created_at)}
-          helper="First successful sign-in"
+          value={memberSince}
+          helper={
+            isGuestPreview
+              ? "Sign in to load your actual account timeline."
+              : "First successful sign-in"
+          }
         />
         <StatTile
           label="Auth Provider"
-          value="Google"
-          helper="Profile fields are synced from your provider"
+          value={isGuestPreview ? "Guest Preview" : "Google"}
+          helper={
+            isGuestPreview
+              ? "This page is rendered without authentication."
+              : "Profile fields are synced from your provider"
+          }
         />
       </div>
 
@@ -63,9 +92,13 @@ export default function Profile() {
           </div>
           <div className="min-w-0">
             <h2 className="text-xl font-semibold truncate">{displayName}</h2>
-            <p className="text-sm text-base-content/70 truncate">{user.email}</p>
-            <div className="mt-2 inline-flex items-center rounded-full bg-success/15 px-2 py-1 text-xs font-medium text-success">
-              Account active
+            <p className="text-sm text-base-content/70 truncate">{accountEmail}</p>
+            <div
+              className={`mt-2 inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                isGuestPreview ? "bg-warning/20 text-warning" : "bg-success/15 text-success"
+              }`}
+            >
+              {isGuestPreview ? "Local preview mode" : "Account active"}
             </div>
           </div>
         </div>
@@ -77,13 +110,14 @@ export default function Profile() {
           </div>
           <div className="rounded-xl border border-base-300 p-4">
             <div className="text-xs uppercase tracking-wide text-base-content/60">Email</div>
-            <div className="mt-2 text-sm font-medium break-all">{user.email}</div>
+            <div className="mt-2 text-sm font-medium break-all">{accountEmail}</div>
           </div>
         </div>
 
         <div className="mt-5 rounded-xl border border-base-300 bg-base-200/45 p-4 text-sm text-base-content/75">
-          Profile name and avatar are sourced from your login provider. If you update those on Google,
-          sign in again to refresh this page.
+          {isGuestPreview
+            ? "This is a local guest preview. Sign in with Google to load your real profile and account details."
+            : "Profile name and avatar are sourced from your login provider. If you update those on Google, sign in again to refresh this page."}
         </div>
       </section>
     </div>

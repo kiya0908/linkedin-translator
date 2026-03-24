@@ -16,6 +16,7 @@ import {
   LINKEDIN_TRANSLATOR_PRICING_CARDS,
   LINKEDIN_TRANSLATOR_PRO_PACK,
 } from "../../app/features/linkedin-translator/pricing.js";
+import { shouldRequireBaseAuthFromEnv } from "../../app/.server/libs/base-auth.js";
 
 test("Stage 3: prompt builder keeps mode-specific intent and hard constraints", () => {
   const prompt = buildTranslationPromptSet(
@@ -122,4 +123,39 @@ test("Stage 2: pricing cards stay aligned with the actual Pro credit pack", () =
     LINKEDIN_TRANSLATOR_PRO_PACK.productId
   );
   assert.match(proCard.description, /usage-based billing/i);
+});
+
+test("Base auth: production always requires login even with bypass enabled", () => {
+  const shouldRequire = shouldRequireBaseAuthFromEnv({
+    isProduction: true,
+    bypassBaseAuthInDev: "true",
+  });
+
+  assert.equal(shouldRequire, true);
+});
+
+test("Base auth: development allows anonymous access when bypass is enabled", () => {
+  const shouldRequire = shouldRequireBaseAuthFromEnv({
+    isProduction: false,
+    bypassBaseAuthInDev: "true",
+  });
+
+  assert.equal(shouldRequire, false);
+});
+
+test("Base auth: development still requires login without bypass", () => {
+  assert.equal(
+    shouldRequireBaseAuthFromEnv({
+      isProduction: false,
+      bypassBaseAuthInDev: "false",
+    }),
+    true
+  );
+
+  assert.equal(
+    shouldRequireBaseAuthFromEnv({
+      isProduction: false,
+    }),
+    true
+  );
 });

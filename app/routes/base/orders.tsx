@@ -1,6 +1,7 @@
 import { redirect } from "react-router";
 import type { Route } from "./+types/orders";
 import type { Order } from "~/.server/libs/db";
+import { shouldRequireBaseAuth } from "~/.server/libs/base-auth";
 import { getOrdersByUserId } from "~/.server/model/order";
 import { getSessionHandler } from "~/.server/libs/session";
 import { createCanonical } from "~/utils/meta";
@@ -40,10 +41,13 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   ];
 };
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+export const loader = async ({ request, context }: Route.LoaderArgs) => {
   const [session] = await getSessionHandler(request);
-  const user = session.get("user");
-  if (!user) throw redirect("/?login=true");
+  const user = session.get("user") ?? null;
+  const requireAuth = shouldRequireBaseAuth(context);
+  if (!user && requireAuth) throw redirect("/?login=true");
+
+  if (!user) return { orders: [] as Order[] };
 
   const orders = await getOrdersByUserId(user.id);
   return { orders };

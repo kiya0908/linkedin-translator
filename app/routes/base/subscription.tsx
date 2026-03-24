@@ -1,6 +1,7 @@
 import { redirect } from "react-router";
 import type { Route } from "./+types/subscription";
 import type { Subscription } from "~/.server/libs/db";
+import { shouldRequireBaseAuth } from "~/.server/libs/base-auth";
 import { getSessionHandler } from "~/.server/libs/session";
 import { getSubscriptionsByUserId } from "~/.server/model/subscriptions";
 import { createCanonical } from "~/utils/meta";
@@ -47,10 +48,18 @@ const toIntervalLabel = (interval: Subscription["interval"], count: number | nul
   return safeCount === 1 ? `Every ${interval}` : `Every ${safeCount} ${interval}s`;
 };
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+export const loader = async ({ request, context }: Route.LoaderArgs) => {
   const [session] = await getSessionHandler(request);
-  const user = session.get("user");
-  if (!user) throw redirect("/?login=true");
+  const user = session.get("user") ?? null;
+  const requireAuth = shouldRequireBaseAuth(context);
+  if (!user && requireAuth) throw redirect("/?login=true");
+
+  if (!user) {
+    return {
+      current: null as Subscription | null,
+      history: [] as Subscription[],
+    };
+  }
 
   let subscriptions: Subscription[] = [];
   try {
