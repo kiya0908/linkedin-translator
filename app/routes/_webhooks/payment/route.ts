@@ -7,6 +7,7 @@ import {
   handleSubscriptionExpired,
   handleSubscriptionRenewal,
 } from "~/.server/services/order";
+import { isIgnorableWebhookPaymentError } from "~/.server/services/order-errors";
 import { getOrderBySessionId } from "~/.server/model/order";
 import { createCreem } from "~/.server/libs/creem";
 import type {
@@ -15,19 +16,6 @@ import type {
   Refund,
   Subscription,
 } from "~/.server/libs/creem/types";
-
-const isIgnorableWebhookError = (message: string) => {
-  const known = [
-    "Invalid transaction",
-    "Subscription not found",
-    "Transaction is completed",
-    "Transaction is refunded",
-    "Transaction is cancelled",
-    "Transaction is expired",
-  ];
-
-  return known.some((item) => message.includes(item));
-};
 
 export const action = async ({ request }: Route.ActionArgs) => {
   if (request.method.toLowerCase() !== "post") {
@@ -89,7 +77,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     const message = (error as Error).message;
 
     // For dashboard-simulated events with foreign IDs, acknowledge to avoid retries.
-    if (isIgnorableWebhookError(message)) {
+    if (isIgnorableWebhookPaymentError(message)) {
       console.log("Ignore webhook event: ", message);
       return Response.json({ ignored: true, message }, { status: 200 });
     }

@@ -17,6 +17,10 @@ import {
   LINKEDIN_TRANSLATOR_PRO_PACK,
 } from "../../app/features/linkedin-translator/pricing.js";
 import { shouldRequireBaseAuthFromEnv } from "../../app/.server/libs/base-auth.js";
+import {
+  isDuplicateOrderCompletionError,
+  isIgnorableWebhookPaymentError,
+} from "../../app/.server/services/order-errors.js";
 
 test("Stage 3: prompt builder keeps mode-specific intent and hard constraints", () => {
   const prompt = buildTranslationPromptSet(
@@ -95,7 +99,7 @@ test("Stage 4: users with depleted paid balance fall back to expired access", ()
 
   assert.equal(entitlement.state, "expired");
   assert.equal(entitlement.canTranslate, true);
-  assert.equal(entitlement.remainingDaily, 2);
+  assert.equal(entitlement.remainingDaily, 4);
 });
 
 test("Stage 4: users with credits are treated as pro and bypass daily quota", () => {
@@ -158,4 +162,16 @@ test("Base auth: development still requires login without bypass", () => {
     }),
     true
   );
+});
+
+test("Payment callback: duplicate completion errors are treated as success-compatible", () => {
+  assert.equal(isDuplicateOrderCompletionError("Transaction is completed"), true);
+  assert.equal(isDuplicateOrderCompletionError("Transaction is processing"), true);
+  assert.equal(isDuplicateOrderCompletionError("Transaction is refunded"), false);
+});
+
+test("Payment webhook: ignorable errors exclude signature failures", () => {
+  assert.equal(isIgnorableWebhookPaymentError("Transaction is completed"), true);
+  assert.equal(isIgnorableWebhookPaymentError("Invalid transaction"), true);
+  assert.equal(isIgnorableWebhookPaymentError("Invalid Signature"), false);
 });

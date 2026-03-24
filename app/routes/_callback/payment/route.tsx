@@ -3,6 +3,7 @@ import { data, Link } from "react-router";
 import { CheckCircle2, XCircle, ArrowRight } from "lucide-react";
 
 import { handleOrderComplete } from "~/.server/services/order";
+import { isDuplicateOrderCompletionError } from "~/.server/services/order-errors";
 import { createCreem } from "~/.server/libs/creem";
 import { getSessionHandler } from "~/.server/libs/session";
 import { getUserCredits } from "~/.server/services/credits";
@@ -36,7 +37,15 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
     // 无论成功还是失败，都在后台尝试完成订单
     // 实际可能在 webhook 已经处理过了，这里可以当做一种冗余检查
-    await handleOrderComplete(rest.checkout_id);
+    try {
+      await handleOrderComplete(rest.checkout_id);
+    } catch (error) {
+      const message = (error as Error).message;
+      if (!isDuplicateOrderCompletionError(message)) {
+        throw error;
+      }
+      console.log("Ignore callback duplicate completion: ", message);
+    }
 
     // 获取最新的积分信息以便组件能够刷新
     let latestCredits = 0;

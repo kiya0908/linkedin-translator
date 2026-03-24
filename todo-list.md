@@ -230,7 +230,7 @@
 - consume/deduct on translation: app/routes/_api/translate.linkedin/route.ts, app/.server/services/linkedin-translator.ts, app/.server/services/credits.ts
 - webhook/refund: app/routes/_webhooks/payment/route.ts, app/.server/services/order.ts
 - DB schema/migrations: app/.server/drizzle/schema.ts, app/.server/drizzle/migrations/0000_workable_quentin_quire.sql
-- [ ] Critical fix pending: callback idempotency.
+- [x] Critical fix completed: callback idempotency (2026-03-24).
 - app/routes/_callback/payment/route.tsx currently always calls handleOrderComplete(rest.checkout_id).
 - If webhook already completed the order first, handleOrderComplete throws "Transaction is completed", and callback may show Payment Failed incorrectly.
 - Fix direction: make callback idempotent (completed order should still render success), only fail on real signature/order errors.
@@ -246,7 +246,7 @@
 - [x] Migration scripts aligned to binding name.
 - `package.json` updated: `db:migrate:local` and `db:migrate:remote` now use `DB` binding instead of old `nanobanana2pro`.
 - [ ] Follow-up when back home:
-- implement callback idempotency fix and add regression test
+- [x] implement callback idempotency fix and add regression test
 - run one end-to-end payment simulation (checkout.completed + callback + credits refresh)
 
 ## 2026-03-23 Latest updates (credits rules + naming)
@@ -415,3 +415,38 @@
 
 ### 验证结果
 - [x] `pnpm run typecheck` 通过。
+
+## 2026-03-24 Payment callback idempotency fix record (Codex)
+
+### Goals
+- [x] Fix false Payment Failed page after successful Creem payment when callback/webhook are both triggered.
+- [x] Keep signature validation strict (`Invalid Signature` must still fail).
+- [x] Unify callback/webhook ignorable payment-state errors to reduce drift.
+
+### Implemented
+- [x] `app/.server/services/order.ts`
+- `handleOrderComplete` is now idempotent for already completed orders: `order.status === "completed"` returns success instead of throwing.
+
+- [x] `app/routes/_callback/payment/route.tsx`
+- Added duplicate-completion guard for callback (`Transaction is completed` / `Transaction is processing`) so callback keeps success rendering.
+
+- [x] `app/routes/_webhooks/payment/route.ts`
+- Reused shared ignorable-payment error classifier; removed route-local duplicated list.
+
+- [x] `app/.server/services/order-errors.ts` (new)
+- Added shared helpers: `isDuplicateOrderCompletionError` and `isIgnorableWebhookPaymentError`.
+
+### Tests and verification
+- [x] Unit regression added in `tests/unit/index.test.ts` for:
+- duplicate completion classification
+- webhook ignorable error classification excludes `Invalid Signature`
+
+- [x] Command run: `pnpm run test:unit` (14/14 pass)
+- [x] Command run: `pnpm run typecheck` (pass)
+- [x] Command run: `pnpm run build` (pass; rerun outside sandbox because initial sandbox run hit `spawn EPERM`)
+
+### Follow-up
+- [ ] Run one production end-to-end payment replay check:
+- complete one real checkout
+- refresh/reopen the same callback URL
+- confirm callback page stays success and credits remain consistent

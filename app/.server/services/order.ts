@@ -107,6 +107,9 @@ export const handleOrderComplete = async (checkoutId: string) => {
 
   const order = await getOrderBySessionId(checkout.id);
   if (!order) throw Error("Invalid transaction");
+  if (order.status === "completed") {
+    return order;
+  }
   if (order.status !== "pending") {
     throw Error(`Transaction is ${order.status}`);
   }
