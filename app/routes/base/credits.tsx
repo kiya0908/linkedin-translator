@@ -1,87 +1,155 @@
-import { useOutletContext } from "react-router";
+import { redirect } from "react-router";
 import type { Route } from "./+types/credits";
-import type { Credit, User } from "~/.server/libs/db";
+import type { Credit } from "~/.server/libs/db";
+import { shouldRequireBaseAuth } from "~/.server/libs/base-auth";
 import { listCreditRecordsByUser } from "~/.server/model/credit_record";
 import { getSessionHandler } from "~/.server/libs/session";
-import { redirect } from "react-router";
+import { getUserCredits } from "~/.server/services/credits";
+import { createCanonical } from "~/utils/meta";
+import {
+  EmptyState,
+  PageIntro,
+  StatTile,
+  formatDate,
+  formatInteger,
+} from "./components/workspace";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-    const [session] = await getSessionHandler(request);
-    const user = session.get("user");
-    if (!user) throw redirect("/?login=true");
+const creditTypeLabelMap: Record<Credit["trans_type"], string> = {
+  initilize: "Initial grant",
+  purchase: "Purchase",
+  subscription: "Subscription",
+  adjustment: "Adjustment",
+};
 
-    const records = await listCreditRecordsByUser(user.id);
-    return { records };
+const creditTypeBadgeClassMap: Record<Credit["trans_type"], string> = {
+  initilize: "badge-info",
+  purchase: "badge-primary",
+  subscription: "badge-success",
+  adjustment: "badge-warning",
+};
+
+export const meta: Route.MetaFunction = ({ matches }) => {
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
+
+  return [
+    { title: "Credits | LinkedIn Translator Account" },
+    {
+      name: "description",
+      content:
+        "Check your LinkedIn Translator credit balance, top-up history, and remaining credit records.",
+    },
+    { name: "robots", content: "noindex, nofollow" },
+    createCanonical("/base/credits", domain),
+  ];
+};
+
+export const loader = async ({ request, context }: Route.LoaderArgs) => {
+  const [session] = await getSessionHandler(request);
+  const user = session.get("user") ?? null;
+  const requireAuth = shouldRequireBaseAuth(context);
+  if (!user && requireAuth) throw redirect("/?login=true");
+
+  if (!user) {
+    return {
+      records: [] as Credit[],
+      balance: 0,
+    };
+  }
+
+  const [records, creditsSummary] = await Promise.all([
+    listCreditRecordsByUser(user.id),
+    getUserCredits(user),
+  ]);
+
+  return {
+    records,
+    balance: creditsSummary.balance,
+  };
 };
 
 export default function Credits({ loaderData }: Route.ComponentProps) {
-    useOutletContext<{ user: User }>();
-    const { records } = loaderData;
+  const { records, balance } = loaderData;
 
-    const getBalance = () => {
-        if (!records || records.length === 0) return 0;
-        // Assuming the first or latest record contains the total remaining credits
-        // Actually getCreditRecordsByUserId returns all records. You would sum them or use remaining_credits of the latest
-        return records[0]?.remaining_credits || 0;
-    };
+  const totalGranted = records.reduce(
+    (sum, record) => sum + Math.max(0, record.credits),
+    0
+  );
+  const activeBuckets = records.filter((record) => record.remaining_credits > 0).length;
 
-    return (
-        <div className="space-y-6">
-            <div>
-                <h2 className="text-2xl font-bold tracking-tight">Credits & History</h2>
-                <p className="text-base-content/70 mt-1">View your credit balance and usage history.</p>
-            </div>
+  return (
+    <div className="space-y-6">
+      <PageIntro
+        title="Credits"
+        description="Track available credits and every top-up record tied to your account."
+        action={{ label: "Buy credits", to: "/#pricing" }}
+      />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-primary text-primary-content p-6 rounded-xl md:col-span-1 shadow-sm">
-                    <h3 className="text-lg font-medium opacity-80">Current Balance</h3>
-                    <div className="mt-4 flex items-baseline text-4xl font-extrabold">
-                        {getBalance()}
-                        <span className="ml-2 text-xl font-medium opacity-80">credits</span>
-                    </div>
-                    <a href="/#pricing" className="btn btn-neutral btn-sm mt-6">Buy Credits</a>
-                </div>
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <StatTile
+          label="Available Now"
+          value={`${formatInteger(balance)} credits`}
+          helper="Real-time remaining balance"
+          tone="primary"
+        />
+        <StatTile
+          label="Total Granted"
+          value={`${formatInteger(totalGranted)} credits`}
+          helper="All-time credited amount"
+        />
+        <StatTile
+          label="Active Buckets"
+          value={formatInteger(activeBuckets)}
+          helper="Credit records with remaining balance"
+        />
+      </div>
 
-                <div className="bg-base-100 p-6 rounded-xl border border-base-200 md:col-span-2">
-                    <h3 className="text-lg font-semibold mb-4">Transaction History</h3>
-                    <div className="overflow-x-auto">
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Credits</th>
-                                    <th>Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {records && records.length > 0 ? (
-                                    records.map((record: Credit) => (
-                                        <tr key={record.id}>
-                                            <td>{new Date(record.created_at).toLocaleDateString()}</td>
-                                            <td>
-                                                <span className={`badge ${record.credits > 0 ? "badge-success" : "badge-ghost"}`}>
-                                                    {record.trans_type}
-                                                </span>
-                                            </td>
-                                            <td className={record.credits > 0 ? "text-success" : "text-base-content"}>
-                                                {record.credits > 0 ? `+${record.credits}` : record.credits}
-                                            </td>
-                                            <td>{record.remaining_credits}</td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={4} className="text-center py-4 text-base-content/50">
-                                            No matching records found.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+      <section className="rounded-2xl border border-base-300 bg-base-100 p-5 md:p-6">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-lg font-semibold">Credit Records</h2>
+          <span className="text-xs text-base-content/60">{records.length} entries</span>
         </div>
-    );
+
+        {records.length > 0 ? (
+          <div className="mt-4 overflow-x-auto">
+            <table className="table table-zebra">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Granted</th>
+                  <th>Remaining</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                {records.map((record: Credit) => (
+                  <tr key={record.id}>
+                    <td className="text-sm">{formatDate(record.created_at)}</td>
+                    <td>
+                      <span className={`badge badge-sm ${creditTypeBadgeClassMap[record.trans_type]}`}>
+                        {creditTypeLabelMap[record.trans_type]}
+                      </span>
+                    </td>
+                    <td className="font-medium text-success">+{formatInteger(record.credits)}</td>
+                    <td>{formatInteger(record.remaining_credits)}</td>
+                    <td className="font-mono text-xs text-base-content/70">
+                      {record.source_id || "--"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="mt-4">
+            <EmptyState
+              title="No credit records yet"
+              description="When you receive starter credits or complete a purchase, the records will show up here."
+              action={{ label: "Go to pricing", to: "/#pricing" }}
+            />
+          </div>
+        )}
+      </section>
+    </div>
+  );
 }

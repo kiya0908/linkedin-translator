@@ -1,6 +1,6 @@
 # LinkedIn Translator – Translate Profiles, Posts & Messages Instantly
 
-LinkedIn Translator is not just a language translator. It is an AI-powered **Tone Translator** built for workplace communication.
+LinkedIn Translator is not just a language translator. It is an AI-powered **Linkedin Translator** built for workplace communication.
 
 It transforms casual wording into polished, engaging, professional LinkedIn-style copy for posts, profile summaries, and resume descriptions.
 

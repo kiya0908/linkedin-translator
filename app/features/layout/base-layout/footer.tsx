@@ -1,3 +1,4 @@
+//base路由 用户面板footer组件
 import { Fragment } from "react";
 import { Logo, Link } from "~/components/common";
 
@@ -15,45 +16,70 @@ export interface FooterProps {
 }
 
 export const Footer = ({ navLinks }: FooterProps) => {
+  void navLinks;
+
   return (
     <Fragment>
-      <footer className="bg-neutral text-neutral-content py-8 sm:py-10">
-        <div className="container footer md:footer-horizontal gap-x-8 gap-y-4">
-          <aside className="md:max-w-sm max-md:mb-6">
-            <Link className="mb-2" to="/">
-              <Logo />
+      <footer className="bg-surface py-20 px-6 border-t border-outline-variant">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+          <div className="col-span-2">
+            <Link to="/" className="inline-flex mb-6">
+              <Logo
+                label="LinkedIn Translator"
+                imageAlt="LinkedIn Translator logo"
+                size="base"
+              />
             </Link>
-            <p>
-              Transform everyday writing into professional LinkedIn tone with a fast, modern workflow.
+            <p className="text-sm text-on-surface-variant max-w-xs leading-relaxed">
+              AI tone translation for modern professionals. All rights reserved.
             </p>
-          </aside>
-          {navLinks.map((navLink, i) => (
-            <div key={i}>
-              <label className="footer-title mb-0">{navLink.label}</label>
-              <nav className="flex flex-row md:flex-col gap-x-4 gap-y-2 flex-wrap">
-                {navLink.list.map((link, index) => (
-                  <Link
-                    key={`${navLink.label}_${index}`}
-                    className="link link-hover"
-                    target={link.target}
-                    to={link.to}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-          ))}
+            <p className="text-[10px] text-on-surface-variant/40 mt-8">
+              (c) {new Date().getFullYear()} LinkedIn Translator. All rights reserved.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">
+              Legal
+            </h4>
+            <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
+              <li>
+                <Link to="/legal/privacy" className="hover:text-primary">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/terms" className="hover:text-primary">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link to="/legal/cookie" className="hover:text-primary">
+                  Cookie Policy
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">
+              Support
+            </h4>
+            <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
+              <li>
+                <Link to="mailto:support@linkedintranslator.online" target="_blank" className="hover:text-primary">
+                  support@linkedintranslator.online
+                </Link>
+              </li>
+              <li>
+                <Link to="https://linkedintranslator.online" target="_blank" className="hover:text-primary">
+                  linkedintranslator.online
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </footer>
-      <div className="bg-neutral text-neutral-content border-t border-neutral-700">
-        <div className="container text-sm p-4">
-          <p className="text-center leading-none text-neutral-400">
-            © {new Date().getFullYear()} LinkedIn Translator. All Rights Reserved.
-          </p>
-        </div>
-      </div>
     </Fragment>
   );
 };
-

@@ -1,11 +1,11 @@
+////base路由 用户面板header组件
 import clsx from "clsx";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 
 import { useUser } from "~/store";
 import { useWindowScroll } from "~/hooks/dom";
 import { GoogleOAuth } from "~/features/oauth";
 
-import { Menu, X } from "lucide-react";
 import { Logo, Link } from "~/components/common";
 import { Image } from "~/components/common";
 
@@ -19,8 +19,6 @@ export interface HeaderProps {
 export const Header = ({ navLinks }: HeaderProps) => {
   const user = useUser((state) => state.user);
   const credits = useUser((state) => state.credits);
-
-  const [openDrawer, setOpenDrawer] = useState(false);
 
   const { y } = useWindowScroll();
   const isScroll = y >= 30;
@@ -37,7 +35,7 @@ export const Header = ({ navLinks }: HeaderProps) => {
       >
         <div className="container flex h-full items-center">
           <Link to="/">
-            <Logo />
+            <Logo label="LinkedIn Translator" imageAlt="LinkedIn Translator logo" />
           </Link>
           <nav className="mx-8 [&>a]:hover:underline flex items-center gap-6 whitespace-nowrap max-md:hidden">
             {navLinks.map((link, i) => (
@@ -73,59 +71,6 @@ export const Header = ({ navLinks }: HeaderProps) => {
                 )}
               </>
             )}
-
-            <div className="drawer">
-              <input
-                id="header-drawer"
-                type="checkbox"
-                checked={openDrawer}
-                onChange={() => setOpenDrawer(!openDrawer)}
-                className="drawer-toggle"
-                aria-label="Drawer Toggle"
-              />
-              <div className="drawer-content">
-                <label
-                  htmlFor="header-drawer"
-                  className="swap swap-rotate md:hidden"
-                >
-                  <input
-                    type="checkbox"
-                    checked={openDrawer}
-                    onChange={() => {}}
-                    aria-label="Drawer Menu Button"
-                  />
-                  <Menu className="swap-off" size={32} />
-                  <X className="swap-on" size={32} />
-                </label>
-              </div>
-              <div className="drawer-side">
-                <label
-                  htmlFor="header-drawer"
-                  aria-label="close sidebar"
-                  className="drawer-overlay"
-                />
-                <div className="bg-base-200 text-base-content min-h-full w-4/5 max-w-xs relative">
-                  <div className="p-4 sticky top-0 w-full bg-base-200 border-b border-base-300">
-                    <Link to="/" onClick={() => setOpenDrawer(false)}>
-                      <Logo />
-                    </Link>
-                  </div>
-                  <ul className="menu menu-lg w-full">
-                    {navLinks.map((link, i) => (
-                      <li key={i} onClick={() => setOpenDrawer(false)}>
-                        <Link
-                          className="rounded-box"
-                          to={link.to}
-                          target={link.target}
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </header>
