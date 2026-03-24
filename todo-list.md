@@ -372,3 +372,28 @@
 
 ### 验证结果
 - [x] `pnpm run typecheck` 通过。
+
+## 2026-03-24 /base 布局回调记录（Codex）
+
+### 操作目标
+- [x] 删除顶部导航在移动端右侧抽屉中显示的菜单面板。
+- [x] 将 `/base` 页面 Footer 调整为与首页一致的展示风格。
+- [x] 将 `/base` 左侧导航恢复为原先样式，并保持“左侧点击、右侧内容区切换”。
+
+### 本轮完成项
+- [x] Header 中移除 `drawer`/`drawer-side` 整块结构，不再渲染右侧弹出菜单。
+- [x] Footer 改为首页同款结构（浅底、品牌区 + Legal + Support 分组）。
+- [x] Sidebar 从增强版卡片导航恢复为原先简洁侧栏样式（`Profile` / `Credits & History` / `Orders` / `Subscription`）。
+
+### 关键文件与修改内容
+- [x] `app/features/layout/base-layout/header.tsx`
+- 删除右侧抽屉菜单相关 JSX 与状态逻辑，保留桌面导航与用户信息区。
+
+- [x] `app/features/layout/base-layout/footer.tsx`
+- 结构改为首页一致版式，并统一品牌文案与链接分组。
+
+- [x] `app/routes/base/layout/components/sidebar.tsx`
+- 恢复旧版左侧导航组件与激活态样式，维持左侧导航位置与右侧内容联动。
+
+### 验证结果
+- [x] `pnpm run typecheck` 通过。

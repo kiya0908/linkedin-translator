@@ -1,3 +1,4 @@
+//base路由 用户面板主页面显示组件
 import { Fragment } from "react";
 import { Header, type HeaderProps } from "./header";
 import { Footer, type FooterProps } from "./footer";
