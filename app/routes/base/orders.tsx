@@ -3,6 +3,7 @@ import type { Route } from "./+types/orders";
 import type { Order } from "~/.server/libs/db";
 import { getOrdersByUserId } from "~/.server/model/order";
 import { getSessionHandler } from "~/.server/libs/session";
+import { createCanonical } from "~/utils/meta";
 import {
   EmptyState,
   PageIntro,
@@ -22,6 +23,21 @@ const orderStatusClassMap: Record<Order["status"], string> = {
   refunded: "badge-neutral",
   cancelled: "badge-ghost",
   expired: "badge-ghost",
+};
+
+export const meta: Route.MetaFunction = ({ matches }) => {
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
+
+  return [
+    { title: "Orders | LinkedIn Translator Account" },
+    {
+      name: "description",
+      content:
+        "Review your LinkedIn Translator purchase orders, payment status, and billing timestamps.",
+    },
+    { name: "robots", content: "noindex, nofollow" },
+    createCanonical("/base/orders", domain),
+  ];
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {

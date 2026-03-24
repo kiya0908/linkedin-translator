@@ -3,6 +3,7 @@ import type { Route } from "./+types/subscription";
 import type { Subscription } from "~/.server/libs/db";
 import { getSessionHandler } from "~/.server/libs/session";
 import { getSubscriptionsByUserId } from "~/.server/model/subscriptions";
+import { createCanonical } from "~/utils/meta";
 import {
   EmptyState,
   PageIntro,
@@ -15,6 +16,21 @@ const subscriptionStatusClassMap: Record<Subscription["status"], string> = {
   active: "badge-success",
   cancelled: "badge-warning",
   expired: "badge-ghost",
+};
+
+export const meta: Route.MetaFunction = ({ matches }) => {
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
+
+  return [
+    { title: "Subscription | LinkedIn Translator Account" },
+    {
+      name: "description",
+      content:
+        "Manage your LinkedIn Translator plan details, renewal timeline, and subscription history.",
+    },
+    { name: "robots", content: "noindex, nofollow" },
+    createCanonical("/base/subscription", domain),
+  ];
 };
 
 const toPlanLabel = (value: string | null | undefined) => {

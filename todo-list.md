@@ -285,3 +285,90 @@
 - [x] 确认 GOOGLE_ANALYTICS_ID 会从 root loaderData 传入 Document（示例值：G-33HJFY9X9D）。
 - [x] 明确记录：window.__reactRouterContext.streamController.enqueue(...) 属于 React Router 数据流，不是 GA 脚本本体。
 - [x] 执行 pnpm run build，构建通过，确认本次改动未破坏打包链路。
+
+## 2026-03-24 /base Workspace 页面改版记录（Codex）
+
+### 操作目标
+- [x] 重新规划并统一 `/base/profile`、`/base/credits`、`/base/orders`、`/base/subscription` 四个页面的前端展示结构。
+- [x] 修复/规避品牌文案异常（如 logo 旁显示 `hair room`）问题，确保后台区域品牌显示一致。
+- [x] 收敛页面信息层级与空态展示，降低“有按钮但无真实动作”的误导体验。
+
+### 本轮完成项
+- [x] `/base` 布局改为统一的 workspace 壳：左侧导航 + 右侧主工作区（响应式支持）。
+- [x] 顶部导航从泛首页入口调整为后台导向（`Dashboard`、`Pricing`、`FAQs`、`Support`）。
+- [x] 侧边栏升级为语义化导航（Profile/Credits/Orders/Subscription），补充图标与说明文案。
+- [x] Profile 页移除无后端落地的“Save Changes”伪表单，改为账号信息面板与状态卡展示。
+- [x] Credits 页余额计算改为服务端真实值（`getUserCredits`），并重构交易记录视图与空态。
+- [x] Orders 页补充统计卡、状态映射、金额与时间格式化，去除 `any` 风险写法。
+- [x] Subscription 页移除 `alert` 占位操作，改为真实可执行动作（升级或邮件支持），并展示订阅历史。
+- [x] 新增 `workspace` 共享 UI 工具组件，统一页面头部、状态卡、空态、时间/金额格式化逻辑。
+- [x] 在 header / drawer / footer 显式传入 `Logo` 的 `label` 与 `imageAlt`，固定品牌文案为 `LinkedIn Translator`。
+
+### 关键文件与修改内容
+- [x] `app/routes/base/layout/index.tsx`
+- 调整 `header.navLinks`（Dashboard / Pricing / FAQs / Support）。
+- 重构 `/base` 主体容器布局，统一后台页面视觉结构。
+
+- [x] `app/routes/base/layout/components/sidebar.tsx`
+- 将简单链接列表改为 workspace 侧栏：图标、描述、激活态、底部引导入口。
+
+- [x] `app/routes/base/profile.tsx`
+- 改为可读性优先的账号信息页，显示 `nickname/email/avatar/created_at`，移除无提交逻辑的输入表单。
+
+- [x] `app/routes/base/credits.tsx`
+- loader 新增 `getUserCredits(user)`，余额以服务端计算为准。
+- 页面重构为统计卡 + 记录表，补充类型标签与空态。
+
+- [x] `app/routes/base/orders.tsx`
+- 增加订单统计与状态颜色映射，展示 `order_no/product/status/amount/paid_at`。
+- 统一金额与时间格式化展示。
+
+- [x] `app/routes/base/subscription.tsx`
+- 由“仅 active 单条”扩展为“current + history”展示。
+- 移除前端占位 `alert`，替换为可执行的升级/支持动作。
+
+- [x] `app/routes/base/components/workspace.tsx`（新增）
+- 新增共享组件：`PageIntro`、`StatTile`、`EmptyState`。
+- 新增共享格式化工具：`formatDate`、`formatDateTime`、`formatCurrencyFromCents`、`formatInteger`。
+
+- [x] `app/features/layout/base-layout/header.tsx`
+- Logo 显式指定：`label="LinkedIn Translator"`、`imageAlt="LinkedIn Translator logo"`（含移动抽屉）。
+
+- [x] `app/features/layout/base-layout/footer.tsx`
+- Footer Logo 显式指定品牌文案，统一后台与全站品牌显示。
+
+### 验证结果
+- [x] `pnpm run typecheck` 通过。
+- [x] `pnpm run build` 通过。
+
+### 线上校验提示
+- [ ] 若线上仍看到旧样式或异常文案，优先检查部署版本与 CDN/浏览器缓存（强刷后再验收）。
+
+## 2026-03-24 /base 路由 SEO metadata 补充记录（Codex）
+
+### 操作目标
+- [x] 为 `/base` 账号页补齐 SEO metadata，解决 title / description / canonical 为空的问题。
+- [x] 每个页面独立配置 metadata，避免多个页面共用或覆盖同一组文案。
+
+### 本轮完成项
+- [x] 为 `/base/profile` 新增 `meta`：`title`、`description`、`canonical`。
+- [x] 为 `/base/credits` 新增 `meta`：`title`、`description`、`canonical`。
+- [x] 为 `/base/orders` 新增 `meta`：`title`、`description`、`canonical`。
+- [x] 为 `/base/subscription` 新增 `meta`：`title`、`description`、`canonical`。
+- [x] 以上 4 个页面统一补充 `robots: noindex, nofollow`（账号后台页默认不收录）。
+
+### 关键文件与修改内容
+- [x] `app/routes/base/profile.tsx`
+- 新增 `export const meta`，canonical 指向 `/base/profile`。
+
+- [x] `app/routes/base/credits.tsx`
+- 新增 `export const meta`，canonical 指向 `/base/credits`。
+
+- [x] `app/routes/base/orders.tsx`
+- 新增 `export const meta`，canonical 指向 `/base/orders`。
+
+- [x] `app/routes/base/subscription.tsx`
+- 新增 `export const meta`，canonical 指向 `/base/subscription`。
+
+### 验证结果
+- [x] `pnpm run typecheck` 通过。

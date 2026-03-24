@@ -1,11 +1,28 @@
+import type { Route } from "./+types/profile";
 import { useOutletContext } from "react-router";
 import type { User } from "~/.server/libs/db";
 import { Image } from "~/components/common";
+import { createCanonical } from "~/utils/meta";
 import {
   PageIntro,
   StatTile,
   formatDate,
 } from "./components/workspace";
+
+export const meta: Route.MetaFunction = ({ matches }) => {
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
+
+  return [
+    { title: "Profile | LinkedIn Translator Account" },
+    {
+      name: "description",
+      content:
+        "View your LinkedIn Translator account profile details, sign-in identity, and member status.",
+    },
+    { name: "robots", content: "noindex, nofollow" },
+    createCanonical("/base/profile", domain),
+  ];
+};
 
 export default function Profile() {
   const { user } = useOutletContext<{ user: User }>();

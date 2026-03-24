@@ -4,6 +4,7 @@ import type { Credit } from "~/.server/libs/db";
 import { listCreditRecordsByUser } from "~/.server/model/credit_record";
 import { getSessionHandler } from "~/.server/libs/session";
 import { getUserCredits } from "~/.server/services/credits";
+import { createCanonical } from "~/utils/meta";
 import {
   EmptyState,
   PageIntro,
@@ -24,6 +25,21 @@ const creditTypeBadgeClassMap: Record<Credit["trans_type"], string> = {
   purchase: "badge-primary",
   subscription: "badge-success",
   adjustment: "badge-warning",
+};
+
+export const meta: Route.MetaFunction = ({ matches }) => {
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
+
+  return [
+    { title: "Credits | LinkedIn Translator Account" },
+    {
+      name: "description",
+      content:
+        "Check your LinkedIn Translator credit balance, top-up history, and remaining credit records.",
+    },
+    { name: "robots", content: "noindex, nofollow" },
+    createCanonical("/base/credits", domain),
+  ];
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
