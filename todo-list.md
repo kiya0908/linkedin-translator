@@ -258,3 +258,160 @@
 - [x] Translation paid billing standardized to fixed `1 credit` per successful request.
 - [x] Task-level credits constant renamed from `NANO_BANANA_TASK_CREDITS` to `EVERY_TASK_CREDITS`.
 - [x] All related references updated and `pnpm run typecheck` passed.
+
+## 2026-03-23 Latest updates (online 504 timeout fix)
+
+- [x] Issue reproduced and confirmed in production path: `POST /api/translate/linkedin` returned `504 Gateway Timeout`, while `app.pageview.app` error was analytics script noise and not the core blocker.
+- [x] Upstream baseline checks completed against Gemini 2.5 Flash endpoint: realistic requests often took ~13s-19s, with occasional transient `fetch failed` / socket termination.
+- [x] Server translation provider hardened in `app/.server/services/linkedin-translation-provider.ts`:
+- added configurable timeout via `LINKEDIN_TRANSLATION_TIMEOUT_MS` (default 35s, bounded 10s-60s)
+- added bounded retry via `LINKEDIN_TRANSLATION_MAX_ATTEMPTS` (default 2, bounded 1-4)
+- added retry backoff via `LINKEDIN_TRANSLATION_RETRY_BASE_DELAY_MS` (default 400ms)
+- added retryable network/provider error classification and graceful normalization
+- kept structured output path, with safer fallback to plain-text completion on retryable failure
+- [x] Frontend error handling improved in `app/features/linkedin-translator/translation-interface.tsx`:
+- normalized `Failed to fetch` into user-friendly network message
+- normalized timeout / 504 into explicit timeout message
+- added status-based fallback message for 5xx responses
+- [x] Verification passed after patch:
+- `pnpm run typecheck`
+- `npm run build`
+- [ ] Ops follow-up: confirm production Cloudflare Worker env has a valid `KIEAI_APIKEY` configured in Dashboard vars/secrets for the currently routed service.
+## 2026-03-24 GA 统计接入记录（Codex）
+
+### 操作目标
+- [x] 使用环境变量 GOOGLE_ANALYTICS_ID 在全站每个页面注入 GA（gtag.js）统计代码。
+- [x] 让 SPA 路由切换也触发页面访问上报（page_path），避免只统计首屏。
+- [x] 修复本地开发环境中“仅在 React Router loaderData 看到 GA ID，但页面元素中看不到 GA 脚本”的问题。
+
+### 修改文件
+- [x] app/features/document/index.tsx
+- [x] types/global.d.ts
+
+### 修改内容（详细）
+- [x] 在全局文档组件C:\Users\1\Desktop\test\linkedin-translator\app\features\document\index.tsx 的 head 中直接渲染 GA 脚本。
+- [x] 新增 script async src="https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}"。
+- [x] 新增 GA 初始化脚本：window.dataLayer、gtag('js', new Date())、gtag('config', GOOGLE_ANALYTICS_ID)。
+- [x] 删除旧的 useEffect + createElement 动态注入 GA 脚本实现，避免重复注入与清理复杂度。
+- [x] 引入 useLocation() 并在路由变化时调用：window.gtag("config", GOOGLE_ANALYTICS_ID, { page_path: pathname + search })。
+- [x] 通过 hasTrackedNavigationRef 跳过首个初始化重复上报，仅对后续路由切换上报。
+- [x] 将 GA 的注入与路由上报条件从“仅生产环境”调整为“只要有 GOOGLE_ANALYTICS_ID 就启用”，便于本地联调验证。
+- [x] 保留 Ads / Plausible 的生产环境控制逻辑，不影响既有广告与其他统计脚本策略。
+- [x] 在 types/global.d.ts 增加 window.gtag 与 window.dataLayer 的全局类型声明。
+
+### 结果与验证
+- [x] 确认 GOOGLE_ANALYTICS_ID 会从 root loaderData 传入 Document（示例值：G-33HJFY9X9D）。
+- [x] 明确记录：window.__reactRouterContext.streamController.enqueue(...) 属于 React Router 数据流，不是 GA 脚本本体。
+- [x] 执行 pnpm run build，构建通过，确认本次改动未破坏打包链路。
+
+## 2026-03-24 /base Workspace 页面改版记录（Codex）
+
+### 操作目标
+- [x] 重新规划并统一 `/base/profile`、`/base/credits`、`/base/orders`、`/base/subscription` 四个页面的前端展示结构。
+- [x] 修复/规避品牌文案异常（如 logo 旁显示 `hair room`）问题，确保后台区域品牌显示一致。
+- [x] 收敛页面信息层级与空态展示，降低“有按钮但无真实动作”的误导体验。
+
+### 本轮完成项
+- [x] `/base` 布局改为统一的 workspace 壳：左侧导航 + 右侧主工作区（响应式支持）。
+- [x] 顶部导航从泛首页入口调整为后台导向（`Dashboard`、`Pricing`、`FAQs`、`Support`）。
+- [x] 侧边栏升级为语义化导航（Profile/Credits/Orders/Subscription），补充图标与说明文案。
+- [x] Profile 页移除无后端落地的“Save Changes”伪表单，改为账号信息面板与状态卡展示。
+- [x] Credits 页余额计算改为服务端真实值（`getUserCredits`），并重构交易记录视图与空态。
+- [x] Orders 页补充统计卡、状态映射、金额与时间格式化，去除 `any` 风险写法。
+- [x] Subscription 页移除 `alert` 占位操作，改为真实可执行动作（升级或邮件支持），并展示订阅历史。
+- [x] 新增 `workspace` 共享 UI 工具组件，统一页面头部、状态卡、空态、时间/金额格式化逻辑。
+- [x] 在 header / drawer / footer 显式传入 `Logo` 的 `label` 与 `imageAlt`，固定品牌文案为 `LinkedIn Translator`。
+
+### 关键文件与修改内容
+- [x] `app/routes/base/layout/index.tsx`
+- 调整 `header.navLinks`（Dashboard / Pricing / FAQs / Support）。
+- 重构 `/base` 主体容器布局，统一后台页面视觉结构。
+
+- [x] `app/routes/base/layout/components/sidebar.tsx`
+- 将简单链接列表改为 workspace 侧栏：图标、描述、激活态、底部引导入口。
+
+- [x] `app/routes/base/profile.tsx`
+- 改为可读性优先的账号信息页，显示 `nickname/email/avatar/created_at`，移除无提交逻辑的输入表单。
+
+- [x] `app/routes/base/credits.tsx`
+- loader 新增 `getUserCredits(user)`，余额以服务端计算为准。
+- 页面重构为统计卡 + 记录表，补充类型标签与空态。
+
+- [x] `app/routes/base/orders.tsx`
+- 增加订单统计与状态颜色映射，展示 `order_no/product/status/amount/paid_at`。
+- 统一金额与时间格式化展示。
+
+- [x] `app/routes/base/subscription.tsx`
+- 由“仅 active 单条”扩展为“current + history”展示。
+- 移除前端占位 `alert`，替换为可执行的升级/支持动作。
+
+- [x] `app/routes/base/components/workspace.tsx`（新增）
+- 新增共享组件：`PageIntro`、`StatTile`、`EmptyState`。
+- 新增共享格式化工具：`formatDate`、`formatDateTime`、`formatCurrencyFromCents`、`formatInteger`。
+
+- [x] `app/features/layout/base-layout/header.tsx`
+- Logo 显式指定：`label="LinkedIn Translator"`、`imageAlt="LinkedIn Translator logo"`（含移动抽屉）。
+
+- [x] `app/features/layout/base-layout/footer.tsx`
+- Footer Logo 显式指定品牌文案，统一后台与全站品牌显示。
+
+### 验证结果
+- [x] `pnpm run typecheck` 通过。
+- [x] `pnpm run build` 通过。
+
+### 线上校验提示
+- [ ] 若线上仍看到旧样式或异常文案，优先检查部署版本与 CDN/浏览器缓存（强刷后再验收）。
+
+## 2026-03-24 /base 路由 SEO metadata 补充记录（Codex）
+
+### 操作目标
+- [x] 为 `/base` 账号页补齐 SEO metadata，解决 title / description / canonical 为空的问题。
+- [x] 每个页面独立配置 metadata，避免多个页面共用或覆盖同一组文案。
+
+### 本轮完成项
+- [x] 为 `/base/profile` 新增 `meta`：`title`、`description`、`canonical`。
+- [x] 为 `/base/credits` 新增 `meta`：`title`、`description`、`canonical`。
+- [x] 为 `/base/orders` 新增 `meta`：`title`、`description`、`canonical`。
+- [x] 为 `/base/subscription` 新增 `meta`：`title`、`description`、`canonical`。
+- [x] 以上 4 个页面统一补充 `robots: noindex, nofollow`（账号后台页默认不收录）。
+
+### 关键文件与修改内容
+- [x] `app/routes/base/profile.tsx`
+- 新增 `export const meta`，canonical 指向 `/base/profile`。
+
+- [x] `app/routes/base/credits.tsx`
+- 新增 `export const meta`，canonical 指向 `/base/credits`。
+
+- [x] `app/routes/base/orders.tsx`
+- 新增 `export const meta`，canonical 指向 `/base/orders`。
+
+- [x] `app/routes/base/subscription.tsx`
+- 新增 `export const meta`，canonical 指向 `/base/subscription`。
+
+### 验证结果
+- [x] `pnpm run typecheck` 通过。
+
+## 2026-03-24 /base 布局回调记录（Codex）
+
+### 操作目标
+- [x] 删除顶部导航在移动端右侧抽屉中显示的菜单面板。
+- [x] 将 `/base` 页面 Footer 调整为与首页一致的展示风格。
+- [x] 将 `/base` 左侧导航恢复为原先样式，并保持“左侧点击、右侧内容区切换”。
+
+### 本轮完成项
+- [x] Header 中移除 `drawer`/`drawer-side` 整块结构，不再渲染右侧弹出菜单。
+- [x] Footer 改为首页同款结构（浅底、品牌区 + Legal + Support 分组）。
+- [x] Sidebar 从增强版卡片导航恢复为原先简洁侧栏样式（`Profile` / `Credits & History` / `Orders` / `Subscription`）。
+
+### 关键文件与修改内容
+- [x] `app/features/layout/base-layout/header.tsx`
+- 删除右侧抽屉菜单相关 JSX 与状态逻辑，保留桌面导航与用户信息区。
+
+- [x] `app/features/layout/base-layout/footer.tsx`
+- 结构改为首页一致版式，并统一品牌文案与链接分组。
+
+- [x] `app/routes/base/layout/components/sidebar.tsx`
+- 恢复旧版左侧导航组件与激活态样式，维持左侧导航位置与右侧内容联动。
+
+### 验证结果
+- [x] `pnpm run typecheck` 通过。
