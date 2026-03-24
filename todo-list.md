@@ -230,7 +230,7 @@
 - consume/deduct on translation: app/routes/_api/translate.linkedin/route.ts, app/.server/services/linkedin-translator.ts, app/.server/services/credits.ts
 - webhook/refund: app/routes/_webhooks/payment/route.ts, app/.server/services/order.ts
 - DB schema/migrations: app/.server/drizzle/schema.ts, app/.server/drizzle/migrations/0000_workable_quentin_quire.sql
-- [x] Critical fix completed: callback idempotency (2026-03-24).
+- [x] 关键修复已完成：callback 幂等性（2026-03-24）。
 - app/routes/_callback/payment/route.tsx currently always calls handleOrderComplete(rest.checkout_id).
 - If webhook already completed the order first, handleOrderComplete throws "Transaction is completed", and callback may show Payment Failed incorrectly.
 - Fix direction: make callback idempotent (completed order should still render success), only fail on real signature/order errors.
@@ -246,7 +246,7 @@
 - [x] Migration scripts aligned to binding name.
 - `package.json` updated: `db:migrate:local` and `db:migrate:remote` now use `DB` binding instead of old `nanobanana2pro`.
 - [ ] Follow-up when back home:
-- [x] implement callback idempotency fix and add regression test
+- [x] 实现 callback 幂等性修复并补充回归测试
 - run one end-to-end payment simulation (checkout.completed + callback + credits refresh)
 
 ## 2026-03-23 Latest updates (credits rules + naming)
@@ -416,37 +416,37 @@
 ### 验证结果
 - [x] `pnpm run typecheck` 通过。
 
-## 2026-03-24 Payment callback idempotency fix record (Codex)
+## 2026-03-24 支付回调幂等性修复记录（Codex）
 
-### Goals
-- [x] Fix false Payment Failed page after successful Creem payment when callback/webhook are both triggered.
-- [x] Keep signature validation strict (`Invalid Signature` must still fail).
-- [x] Unify callback/webhook ignorable payment-state errors to reduce drift.
+### 目标
+- [x] 修复 Creem 支付成功后，callback/webhook 同时触发时误显示 Payment Failed 的问题。
+- [x] 保持签名校验严格（`Invalid Signature` 仍然必须失败）。
+- [x] 统一 callback/webhook 可忽略的支付状态错误，避免两处规则漂移。
 
-### Implemented
+### 实施内容
 - [x] `app/.server/services/order.ts`
-- `handleOrderComplete` is now idempotent for already completed orders: `order.status === "completed"` returns success instead of throwing.
+- `handleOrderComplete` 对已完成订单改为幂等返回：`order.status === "completed"` 时直接返回成功，不再抛错。
 
 - [x] `app/routes/_callback/payment/route.tsx`
-- Added duplicate-completion guard for callback (`Transaction is completed` / `Transaction is processing`) so callback keeps success rendering.
+- 为 callback 增加重复完成兜底（`Transaction is completed` / `Transaction is processing`），避免误判失败页。
 
 - [x] `app/routes/_webhooks/payment/route.ts`
-- Reused shared ignorable-payment error classifier; removed route-local duplicated list.
+- 复用共享的可忽略支付错误判定，移除路由内重复维护的错误列表。
 
-- [x] `app/.server/services/order-errors.ts` (new)
-- Added shared helpers: `isDuplicateOrderCompletionError` and `isIgnorableWebhookPaymentError`.
+- [x] `app/.server/services/order-errors.ts`（新增）
+- 新增共享方法：`isDuplicateOrderCompletionError`、`isIgnorableWebhookPaymentError`。
 
-### Tests and verification
-- [x] Unit regression added in `tests/unit/index.test.ts` for:
-- duplicate completion classification
-- webhook ignorable error classification excludes `Invalid Signature`
+### 测试与验证
+- [x] 在 `tests/unit/index.test.ts` 新增回归测试，覆盖：
+- 重复完成错误识别
+- webhook 可忽略错误判定不包含 `Invalid Signature`
 
-- [x] Command run: `pnpm run test:unit` (14/14 pass)
-- [x] Command run: `pnpm run typecheck` (pass)
-- [x] Command run: `pnpm run build` (pass; rerun outside sandbox because initial sandbox run hit `spawn EPERM`)
+- [x] 已执行：`pnpm run test:unit`（14/14 通过）
+- [x] 已执行：`pnpm run typecheck`（通过）
+- [x] 已执行：`pnpm run build`（通过；首次沙箱内因 `spawn EPERM` 失败，提权后重跑通过）
 
-### Follow-up
-- [ ] Run one production end-to-end payment replay check:
-- complete one real checkout
-- refresh/reopen the same callback URL
-- confirm callback page stays success and credits remain consistent
+### 后续待办
+- [x] 线上执行一次支付回放核验：
+- 完成一次真实 checkout
+- 刷新/重复打开同一个 callback URL
+- 确认页面持续显示成功，且 credits 数据一致
