@@ -13,8 +13,8 @@ interface LogoProps extends React.ComponentProps<"div"> {
 export const Logo = ({
   size = "base",
   iconSize,
-  label = "HairRoom",
-  imageAlt = "HairRoom, Try-on AI Hairstyle",
+  label = "LinkedIn Translator",
+  imageAlt = "LinkedIn Translator",
   className,
   ...rest
 }: LogoProps) => {

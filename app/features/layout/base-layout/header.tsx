@@ -37,7 +37,7 @@ export const Header = ({ navLinks }: HeaderProps) => {
       >
         <div className="container flex h-full items-center">
           <Link to="/">
-            <Logo />
+            <Logo label="LinkedIn Translator" imageAlt="LinkedIn Translator logo" />
           </Link>
           <nav className="mx-8 [&>a]:hover:underline flex items-center gap-6 whitespace-nowrap max-md:hidden">
             {navLinks.map((link, i) => (
@@ -107,7 +107,7 @@ export const Header = ({ navLinks }: HeaderProps) => {
                 <div className="bg-base-200 text-base-content min-h-full w-4/5 max-w-xs relative">
                   <div className="p-4 sticky top-0 w-full bg-base-200 border-b border-base-300">
                     <Link to="/" onClick={() => setOpenDrawer(false)}>
-                      <Logo />
+                      <Logo label="LinkedIn Translator" imageAlt="LinkedIn Translator logo" />
                     </Link>
                   </div>
                   <ul className="menu menu-lg w-full">

@@ -13,3 +13,8 @@ declare interface GoogleUserInfo {
   email: string;
   email_verified: boolean;
 }
+
+interface Window {
+  dataLayer?: unknown[];
+  gtag?: (...args: unknown[]) => void;
+}

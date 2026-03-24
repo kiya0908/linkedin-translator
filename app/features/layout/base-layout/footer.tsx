@@ -21,7 +21,7 @@ export const Footer = ({ navLinks }: FooterProps) => {
         <div className="container footer md:footer-horizontal gap-x-8 gap-y-4">
           <aside className="md:max-w-sm max-md:mb-6">
             <Link className="mb-2" to="/">
-              <Logo />
+              <Logo label="LinkedIn Translator" imageAlt="LinkedIn Translator logo" />
             </Link>
             <p>
               Transform everyday writing into professional LinkedIn tone with a fast, modern workflow.
@@ -49,7 +49,7 @@ export const Footer = ({ navLinks }: FooterProps) => {
       <div className="bg-neutral text-neutral-content border-t border-neutral-700">
         <div className="container text-sm p-4">
           <p className="text-center leading-none text-neutral-400">
-            © {new Date().getFullYear()} LinkedIn Translator. All Rights Reserved.
+            (c) {new Date().getFullYear()} LinkedIn Translator. All Rights Reserved.
           </p>
         </div>
       </div>

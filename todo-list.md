@@ -258,3 +258,30 @@
 - [x] Translation paid billing standardized to fixed `1 credit` per successful request.
 - [x] Task-level credits constant renamed from `NANO_BANANA_TASK_CREDITS` to `EVERY_TASK_CREDITS`.
 - [x] All related references updated and `pnpm run typecheck` passed.
+
+## 2026-03-24 GA 统计接入记录（Codex）
+
+### 操作目标
+- [x] 使用环境变量 GOOGLE_ANALYTICS_ID 在全站每个页面注入 GA（gtag.js）统计代码。
+- [x] 让 SPA 路由切换也触发页面访问上报（page_path），避免只统计首屏。
+- [x] 修复本地开发环境中“仅在 React Router loaderData 看到 GA ID，但页面元素中看不到 GA 脚本”的问题。
+
+### 修改文件
+- [x] app/features/document/index.tsx
+- [x] types/global.d.ts
+
+### 修改内容（详细）
+- [x] 在全局文档组件C:\Users\1\Desktop\test\linkedin-translator\app\features\document\index.tsx 的 head 中直接渲染 GA 脚本。
+- [x] 新增 script async src="https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}"。
+- [x] 新增 GA 初始化脚本：window.dataLayer、gtag('js', new Date())、gtag('config', GOOGLE_ANALYTICS_ID)。
+- [x] 删除旧的 useEffect + createElement 动态注入 GA 脚本实现，避免重复注入与清理复杂度。
+- [x] 引入 useLocation() 并在路由变化时调用：window.gtag("config", GOOGLE_ANALYTICS_ID, { page_path: pathname + search })。
+- [x] 通过 hasTrackedNavigationRef 跳过首个初始化重复上报，仅对后续路由切换上报。
+- [x] 将 GA 的注入与路由上报条件从“仅生产环境”调整为“只要有 GOOGLE_ANALYTICS_ID 就启用”，便于本地联调验证。
+- [x] 保留 Ads / Plausible 的生产环境控制逻辑，不影响既有广告与其他统计脚本策略。
+- [x] 在 types/global.d.ts 增加 window.gtag 与 window.dataLayer 的全局类型声明。
+
+### 结果与验证
+- [x] 确认 GOOGLE_ANALYTICS_ID 会从 root loaderData 传入 Document（示例值：G-33HJFY9X9D）。
+- [x] 明确记录：window.__reactRouterContext.streamController.enqueue(...) 属于 React Router 数据流，不是 GA 脚本本体。
+- [x] 执行 pnpm run build，构建通过，确认本次改动未破坏打包链路。

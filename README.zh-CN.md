@@ -1,6 +1,6 @@
 # LinkedIn Translator - 领英语调转换器
 
-LinkedIn Translator 不是普通的语言翻译工具，而是一款面向职场表达的 AI **语调转换器（Tone Translator）**。
+LinkedIn Translator 不是普通的语言翻译工具，而是一款面向职场表达的 AI **语调转换器（Linkedin Translator）**。
 
 它可以把日常大白话快速改写成更专业、更吸引人的 LinkedIn speak，用于领英动态、个人简介、简历描述等场景。
 
