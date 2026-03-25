@@ -831,7 +831,7 @@ export default function App() {
             </p>
           </div>
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">Legal</h4>
+            <p className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">Legal</p>
             <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
               <li><a href="/legal/privacy" className="hover:text-primary">Privacy Policy</a></li>
               <li><a href="/legal/terms" className="hover:text-primary">Terms of Service</a></li>
@@ -839,7 +839,7 @@ export default function App() {
             </ul>
           </div>
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">Support</h4>
+            <p className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">Support</p>
             <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
               <li><a href="mailto:support@linkedintranslator.online" className="hover:text-primary">support@linkedintranslator.online</a></li>
               <li><a href="https://linkedintranslator.online" className="hover:text-primary">linkedintranslator.online</a></li>
