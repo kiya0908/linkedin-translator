@@ -86,6 +86,28 @@ const FAQS = [
   }
 ];
 
+interface LazyGoogleOAuthProps {
+  className?: string;
+}
+
+function LazyGoogleOAuth({ className }: LazyGoogleOAuthProps) {
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  if (shouldLoad) {
+    return <GoogleOAuth />;
+  }
+
+  return (
+    <button
+      type="button"
+      className={`btn btn-primary ${className ?? ""}`.trim()}
+      onClick={() => setShouldLoad(true)}
+    >
+      Sign In
+    </button>
+  );
+}
+
 export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [checkouting, setCheckouting] = useState(false);
@@ -139,8 +161,11 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img
-              src="/assets/logo.webp"
+              src="/assets/logo-64.png"
               alt="LinkedIn Translator logo"
+              width={32}
+              height={32}
+              decoding="async"
               className="w-8 h-8 rounded-lg object-cover"
             />
             <span className="font-display font-bold text-xl text-primary">LinkedIn Translator</span>
@@ -162,7 +187,7 @@ export default function App() {
               Credits: {credits}
             </a>
           ) : (
-            <GoogleOAuth />
+            <LazyGoogleOAuth className="max-md:btn-sm" />
           )}
         </div>
       </nav>
@@ -171,39 +196,21 @@ export default function App() {
         {/* Hero Section */}
         <section className="pt-24 pb-32 px-6 bg-surface">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-block px-4 py-1.5 bg-secondary-fixed text-primary text-[10px] font-bold tracking-widest uppercase rounded-full mb-6"
-            >
+            <div className="inline-block px-4 py-1.5 bg-secondary-fixed text-primary text-[10px] font-bold tracking-widest uppercase rounded-full mb-6">
               Elevate Your Narrative
-            </motion.div>
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl font-extrabold text-on-surface mb-8 leading-[1.1]"
-            >
-              LinkedIn Translator – Translate Profiles, Posts & Messages Instantly
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed"
-            >
+            </div>
+            <h1 className="text-5xl md:text-7xl font-extrabold text-on-surface mb-8 leading-[1.1]">
+              LinkedIn Translator - Translate Profiles, Posts & Messages Instantly
+            </h1>
+            <p className="text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
               Use a LinkedIn translator to translate profiles, posts, and messages quickly and accurately. Ideal for professionals, recruiters, and global job seekers.
-            </motion.p>
+            </p>
           </div>
 
           {/* Translation Interface */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-          >
+          <div>
             <TranslationInterface />
-          </motion.div>
+          </div>
         </section>
 
         {/* What is LinkedIn Translator Section */}
@@ -692,7 +699,7 @@ export default function App() {
                       ) : (
                         <div className="mb-10 space-y-3">
                           <div className="[&_button]:w-full [&_button]:justify-center">
-                            <GoogleOAuth />
+                            <LazyGoogleOAuth className="w-full justify-center" />
                           </div>
                           <p className="text-xs text-on-surface-variant">
                             Sign in first, then complete checkout in one step.
@@ -820,7 +827,7 @@ export default function App() {
               AI tone translation for modern professionals. All rights reserved.
             </p>
             <p className="text-[10px] text-on-surface-variant/40 mt-8">
-              © 2026 LinkedIn Translator. All rights reserved.
+              漏 2026 LinkedIn Translator. All rights reserved.
             </p>
           </div>
           <div>
@@ -843,4 +850,5 @@ export default function App() {
     </div>
   );
 }
+
 

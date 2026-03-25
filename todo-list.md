@@ -1,4 +1,4 @@
-# LinkedIn Translator 项目 TODO List
+﻿# LinkedIn Translator 项目 TODO List
 
 > 更新时间：2026-03-22  
 > 说明：当前基于你已描述的页面与功能目标整理，等 PowerShell 环境恢复后，建议再做一次代码级核对并补齐状态。
@@ -450,3 +450,36 @@
 - 完成一次真实 checkout
 - 刷新/重复打开同一个 callback URL
 - 确认页面持续显示成功，且 credits 数据一致
+
+## 2026-03-25 Performance 优化记录（Codex）
+
+### 目标
+- [x] 基于 PageSpeed Insights（mobile）结果，优先修复首屏渲染与资源加载问题。
+- [x] 在不影响主流程的前提下，降低首屏图片与第三方脚本开销。
+
+### 本轮已完成
+- [x] 新增小尺寸 Logo 资源：`public/assets/logo-64.png`（约 8.3KB），并替换页面中小尺寸 logo 引用。
+- [x] 首屏 Hero 关键文案改为静态首屏渲染（移除首屏动画延迟），避免 LCP 文本晚出现。
+- [x] Google OAuth 改为点击后再挂载（Lazy mount），避免首屏加载 `accounts.google.com/gsi/client`。
+- [x] GA / Ads / Pageview 改为 `window.load` 后延迟注入，移除 head 里的同步 GA 注入。
+- [x] 字体首屏策略减重：正文 `--font-sans` 改系统字体栈；`google-fonts.css` 仅保留 Manrope 400/700。
+
+### 主要改动文件
+- [x] `app/features/document/index.tsx`
+- [x] `app/features/linkedin-translator/landing-page.tsx`
+- [x] `app/components/common/logo.tsx`
+- [x] `app/app.css`
+- [x] `public/fonts/google-fonts.css`
+- [x] `public/assets/logo-64.png`
+
+### 验证结果
+- [x] `pnpm run typecheck` 通过。
+- [x] `pnpm run build` 通过。
+
+### 预期收益（按 PSI 诊断）
+- [x] 降低首屏 LCP/FCP 风险（首屏文本立即可见，减少 hydration 后延迟显示）。
+- [x] 降低 unused JavaScript 风险（第三方统计与登录 SDK 不再首屏立即加载）。
+- [x] 降低图片传输浪费（32x32 场景不再下载 155KB logo）。
+
+### 后续建议
+- [ ] 部署后重新跑一次 mobile PSI，对比 FCP/LCP/TTI 和 opportunities 是否下降。

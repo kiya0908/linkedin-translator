@@ -28,15 +28,6 @@ export function Document({
   const { pathname, search } = useLocation();
   const error = useRouteError();
 
-  const gaInitScript = GOOGLE_ANALYTICS_ID
-    ? [
-        "window.dataLayer = window.dataLayer || [];",
-        "function gtag(){dataLayer.push(arguments);}",
-        "gtag('js', new Date());",
-        `gtag('config', ${JSON.stringify(GOOGLE_ANALYTICS_ID)});`,
-      ].join("\n")
-    : "";
-
   useEffect(() => {
     if (!rootRef.current) return;
     rootRef.current.lang = lang;
@@ -47,32 +38,94 @@ export function Document({
 
     let adsScript: HTMLScriptElement;
     let pScript: HTMLScriptElement;
+    let timeoutId: number | undefined;
 
-    // Adsense
-    if (GOOGLE_ADS_ID && !error) {
-      adsScript = document.createElement("script");
-      adsScript.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${GOOGLE_ADS_ID}`;
-      adsScript.async = true;
-      adsScript.crossOrigin = "anonymous";
+    const injectScripts = () => {
+      // Adsense
+      if (GOOGLE_ADS_ID && !error) {
+        adsScript = document.createElement("script");
+        adsScript.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${GOOGLE_ADS_ID}`;
+        adsScript.async = true;
+        adsScript.crossOrigin = "anonymous";
 
-      document.head.appendChild(adsScript);
-    }
+        document.head.appendChild(adsScript);
+      }
 
-    // Plausible
-    if (DOMAIN) {
-      pScript = document.createElement("script");
-      pScript.src = "https://app.pageview.app/js/script.js";
-      pScript.dataset.domain = new URL(DOMAIN).hostname;
-      pScript.defer = true;
+      // Plausible
+      if (DOMAIN) {
+        pScript = document.createElement("script");
+        pScript.src = "https://app.pageview.app/js/script.js";
+        pScript.dataset.domain = new URL(DOMAIN).hostname;
+        pScript.defer = true;
 
-      document.head.appendChild(pScript);
+        document.head.appendChild(pScript);
+      }
+    };
+
+    const scheduleInjection = () => {
+      timeoutId = window.setTimeout(injectScripts, 1500);
+    };
+
+    if (document.readyState === "complete") {
+      scheduleInjection();
+    } else {
+      window.addEventListener("load", scheduleInjection, { once: true });
     }
 
     return () => {
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId);
+      }
+      window.removeEventListener("load", scheduleInjection);
       if (adsScript) adsScript.remove();
       if (pScript) pScript.remove();
     };
   }, [GOOGLE_ADS_ID, DOMAIN, error]);
+
+  useEffect(() => {
+    if (!import.meta.env.PROD) return;
+    if (!GOOGLE_ANALYTICS_ID) return;
+
+    let gaScript: HTMLScriptElement | undefined;
+    let timeoutId: number | undefined;
+    let cancelled = false;
+
+    const loadGA = () => {
+      if (cancelled || window.gtag) return;
+
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = (...args: unknown[]) => {
+        window.dataLayer?.push(args);
+      };
+
+      window.gtag("js", new Date());
+      window.gtag("config", GOOGLE_ANALYTICS_ID);
+
+      gaScript = document.createElement("script");
+      gaScript.async = true;
+      gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`;
+      document.head.appendChild(gaScript);
+    };
+
+    const scheduleLoad = () => {
+      timeoutId = window.setTimeout(loadGA, 2500);
+    };
+
+    if (document.readyState === "complete") {
+      scheduleLoad();
+    } else {
+      window.addEventListener("load", scheduleLoad, { once: true });
+    }
+
+    return () => {
+      cancelled = true;
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId);
+      }
+      window.removeEventListener("load", scheduleLoad);
+      if (gaScript) gaScript.remove();
+    };
+  }, [GOOGLE_ANALYTICS_ID]);
 
   useEffect(() => {
     if (!GOOGLE_ANALYTICS_ID) return;
@@ -95,18 +148,6 @@ export function Document({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {GOOGLE_ADS_ID && (
           <meta name="google-adsense-account" content={`ca-${GOOGLE_ADS_ID}`} />
-        )}
-        {GOOGLE_ANALYTICS_ID && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`}
-            />
-            <script
-              id="gtag-init"
-              dangerouslySetInnerHTML={{ __html: gaInitScript }}
-            />
-          </>
         )}
         <Meta />
         <Links />

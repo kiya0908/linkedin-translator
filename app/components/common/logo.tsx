@@ -38,8 +38,11 @@ export const Logo = ({
       <div className={clsx("rounded-box", sizeStyles[iconSize ?? size].box)}>
         <Image
           className="w-full h-full object-cover"
-          src="/assets/logo.webp"
+          src="/assets/logo-64.png"
           alt={imageAlt}
+          width={64}
+          height={64}
+          decoding="async"
         />
       </div>
       <div className={clsx("font-title", sizeStyles[size].text)}>{label}</div>

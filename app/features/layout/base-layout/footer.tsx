@@ -39,9 +39,9 @@ export const Footer = ({ navLinks }: FooterProps) => {
           </div>
 
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">
+            <p className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">
               Legal
-            </h4>
+            </p>
             <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
               <li>
                 <Link to="/legal/privacy" className="hover:text-primary">
@@ -62,9 +62,9 @@ export const Footer = ({ navLinks }: FooterProps) => {
           </div>
 
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">
+            <p className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">
               Support
-            </h4>
+            </p>
             <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
               <li>
                 <Link to="mailto:support@linkedintranslator.online" target="_blank" className="hover:text-primary">
