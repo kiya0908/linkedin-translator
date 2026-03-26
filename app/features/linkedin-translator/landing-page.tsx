@@ -30,6 +30,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 
 import { GoogleOAuth } from "~/features/oauth/google";
+import { Footer } from "~/features/layout/base-layout/footer";
 import { useUser } from "~/store";
 
 import { TranslationInterface } from './translation-interface';
@@ -812,43 +813,10 @@ export default function App() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-surface py-20 px-6 border-t border-outline-variant">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
-          <div className="col-span-2">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
-                <Languages className="text-white w-4 h-4" />
-              </div>
-              <span className="font-display font-bold text-lg text-primary">LinkedIn Translator</span>
-            </div>
-            <p className="text-sm text-on-surface-variant max-w-xs leading-relaxed">
-              AI tone translation for modern professionals. All rights reserved.
-            </p>
-            <p className="text-[10px] text-on-surface-variant/40 mt-8">
-              漏 2026 LinkedIn Translator. All rights reserved.
-            </p>
-          </div>
-          <div>
-            <p className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">Legal</p>
-            <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
-              <li><a href="/legal/privacy" className="hover:text-primary">Privacy Policy</a></li>
-              <li><a href="/legal/terms" className="hover:text-primary">Terms of Service</a></li>
-              <li><a href="/legal/cookie" className="hover:text-primary">Cookie Policy</a></li>
-            </ul>
-          </div>
-          <div>
-            <p className="font-bold text-xs uppercase tracking-widest text-on-surface-variant/60 mb-6">Support</p>
-            <ul className="space-y-4 text-sm font-medium text-on-surface-variant">
-              <li><a href="mailto:support@linkedintranslator.online" className="hover:text-primary">support@linkedintranslator.online</a></li>
-              <li><a href="https://linkedintranslator.online" className="hover:text-primary">linkedintranslator.online</a></li>
-            </ul>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
+
 
 
