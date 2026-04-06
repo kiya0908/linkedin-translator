@@ -41,7 +41,7 @@ Depending on your location, you may have rights to access, correct, delete, or e
 
 To submit a request, contact:
 
-- **support@linkdinspeaktranslator.top**
+- **support@linkedinspeaktranslator.top**
 
 ## 8. Policy Updates
 
@@ -49,4 +49,4 @@ We may update this Privacy Policy and will publish the latest version on this pa
 
 ## 9. Contact
 
-- **Email:** [support@linkdinspeaktranslator.top](mailto:support@linkdinspeaktranslator.top)
+- **Email:** [support@linkedinspeaktranslator.top](mailto:support@linkedinspeaktranslator.top)

@@ -46,13 +46,13 @@ const DEFAULT_FOOTER_LINKS: FooterNavLink[] = [
     label: "Support",
     list: [
       {
-        to: "mailto:support@linkdinspeaktranslator.top",
-        label: "support@linkdinspeaktranslator.top",
+        to: "mailto:support@linkedinspeaktranslator.top",
+        label: "support@linkedinspeaktranslator.top",
         target: "_blank",
       },
       {
-        to: "https://linkdinspeaktranslator.top",
-        label: "linkdinspeaktranslator.top",
+        to: "https://linkedinspeaktranslator.top",
+        label: "linkedinspeaktranslator.top",
         target: "_blank",
       },
     ],

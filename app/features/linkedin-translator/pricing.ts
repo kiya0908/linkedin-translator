@@ -8,7 +8,7 @@ import {
 } from "./i18n";
 
 export const LINKEDIN_TRANSLATOR_SUPPORT_EMAIL =
-  "support@linkdinspeaktranslator.top";
+  "support@linkedinspeaktranslator.top";
 export const LINKEDIN_TRANSLATOR_PRIMARY_PRICING_CARD_ID =
   "linkedin-pro-pack";
 

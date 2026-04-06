@@ -20,7 +20,7 @@ const subscriptionStatusClassMap: Record<Subscription["status"], string> = {
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://linkdinspeaktranslator.top";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedinspeaktranslator.top";
 
   return [
     { title: "Subscription | LinkedIn Translator Account" },
@@ -95,7 +95,7 @@ export default function SubscriptionPage({ loaderData }: Route.ComponentProps) {
           isActive
             ? {
                 label: "Billing support",
-                to: "mailto:support@linkdinspeaktranslator.top",
+                to: "mailto:support@linkedinspeaktranslator.top",
                 target: "_blank",
               }
             : { label: "Upgrade plan", to: "/#pricing" }

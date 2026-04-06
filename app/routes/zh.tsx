@@ -13,7 +13,7 @@ const createAlternate = (pathname: string, domain: string, hrefLang: string) => 
 });
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://linkdinspeaktranslator.top";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedinspeaktranslator.top";
   const routeMeta = getLinkedinTranslatorRouteMeta("zh");
 
   return [

@@ -52,7 +52,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
   }
 
   const rootData = matches[0]?.data as { DOMAIN?: string } | undefined;
-  const domain = rootData?.DOMAIN ?? "https://linkdinspeaktranslator.top";
+  const domain = rootData?.DOMAIN ?? "https://linkedinspeaktranslator.top";
   const englishPath = getContentPath("en", data.collection, data.entry.slug);
   const alternateLang = data.locale === "en" ? "zh" : "en";
 

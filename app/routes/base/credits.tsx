@@ -29,7 +29,7 @@ const creditTypeBadgeClassMap: Record<Credit["trans_type"], string> = {
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://linkdinspeaktranslator.top";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedinspeaktranslator.top";
 
   return [
     { title: "Credits | LinkedIn Translator Account" },

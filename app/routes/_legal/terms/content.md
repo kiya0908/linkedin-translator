@@ -54,4 +54,4 @@ We may update these Terms from time to time. Continued use of the Service after 
 
 For support or legal questions:
 
-- **Email:** [support@linkdinspeaktranslator.top](mailto:support@linkdinspeaktranslator.top)
+- **Email:** [support@linkedinspeaktranslator.top](mailto:support@linkedinspeaktranslator.top)

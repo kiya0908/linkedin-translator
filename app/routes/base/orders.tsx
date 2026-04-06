@@ -27,7 +27,7 @@ const orderStatusClassMap: Record<Order["status"], string> = {
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://linkdinspeaktranslator.top";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedinspeaktranslator.top";
 
   return [
     { title: "Orders | LinkedIn Translator Account" },

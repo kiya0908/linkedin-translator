@@ -10,7 +10,7 @@ import {
 } from "./components/workspace";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://linkdinspeaktranslator.top";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedinspeaktranslator.top";
 
   return [
     { title: "Profile | LinkedIn Translator Account" },

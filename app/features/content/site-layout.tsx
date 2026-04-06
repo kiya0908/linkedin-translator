@@ -40,8 +40,8 @@ const buildFooterLinks = (locale: ContentLocale): FooterNavLink[] => {
       label: supportLabel,
       list: [
         {
-          to: "mailto:support@linkdinspeaktranslator.top",
-          label: "support@linkdinspeaktranslator.top",
+          to: "mailto:support@linkedinspeaktranslator.top",
+          label: "support@linkedinspeaktranslator.top",
           target: "_blank",
         },
         {

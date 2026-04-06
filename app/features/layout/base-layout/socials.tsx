@@ -21,7 +21,7 @@ export const Socials = ({
       className={clsx("flex items-center justify-center gap-3 mb-4", className)}
       {...props}
     >
-      <Link to="mailto:support@linkdinspeaktranslator.top" title="Support Email">
+      <Link to="mailto:support@linkedinspeaktranslator.top" title="Support Email">
         <UserDetail
           strokeWidth={strokeWidth}
           width={iconSize}
