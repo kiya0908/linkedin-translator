@@ -32,4 +32,4 @@ If approved, refunds are issued to the original payment method. Final settlement
 
 ## 6. Contact
 
-- **Email:** [support@linkedintranslator.online](mailto:support@linkedintranslator.online)
+- **Email:** [support@linkdinspeaktranslator.top](mailto:support@linkdinspeaktranslator.top)

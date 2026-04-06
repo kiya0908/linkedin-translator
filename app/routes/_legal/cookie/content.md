@@ -26,4 +26,4 @@ We may update this Cookie Policy from time to time and will post the latest vers
 
 ## 6. Contact
 
-- **Email:** [support@linkedintranslator.online](mailto:support@linkedintranslator.online)
+- **Email:** [support@linkdinspeaktranslator.top](mailto:support@linkdinspeaktranslator.top)

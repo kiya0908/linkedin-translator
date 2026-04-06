@@ -1,3 +1,4 @@
+//首页交互功能组件
 import { useEffect, useState } from "react";
 import { ArrowRightLeft, Check, Copy, Lock, Sparkles, Zap } from "lucide-react";
 
@@ -9,15 +10,19 @@ import {
 } from "./access";
 import {
   DEFAULT_INTENSITY_BY_MODE,
-  getIntensityConfig,
-  getModeConfig,
   isLockedIntensity,
   MAX_TRANSLATION_INPUT_CHARS,
-  TRANSLATION_INTENSITIES,
-  TRANSLATION_MODES,
   type TranslationIntensity,
   type TranslationMode,
 } from "./config";
+import {
+  getLocalizedTranslationIntensities,
+  getLocalizedTranslationIntensityConfig,
+  getLocalizedTranslationModeConfig,
+  getLocalizedTranslationModes,
+  getTranslationInterfaceCopy,
+  type LinkedinTranslatorLocale,
+} from "./i18n";
 
 type IntensityByMode = Record<TranslationMode, TranslationIntensity>;
 
@@ -26,6 +31,10 @@ interface TranslationApiResponse {
   meta?: {
     entitlement?: TranslationEntitlement;
   };
+}
+
+interface TranslationInterfaceProps {
+  locale: LinkedinTranslatorLocale;
 }
 
 const INITIAL_INTENSITY_BY_MODE: IntensityByMode = {
@@ -39,17 +48,19 @@ const INITIAL_ENTITLEMENT = deriveTranslationEntitlement({
   dailyUsed: 0,
 });
 
-const DEFAULT_TRANSLATION_ERROR_MESSAGE =
-  "Translation failed. Please try again in a moment.";
+const normalizeTranslationErrorMessage = (
+  locale: LinkedinTranslatorLocale,
+  error: unknown
+) => {
+  const copy = getTranslationInterfaceCopy(locale);
 
-const normalizeTranslationErrorMessage = (error: unknown) => {
   if (!(error instanceof Error)) {
-    return DEFAULT_TRANSLATION_ERROR_MESSAGE;
+    return copy.errors.default;
   }
 
   const message = error.message.trim();
   if (!message) {
-    return DEFAULT_TRANSLATION_ERROR_MESSAGE;
+    return copy.errors.default;
   }
 
   const normalized = message.toLowerCase();
@@ -57,7 +68,7 @@ const normalizeTranslationErrorMessage = (error: unknown) => {
     normalized === "failed to fetch" ||
     normalized.includes("fetch failed")
   ) {
-    return "Network connection failed while contacting the translation service. Please retry.";
+    return copy.errors.network;
   }
 
   if (
@@ -65,17 +76,19 @@ const normalizeTranslationErrorMessage = (error: unknown) => {
     normalized.includes("timed out") ||
     normalized.includes("timeout")
   ) {
-    return "Translation timed out. Please try again in a moment.";
+    return copy.errors.timeout;
   }
 
   if (normalized.startsWith("<!doctype") || normalized.startsWith("<html")) {
-    return "Translation service is temporarily unavailable. Please retry shortly.";
+    return copy.errors.unavailable;
   }
 
   return message;
 };
 
-export function TranslationInterface() {
+export function TranslationInterface({
+  locale,
+}: TranslationInterfaceProps) {
   const user = useUser((state) => state.user);
   const setCredits = useUser((state) => state.setCredits);
 
@@ -93,6 +106,10 @@ export function TranslationInterface() {
   const [accessLoading, setAccessLoading] = useState(true);
   const [entitlement, setEntitlement] =
     useState<TranslationEntitlement>(INITIAL_ENTITLEMENT);
+
+  const copy = getTranslationInterfaceCopy(locale);
+  const modeOptions = getLocalizedTranslationModes(locale);
+  const intensityOptions = getLocalizedTranslationIntensities(locale);
 
   const refreshEntitlement = async () => {
     setAccessLoading(true);
@@ -132,7 +149,11 @@ export function TranslationInterface() {
   }, [user?.email]);
 
   const selectedIntensity = intensityByMode[mode];
-  const modeConfig = getModeConfig(mode);
+  const modeConfig = getLocalizedTranslationModeConfig(locale, mode);
+  const intensityConfig = getLocalizedTranslationIntensityConfig(
+    locale,
+    selectedIntensity
+  );
   const hasPaidAccess = entitlement.state === "pro";
   const selectedIntensityLocked = isLockedIntensity(
     selectedIntensity,
@@ -145,12 +166,35 @@ export function TranslationInterface() {
     (!entitlement.canTranslate && !selectedIntensityLocked);
 
   const translateLabel = accessLoading
-    ? "Loading access..."
+    ? copy.accessLoading
     : selectedIntensityLocked
-      ? "Upgrade to use Extreme"
+      ? copy.upgradeToUseExtreme
       : status === "loading"
-        ? "Translating..."
-        : "Translate";
+        ? copy.translating
+        : copy.translate;
+
+  const helperCopy = accessLoading
+    ? copy.helperCheckingAccess
+    : entitlement.helperText;
+
+  const inputHint = selectedIntensityLocked
+    ? copy.extremeUnlockHint
+    : !entitlement.canTranslate
+      ? entitlement.isAuthenticated
+        ? copy.freeQuotaUsedHint
+        : copy.signInFreeQuotaHint
+      : hasPaidAccess
+        ? copy.paidUsageHint
+        : entitlement.state === "trial"
+          ? copy.trialHint
+          : copy.signInHint;
+
+  const outputStatusLabel =
+    status === "error"
+      ? copy.outputStatusNeedsRetry
+      : status === "success"
+        ? copy.outputStatusLatest
+        : copy.outputStatusWaiting;
 
   const handleModeChange = (nextMode: TranslationMode) => {
     setMode(nextMode);
@@ -200,10 +244,10 @@ export function TranslationInterface() {
         const rawMessage = (await response.text()).trim();
         const fallbackByStatus =
           response.status === 504
-            ? "Translation timed out. Please try again in a moment."
+            ? copy.errors.timeout
             : response.status >= 500
-              ? "Translation service is temporarily unavailable. Please retry shortly."
-              : "Translation request failed";
+              ? copy.errors.unavailable
+              : copy.errors.requestFailed;
         const message = rawMessage || fallbackByStatus;
 
         await refreshEntitlement();
@@ -213,7 +257,7 @@ export function TranslationInterface() {
       const result = (await response.json()) as TranslationApiResponse;
       const translatedText = result.text?.trim();
       if (!translatedText) {
-        throw new Error("Empty response from translation service.");
+        throw new Error(copy.errors.emptyResponse);
       }
 
       if (result.meta?.entitlement) {
@@ -227,7 +271,7 @@ export function TranslationInterface() {
       setStatus("success");
     } catch (error) {
       setStatus("error");
-      setErrorMessage(normalizeTranslationErrorMessage(error));
+      setErrorMessage(normalizeTranslationErrorMessage(locale, error));
     }
   };
 
@@ -239,8 +283,6 @@ export function TranslationInterface() {
     window.setTimeout(() => setCopied(false), 2000);
   };
 
-  const helperCopy = accessLoading ? "Checking access..." : entitlement.helperText;
-
   return (
     <div className="max-w-5xl mx-auto rounded-[28px] border border-outline-variant bg-surface-container-lowest shadow-[0_24px_80px_rgba(8,26,39,0.08)] overflow-hidden">
       <div className="border-b border-outline-variant bg-[linear-gradient(135deg,rgba(0,90,140,0.08),rgba(255,255,255,0.92))] p-5 md:p-6">
@@ -248,7 +290,7 @@ export function TranslationInterface() {
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-primary">
-                Translation Interface 2.0
+                {copy.badge}
               </span>
               <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-on-surface-variant">
                 {helperCopy}
@@ -256,7 +298,7 @@ export function TranslationInterface() {
             </div>
             <div>
               <p className="text-2xl font-bold text-on-surface md:text-3xl">
-                Switch direction, keep your preferred intensity, and translate with clear system feedback.
+                {copy.headline}
               </p>
             </div>
           </div>
@@ -267,12 +309,12 @@ export function TranslationInterface() {
             className="inline-flex items-center justify-center gap-2 rounded-full border border-outline-variant bg-white px-4 py-2 text-sm font-semibold text-on-surface transition hover:border-primary/30 hover:text-primary"
           >
             <ArrowRightLeft className="h-4 w-4" />
-            Swap mode
+            {copy.swapMode}
           </button>
         </div>
 
         <div className="mt-5 grid gap-3 md:grid-cols-2">
-          {TRANSLATION_MODES.map((item) => {
+          {modeOptions.map((item) => {
             const active = item.value === mode;
 
             return (
@@ -304,7 +346,7 @@ export function TranslationInterface() {
         </div>
 
         <div className="mt-5 grid gap-3 lg:grid-cols-3">
-          {TRANSLATION_INTENSITIES.map((item) => {
+          {intensityOptions.map((item) => {
             const active = item.value === selectedIntensity;
             const locked = isLockedIntensity(
               item.value,
@@ -341,7 +383,7 @@ export function TranslationInterface() {
                   </div>
                   {active && <Check className="mt-0.5 h-4 w-4 shrink-0" />}
                 </div>
-                {locked && (
+                {locked && item.upgradeLabel ? (
                   <div
                     className={[
                       "mt-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em]",
@@ -351,7 +393,7 @@ export function TranslationInterface() {
                     <Sparkles className="h-3 w-3" />
                     {item.upgradeLabel}
                   </div>
-                )}
+                ) : null}
               </button>
             );
           })}
@@ -366,7 +408,7 @@ export function TranslationInterface() {
                 {modeConfig.inputLabel}
               </p>
               <p className="mt-1 text-sm text-on-surface-variant">
-                {getIntensityConfig(selectedIntensity).label} intensity
+                {intensityConfig.label} {copy.intensitySuffix}
               </p>
             </div>
             <span className="text-xs font-medium text-on-surface-variant">
@@ -384,19 +426,7 @@ export function TranslationInterface() {
           />
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-on-surface-variant">
-              {selectedIntensityLocked
-                ? "Extreme unlocks when your credit balance is above zero."
-                : !entitlement.canTranslate
-                  ? entitlement.isAuthenticated
-                    ? "Today's free quota is used up. Recharge credits to keep going."
-                    : "Sign in to unlock 5 free translations per day and your starter credits."
-                  : hasPaidAccess
-                    ? "Each successful request deducts 1 credit from your balance."
-                    : entitlement.state === "trial"
-                      ? "Signed-in free quota covers Light and Standard. Add credits to unlock Extreme."
-                      : "Sign in to start your free daily quota."}
-            </p>
+            <p className="text-sm text-on-surface-variant">{inputHint}</p>
 
             <button
               type="button"
@@ -427,11 +457,7 @@ export function TranslationInterface() {
                 {modeConfig.outputLabel}
               </p>
               <p className="mt-1 text-sm text-on-surface-variant">
-                {status === "error"
-                  ? "Needs another try"
-                  : status === "success"
-                    ? "Latest result"
-                    : "Waiting for input"}
+                {outputStatusLabel}
               </p>
             </div>
 
@@ -442,7 +468,7 @@ export function TranslationInterface() {
               className="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition hover:border-primary/30 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
             >
               {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
-              {copied ? "Copied" : "Copy"}
+              {copied ? copy.copied : copy.copy}
             </button>
           </div>
 
@@ -454,7 +480,7 @@ export function TranslationInterface() {
                     <Zap className="h-5 w-5" />
                   </span>
                   <p className="mt-4 text-base font-semibold text-on-surface">
-                    {accessLoading ? "Checking access and quota..." : modeConfig.loadingState}
+                    {accessLoading ? copy.checkingAccessQuota : modeConfig.loadingState}
                   </p>
                 </div>
               </div>
@@ -462,11 +488,10 @@ export function TranslationInterface() {
               <div className="flex h-full min-h-[280px] items-center">
                 <div>
                   <p className="text-base font-semibold text-rose-600">
-                    Translation failed
+                    {copy.translationFailedTitle}
                   </p>
                   <p className="mt-2 text-sm leading-7 text-on-surface-variant">
-                    {errorMessage ||
-                      "Something went wrong while contacting the translation service."}
+                    {errorMessage || copy.translationFailedFallback}
                   </p>
                 </div>
               </div>

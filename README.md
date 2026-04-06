@@ -4,10 +4,10 @@ LinkedIn Translator is not just a language translator. It is an AI-powered **Lin
 
 It transforms casual wording into polished, engaging, professional LinkedIn-style copy for posts, profile summaries, and resume descriptions.
 
-[English](README.md) | [中文](README.zh-CN.md) | [Live Site](https://linkedintranslator.online)
+[English](README.md) | [中文](README.zh-CN.md) | [Live Site](https://linkdinspeaktranslator.top)
 
-- Website: `https://linkedintranslator.online`
-- Support: `support@linkedintranslator.online`
+- Website: `https://linkdinspeaktranslator.top`
+- Support: `support@linkdinspeaktranslator.top`
 
 ## Positioning
 
@@ -60,7 +60,7 @@ Set required variables in Cloudflare (or local `.dev.vars`) such as:
 
 - `KIEAI_APIKEY`
 - `SESSION_SECRET`
-- `DOMAIN` (recommended: `https://linkedintranslator.online`)
+- `DOMAIN` (recommended: `https://linkdinspeaktranslator.top`)
 - `CDN_URL` (if used)
 
 ### 2.1 Configure D1 Database

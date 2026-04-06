@@ -39,7 +39,7 @@ If we detect violations, we may take one or more actions:
 
 If you believe this policy is being violated, contact:
 
-- **Email:** [support@linkedintranslator.online](mailto:support@linkedintranslator.online)
+- **Email:** [support@linkdinspeaktranslator.top](mailto:support@linkdinspeaktranslator.top)
 
 ## 6. Relationship to Other Policies
 

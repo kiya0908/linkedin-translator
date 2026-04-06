@@ -13,11 +13,11 @@
   "upload_source_maps": true,
   "routes": [
     {
-      "pattern": "linkedintranslator.online",
+      "pattern": "linkdinspeaktranslator.top",
       "custom_domain": true
     },
     {
-      "pattern": "www.linkedintranslator.online",
+      "pattern": "www.linkdinspeaktranslator.top",
       "custom_domain": true
     }
   ],
@@ -34,8 +34,8 @@
 #   "SESSION_SECRET": "YOUR_SESSION_SECRET",
 #   
     // Other Parameters
-#   "CDN_URL": "https://cdn.linkedintranslator.online",
-#   "DOMAIN": "https://linkedintranslator.online/",
+#   "CDN_URL": "https://cdn.linkdinspeaktranslator.top",
+#   "DOMAIN": "https://linkdinspeaktranslator.top/",
 
 #   "GOOGLE_ANALYTICS_ID": "G-XXXXXXX",
 #   "GOOGLE_ADS_ID": "pub-xxxxxxxxxxxxxxxx",

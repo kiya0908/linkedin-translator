@@ -1,6 +1,7 @@
 import type { Route } from "./+types/home";
 
 import LinkedinTranslatorLandingPage from "~/features/linkedin-translator/landing-page";
+import { getLinkedinTranslatorRouteMeta } from "~/features/linkedin-translator/i18n";
 import { createCanonical } from "~/utils/meta";
 
 const createAlternate = (pathname: string, domain: string, hrefLang: string) => ({
@@ -11,14 +12,14 @@ const createAlternate = (pathname: string, domain: string, hrefLang: string) => 
 });
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const domain = matches[0]?.data?.DOMAIN ?? "https://linkedintranslator.online";
+  const domain = matches[0]?.data?.DOMAIN ?? "https://linkdinspeaktranslator.top";
+  const routeMeta = getLinkedinTranslatorRouteMeta("en");
 
   return [
-    { title: "LinkedIn Translator – Translate Profiles, Posts & Messages Instantly" },
+    { title: routeMeta.title },
     {
       name: "description",
-      content:
-        "LinkedIn Translator is an AI translator that converts everyday wording into professional LinkedIn speak with hooks, smart line breaks, and workplace-ready polish.",
+      content: routeMeta.description,
     },
     createCanonical("/", domain),
     createAlternate("/", domain, "en"),
@@ -28,5 +29,6 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 export default function HomePage() {
-  return <LinkedinTranslatorLandingPage />;
+  return <LinkedinTranslatorLandingPage locale="en" />;
 }
+

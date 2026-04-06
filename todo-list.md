@@ -483,3 +483,21 @@
 
 ### 后续建议
 - [ ] 部署后重新跑一次 mobile PSI，对比 FCP/LCP/TTI 和 opportunities 是否下降。
+
+## 2026-04-06 本地 /base 免登录配置记录（模板复用）
+
+### 问题现象
+- [x] 本地开发访问 `/base/*` 仍被要求登录，未按预期跳过 Base Auth。
+
+### 根因结论
+- [x] 本地实际读取的是 `.dev.vars`，不是 `.dev copy.vars`。
+- [x] `BYPASS_BASE_AUTH_IN_DEV` 的语义是：`true` 才跳过登录；`false` 会要求登录。
+- [x] 之前配置值写成了 `flase`（拼写错误），会被解析为非真值，等同于未开启 bypass。
+
+### 正确配置（本地开发）
+- [x] 在项目根目录 `.dev.vars` 中设置：`BYPASS_BASE_AUTH_IN_DEV="true"`。
+- [x] 修改后重启本地 dev 进程（环境变量在启动时加载，热更新不会刷新该变量）。
+
+### 代码定位（后续排查入口）
+- [x] 开关解析逻辑：`app/.server/libs/base-auth.ts`
+- [x] `.dev.vars` 加载逻辑：`vite.config.ts`

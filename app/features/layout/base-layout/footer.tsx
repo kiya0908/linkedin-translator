@@ -1,3 +1,4 @@
+//公共布局 footer组件
 import { Languages } from "lucide-react";
 import { Link } from "~/components/common";
 
@@ -26,6 +27,14 @@ export interface FooterProps {
 
 const DEFAULT_FOOTER_LINKS: FooterNavLink[] = [
   {
+    label: "Explore",
+    list: [
+      { to: "/tools", label: "Tools" },
+      { to: "/templates", label: "Templates" },
+      { to: "/blog", label: "Blog" },
+    ],
+  },
+  {
     label: "Legal",
     list: [
       { to: "/legal/privacy", label: "Privacy Policy" },
@@ -37,13 +46,13 @@ const DEFAULT_FOOTER_LINKS: FooterNavLink[] = [
     label: "Support",
     list: [
       {
-        to: "mailto:support@linkedintranslator.online",
-        label: "support@linkedintranslator.online",
+        to: "mailto:support@linkdinspeaktranslator.top",
+        label: "support@linkdinspeaktranslator.top",
         target: "_blank",
       },
       {
-        to: "https://linkedintranslator.online",
-        label: "linkedintranslator.online",
+        to: "https://linkdinspeaktranslator.top",
+        label: "linkdinspeaktranslator.top",
         target: "_blank",
       },
     ],
@@ -108,8 +117,9 @@ export const Footer = ({
           ))}
         </div>
       </div>
-    {/* 导航站链接 */}
+      {/* 导航站链接 */}
       <DirectoryBadges items={badgeItems} title={directoryBadgeTitle} />
     </footer>
   );
 };
+

@@ -4,10 +4,10 @@ LinkedIn Translator 不是普通的语言翻译工具，而是一款面向职场
 
 它可以把日常大白话快速改写成更专业、更吸引人的 LinkedIn speak，用于领英动态、个人简介、简历描述等场景。
 
-[English](README.md) | [中文](README.zh-CN.md) | [在线访问](https://linkedintranslator.online)
+[English](README.md) | [中文](README.zh-CN.md) | [在线访问](https://linkdinspeaktranslator.top)
 
-- 网站：`https://linkedintranslator.online`
-- 支持邮箱：`support@linkedintranslator.online`
+- 网站：`https://linkdinspeaktranslator.top`
+- 支持邮箱：`support@linkdinspeaktranslator.top`
 
 ## 核心定位
 
@@ -59,7 +59,7 @@ pnpm install
 
 - `KIEAI_APIKEY`
 - `SESSION_SECRET`
-- `DOMAIN`（建议：`https://linkedintranslator.online`）
+- `DOMAIN`（建议：`https://linkdinspeaktranslator.top`）
 - `CDN_URL`（如需）
 
 ### 3. 启动开发环境

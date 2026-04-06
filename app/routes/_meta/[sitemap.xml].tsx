@@ -1,5 +1,7 @@
 import type { Route } from "./+types/[sitemap.xml]";
 
+import { getContentSitemapEntries } from "~/features/content/registry";
+
 interface Sitemaps {
   path: string;
   priority: string;
@@ -11,13 +13,11 @@ const defaultSitemaps: Sitemaps[] = [
     priority: "1.0",
     lastmod: new Date("2026-03-24"),
   },
-  /* 
   {
     path: "/zh",
     priority: "0.9",
-    lastmod: new Date("2026-03-11"),
+    lastmod: new Date("2026-03-30"),
   },
-  */
   {
     path: "/legal/privacy",
     priority: "0.6",
@@ -38,18 +38,23 @@ const defaultSitemaps: Sitemaps[] = [
 export const loader = async ({ request, context }: Route.LoaderArgs) => {
   const url = new URL(request.url);
 
-  const sitemapList = [] as {
-    loc: String;
-    lastmod: String;
-    priority: String;
-  }[];
+  const sitemapList: Array<{
+    loc: string;
+    lastmod: string;
+    priority: string;
+  }> = [];
 
-  const sitemaps = Array.from(defaultSitemaps);
+  const sitemaps = [...defaultSitemaps, ...getContentSitemapEntries()];
+  const seen = new Set<string>();
 
   sitemaps.forEach((site) => {
     const location = new URL(site.path, url);
 
     const loc = location.toString();
+
+    if (seen.has(loc)) return;
+    seen.add(loc);
+
     sitemapList.push({
       loc,
       lastmod: site.lastmod

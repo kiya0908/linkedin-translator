@@ -13,9 +13,21 @@ const metaRoutes = await flatRoutes({ rootDirectory: "./routes/_meta" });
 const legalRoutes = await flatRoutes({ rootDirectory: "./routes/_legal" });
 
 export default [
-  // Nano Banana 首页 — 独立路由，不经过 BaseLayout
+  // 首页 — 独立路由，不经过 BaseLayout
   index("./routes/home.tsx"),
   route("zh", "./routes/zh.tsx"),
+  route("tools", "./routes/content/tools.tsx"),
+  route("tools/:slug", "./routes/content/tools.$slug.tsx"),
+  route("templates", "./routes/content/templates.tsx"),
+  route("templates/:slug", "./routes/content/templates.$slug.tsx"),
+  route("blog", "./routes/content/blog.tsx"),
+  route("blog/:slug", "./routes/content/blog.$slug.tsx"),
+  route("zh/tools", "./routes/content/zh.tools.tsx"),
+  route("zh/tools/:slug", "./routes/content/zh.tools.$slug.tsx"),
+  route("zh/templates", "./routes/content/zh.templates.tsx"),
+  route("zh/templates/:slug", "./routes/content/zh.templates.$slug.tsx"),
+  route("zh/blog", "./routes/content/zh.blog.tsx"),
+  route("zh/blog/:slug", "./routes/content/zh.blog.$slug.tsx"),
   // 其他需要 BaseLayout 的页面
   ...prefix("base", [
     layout("./routes/base/layout/index.tsx", [

@@ -22,7 +22,7 @@ export const loader = async ({ request, context }: Route.LoaderArgs) => {
       { label: "FAQs", to: "/#faq" },
       {
         label: "Support",
-        to: "mailto:support@linkedintranslator.online",
+        to: "mailto:support@linkdinspeaktranslator.top",
         target: "_blank",
       },
     ],
@@ -38,8 +38,8 @@ export const loader = async ({ request, context }: Route.LoaderArgs) => {
         label: "Support",
         list: [
           {
-            to: "mailto:support@linkedintranslator.online",
-            label: "support@linkedintranslator.online",
+            to: "mailto:support@linkdinspeaktranslator.top",
+            label: "support@linkdinspeaktranslator.top",
             target: "_blank",
           },
         ],
