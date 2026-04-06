@@ -111,8 +111,8 @@ export const ContentSiteLayout = ({
         navLinks={buildFooterLinks(locale)}
         description={
           locale === "zh"
-            ? "面向现代职业用户的 LinkedIn AI 翻译与内容优化站点。"
-            : "AI translation and localization workflows tailored for modern LinkedIn publishing."
+            ? "面向现代职业用户的 LinkedIn AI 翻译与内容优化站点。不隶属于LinkedIn。我们只是帮助你掌握语言。"
+            : "AI translation for modern LinkedIn publishing.Not affiliated with LinkedIn. We just help you navigate the language."
         }
       />
     </div>

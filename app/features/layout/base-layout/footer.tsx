@@ -62,7 +62,7 @@ const DEFAULT_FOOTER_LINKS: FooterNavLink[] = [
 export const Footer = ({
   navLinks,
   brandName = "LinkedIn Translator",
-  description = "AI tone translation for modern professionals. All rights reserved.",
+  description = "AI translation for modern LinkedIn publishing.Not affiliated with LinkedIn. We just help you navigate the language.",
   directoryBadges,
   directoryBadgeTitle,
 }: FooterProps) => {

@@ -221,7 +221,7 @@ const HOME_PAGE_COPY: Record<LinkedinTranslatorLocale, HomePageCopy> = {
     },
     footer: {
       description:
-        "AI translation and localization workflows tailored for modern LinkedIn publishing.",
+        "AI translation for modern LinkedIn publishing.Not affiliated with LinkedIn. We just help you navigate the language.",
       directoryBadgeTitle: "Featured on directories",
       navLinks: [
         {
