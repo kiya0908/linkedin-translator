@@ -11,7 +11,7 @@ keywords:
   - linkedin profile to english
 publishedAt: 2026-03-30
 updatedAt: 2026-03-30
-indexable: true
+indexable: false
 sitemapPriority: 0.85
 translationGroup: tools-profile-translation
 ---

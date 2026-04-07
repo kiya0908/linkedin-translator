@@ -1,13 +1,12 @@
-//子目录列表页和详情页收录策略决定组件
 import type {
   ContentCollection,
   ContentEntrySummary,
   ContentIndexPolicy,
   ContentLocale,
 } from "./types";
-//详情页总开关
-const CONTENT_ENTRY_INDEXING_ENABLED = false;
-//列表页按目录单独配置开关
+
+const CONTENT_ENTRY_INDEXING_ENABLED = true;
+
 const CONTENT_COLLECTION_INDEX_POLICY: Record<
   ContentLocale,
   Record<ContentCollection, ContentIndexPolicy>
@@ -22,8 +21,8 @@ const CONTENT_COLLECTION_INDEX_POLICY: Record<
       includeInSitemap: false,
     },
     blog: {
-      indexable: false,
-      includeInSitemap: false,
+      indexable: true,
+      includeInSitemap: true,
     },
   },
   zh: {
@@ -36,8 +35,8 @@ const CONTENT_COLLECTION_INDEX_POLICY: Record<
       includeInSitemap: false,
     },
     blog: {
-      indexable: false,
-      includeInSitemap: false,
+      indexable: true,
+      includeInSitemap: true,
     },
   },
 };

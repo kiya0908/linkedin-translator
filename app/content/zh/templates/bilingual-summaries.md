@@ -11,7 +11,7 @@ keywords:
   - linkedin summary for translator
 publishedAt: 2026-03-30
 updatedAt: 2026-03-30
-indexable: true
+indexable: false
 sitemapPriority: 0.8
 translationGroup: templates-bilingual-summaries
 ---
