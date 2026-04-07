@@ -20,6 +20,7 @@ export interface FooterNavLink {
 export interface FooterProps {
   navLinks?: FooterNavLink[];
   brandName?: string;
+  brandTo?: string;
   description?: string;
   directoryBadges?: DirectoryBadgeItem[];
   directoryBadgeTitle?: string;
@@ -62,6 +63,7 @@ const DEFAULT_FOOTER_LINKS: FooterNavLink[] = [
 export const Footer = ({
   navLinks,
   brandName = "LinkedIn Translator",
+  brandTo = "/",
   description = "AI translation for modern LinkedIn publishing.Not affiliated with LinkedIn. We just help you navigate the language.",
   directoryBadges,
   directoryBadgeTitle,
@@ -73,7 +75,7 @@ export const Footer = ({
     <footer className="bg-surface py-20 px-6 border-t border-outline-variant">
       <div className="max-w-7xl mx-auto flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
         <div className="lg:max-w-md">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6">
+          <Link to={brandTo} className="inline-flex items-center gap-2 mb-6">
             <span className="w-6 h-6 bg-primary rounded flex items-center justify-center">
               <Languages className="text-white w-4 h-4" />
             </span>

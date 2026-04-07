@@ -24,5 +24,5 @@ export const loader = ({}: Route.LoaderArgs) => {
 };
 
 export default function Page({ loaderData: { node } }: Route.ComponentProps) {
-  return <Legal node={node} />;
+  return <Legal node={node} withHomeChrome />;
 }

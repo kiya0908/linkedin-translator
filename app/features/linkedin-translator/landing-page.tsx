@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { Footer } from "~/features/layout/base-layout/footer";
+import { PublicSiteLayout } from "~/features/layout/base-layout/public-site-layout";
 import { GoogleOAuth } from "~/features/oauth/google";
 import { useUser } from "~/store";
 
@@ -74,12 +74,12 @@ export default function LinkedinTranslatorLandingPage({
 }: LandingPageProps) {
   const copy = getLinkedinTranslatorHomePageCopy(locale);
   const pricingCards = getLinkedinTranslatorPricingCards(locale);
+  const localeSwitchTo = locale === "en" ? "/zh" : "/";
 
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [checkouting, setCheckouting] = useState(false);
   const [pricingMessage, setPricingMessage] = useState("");
   const user = useUser((state) => state.user);
-  const credits = useUser((state) => state.credits);
 
   const aboutIcons = [Shield, Zap, MessageSquare, Languages];
   const stepIcons = [FileText, ArrowRightLeft, Sliders];
@@ -127,53 +127,8 @@ export default function LinkedinTranslatorLandingPage({
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <nav className="sticky top-0 z-50 glass border-b border-outline-variant">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img
-              src="/assets/logo-64.png"
-              alt={copy.navbar.logoAlt}
-              width={32}
-              height={32}
-              decoding="async"
-              className="w-8 h-8 rounded-lg object-cover"
-            />
-            <span className="font-display font-bold text-xl text-primary">
-              LinkedIn Translator
-            </span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-8">
-            {copy.navbar.navLinks.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-
-          {user ? (
-            <a
-              href="/base/credits"
-              className="bg-primary hover:bg-primary-container text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm"
-            >
-              {copy.navbar.credits}: {credits}
-            </a>
-          ) : (
-            <LazyGoogleOAuth
-              className="max-md:btn-sm"
-              label={copy.navbar.signIn}
-            />
-          )}
-        </div>
-      </nav>
-
-      <main className="flex-grow">
-        <section className="pt-24 pb-32 px-6 bg-surface">
+    <PublicSiteLayout locale={locale} localeSwitchTo={localeSwitchTo}>
+      <section className="pt-24 pb-32 px-6 bg-surface">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <div className="inline-block px-4 py-1.5 bg-secondary-fixed text-primary text-[10px] font-bold tracking-widest uppercase rounded-full mb-6">
               {copy.hero.eyebrow}
@@ -753,14 +708,7 @@ export default function LinkedinTranslatorLandingPage({
               </button>
             </div>
           </div>
-        </section>
-      </main>
-
-      <Footer
-        navLinks={copy.footer.navLinks}
-        description={copy.footer.description}
-        directoryBadgeTitle={copy.footer.directoryBadgeTitle}
-      />
-    </div>
+      </section>
+    </PublicSiteLayout>
   );
 }

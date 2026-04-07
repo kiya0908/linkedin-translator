@@ -1,4 +1,4 @@
-//渲染内容详情页，包括正文、关键词、相关页面和主工具 CTA。
+//渲染内容详情页，包括正文、关键词、相关页面。
 import type { RenderableTreeNodes } from "@markdoc/markdoc";
 import { ArrowRight, Globe2 } from "lucide-react";
 
@@ -40,12 +40,6 @@ export const ContentDetailPage = ({
     entry.updatedAt ?? entry.publishedAt,
     locale
   );
-  const ctaLabel =
-    locale === "zh" ? "回到主翻译工具" : "Open the main translator";
-  const ctaDescription =
-    locale === "zh"
-      ? "当前页面负责承接搜索流量，真正的翻译动作仍然回到站点主工具完成。"
-      : "This content page captures search intent, while the main translator remains the primary conversion destination.";
 
   return (
     <ContentSiteLayout
@@ -90,24 +84,6 @@ export const ContentDetailPage = ({
               node={node}
               className="markdown-body bg-white border border-outline-variant rounded-[2rem] p-6 md:p-10 mt-8"
             />
-
-            <div className="mt-8 rounded-[2rem] bg-primary text-white p-8 md:p-10">
-              <h2 className="text-2xl font-bold">
-                {locale === "zh"
-                  ? "下一步仍然是进入主工具完成翻译"
-                  : "The next step still happens inside the main tool"}
-              </h2>
-              <p className="mt-4 text-white/80 leading-relaxed max-w-2xl">
-                {ctaDescription}
-              </p>
-              <Link
-                to={getHomePath(locale)}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-primary"
-              >
-                {ctaLabel}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
           </article>
 
           <aside className="space-y-6">

@@ -501,3 +501,49 @@
 ### 代码定位（后续排查入口）
 - [x] 开关解析逻辑：`app/.server/libs/base-auth.ts`
 - [x] `.dev.vars` 加载逻辑：`vite.config.ts`
+
+## 2026-04-07 Public Header / Footer 统一记录（Codex）
+
+### 操作目标
+- [x] 统一首页、内容页、法务页的 public header / footer，不再由多套组件分别拼装。
+- [x] 在 public header 中补充 `Blog` 主导航，并在 `Sign In` 左侧加入语言切换入口。
+- [x] 先移除内容页 header 下方的 `tools / templates / blog` 二级导航，后续如果 `/tools`、`/templates` 成熟，再并入主 header。
+
+### 本轮完成项
+- [x] 新增公共站点布局：`app/features/layout/base-layout/public-site-layout.tsx`。
+- [x] 首页、内容页、法务页统一改为复用 `PublicSiteLayout`。
+- [x] 公共 header 继续复用 `MarketingHeader`，语言切换通过共享组件 `MarketingHeaderLocaleSwitch` 注入到右侧区域。
+- [x] 首页主导航文案补充 `Blog`；中文主导航同步补充 `博客`，分别指向 `/blog` 与 `/zh/blog`。
+- [x] 内容页不再单独渲染第二排站内导航，只保留公共 header。
+- [x] `/blog` 在内容站场景下仍可在主 header 中保持高亮，便于区分当前位于博客体系。
+- [x] Footer 新增 `brandTo`，保证中文页 footer 品牌链接返回 `/zh`，英文页返回 `/`。
+
+### 关键文件与修改内容
+- [x] `app/features/layout/base-layout/public-site-layout.tsx`
+- 统一 public 页面的主 header / footer、语言切换、`/blog` 主导航高亮逻辑。
+
+- [x] `app/features/layout/base-layout/marketing-header.tsx`
+- 新增 `MarketingHeaderLocaleSwitch` 共享语言切换组件，供 public 布局复用。
+
+- [x] `app/features/layout/base-layout/footer.tsx`
+- 新增 `brandTo` 参数，支持 footer 品牌链接按语言返回对应首页。
+
+- [x] `app/features/linkedin-translator/i18n.ts`
+- 首页导航增加 `Blog` / `博客`。
+
+- [x] `app/features/linkedin-translator/landing-page.tsx`
+- 首页改为直接复用 `PublicSiteLayout`，移除页面内手写的 header / footer 拼装。
+
+- [x] `app/features/content/site-layout.tsx`
+- 内容页改为复用 `PublicSiteLayout`，并删除原先的二级导航注入逻辑。
+
+- [x] `app/components/pages/legal/index.tsx`
+- 法务页改为复用 `PublicSiteLayout`，与首页、内容页保持同一套 public 站点 chrome。
+
+### 当前产品决策
+- [x] 当前 public header 只保留首页信息架构里的主导航：`About / How it Works / Why Us / FAQ / Blog`。
+- [x] `tools / templates` 暂不放进主 header。
+- [x] 内容页二级导航先整体移除，后续如果 `/tools`、`/templates` 真正上线并需要入口，再直接改 `app/features/linkedin-translator/i18n.ts` 的主导航配置。
+
+### 验证结果
+- [x] `.\node_modules\.bin\tsc.cmd -b --pretty false` 通过。

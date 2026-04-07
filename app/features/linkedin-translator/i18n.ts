@@ -217,6 +217,7 @@ const HOME_PAGE_COPY: Record<LinkedinTranslatorLocale, HomePageCopy> = {
         { label: "How it Works", href: "#how-it-works" },
         { label: "Why Us", href: "#why-choose-us" },
         { label: "FAQ", href: "#faq" },
+        { label: "Blog", href: "/blog" },
       ],
     },
     footer: {
@@ -421,6 +422,7 @@ const HOME_PAGE_COPY: Record<LinkedinTranslatorLocale, HomePageCopy> = {
         { label: "使用方式", href: "#how-it-works" },
         { label: "优势", href: "#why-choose-us" },
         { label: "常见问题", href: "#faq" },
+        { label: "博客", href: "/zh/blog" },
       ],
     },
     footer: {

@@ -1,4 +1,4 @@
-//提供内容路由相关的工具函数，比如路径生成、语言判断、目录文案、日期格式化。
+//提供子路由/tools /templates /blog 相关的工具函数，比如路径生成、语言判断、目录文案、日期格式化。
 import {
   CONTENT_COLLECTIONS,
   CONTENT_LOCALES,
@@ -53,15 +53,16 @@ const COLLECTION_PAGE_COPY: Record<
         "Template pages will appear here once the first batch of resources is published.",
     },
     blog: {
-      title: "LinkedIn Translation Blog",
+      title: "LinkedIn Speak Translator Blog",
       description:
-        "Read actionable guides on LinkedIn translation, profile localization, and multilingual posting strategies.",
-      eyebrow: "SEO knowledge center",
-      heading: "Guides built to answer search intent and lead into the product",
+        "Read practical guides on using LinkedIn Speak Translator (LinkedIn Translator) to improve profiles, posts, and professional messaging.",
+      eyebrow: "LinkedIn Speak Translator Blog hub",
+      heading:
+        "Guides built around LinkedIn Speak Translator search intent and product conversion",
       intro:
-        "Blog pages capture informational searches. The goal is to answer specific questions clearly, then connect the next step to a relevant tool or template page.",
+        "These blog pages target informational queries around LinkedIn Speak Translator and LinkedIn Translator.",
       emptyState:
-        "The first knowledge-base articles will appear here once they are ready.",
+        "More LinkedIn Speak Translator guides will appear here as new articles are published.",
     },
   },
   zh: {
@@ -86,14 +87,15 @@ const COLLECTION_PAGE_COPY: Record<
       emptyState: "模板目录会随着后续内容补充而持续扩充。",
     },
     blog: {
-      title: "LinkedIn 翻译博客",
+      title: "LinkedIn Speak Translator 博客",
       description:
-        "围绕 LinkedIn 翻译、主页本地化和多语言发布策略的知识内容中心。",
-      eyebrow: "知识型 SEO 内容",
-      heading: "回答搜索问题，同时把下一步动作引导回工具页",
+        "围绕 LinkedIn Speak Translator（LinkedIn Translator）的实战指南，帮助你优化 LinkedIn 主页、动态和职业沟通表达。",
+      eyebrow: "LinkedIn Speak Translator 博客 内容中心",
+      heading: "围绕 LinkedIn Speak Translator 搜索意图构建，并服务产品转化",
       intro:
-        "博客页主要覆盖 how-to、平台机制与常见问题。每篇文章都需要回答清楚问题本身，同时为工具页留下自然的导流路径。",
-      emptyState: "后续会继续补充更多围绕 LinkedIn 翻译的博客文章。",
+        "博客页聚焦 LinkedIn Speak Translator 与 LinkedIn Translator 相关的信息型搜索问题。",
+      emptyState:
+        "后续会持续发布更多围绕 LinkedIn Speak Translator 的实用文章。",
     },
   },
 };

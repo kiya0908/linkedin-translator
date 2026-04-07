@@ -57,7 +57,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
   const alternateLang = data.locale === "en" ? "zh" : "en";
 
   return [
-    { title: `${data.entry.title} | LinkedIn Translator` },
+    { title: `${data.entry.title}` },
     { name: "description", content: data.entry.description },
     ...(!data.indexable
       ? [{ name: "robots", content: "noindex,follow" as const }]
