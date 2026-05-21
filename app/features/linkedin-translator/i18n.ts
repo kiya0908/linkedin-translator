@@ -398,6 +398,11 @@ const HOME_PAGE_COPY: Record<LinkedinTranslatorLocale, HomePageCopy> = {
           answerHtml:
             "Each successful paid translation deducts <strong>1 credit</strong>.",
         },
+        {
+          question: "How does the translation work?",
+          answerHtml:
+            "This service utilizes the Gemini 2.5 Flash AI model to provide accurate AI translations.",
+        },
       ],
     },
     cta: {
